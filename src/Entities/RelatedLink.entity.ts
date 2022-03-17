@@ -5,7 +5,7 @@ import { Club } from './Club.entity';
 export class RelatedLink {
   @PrimaryColumn()
   @ManyToOne(() => Club, (club) => club.relatedLink)
-  id: number;
+  id: Club;
 
   @Column()
   name: string;

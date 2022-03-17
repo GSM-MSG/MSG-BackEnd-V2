@@ -1,12 +1,13 @@
-import { Column, Entity, OneToMany, OneToOne } from 'typeorm';
+import { Column, Entity, ManyToOne, PrimaryColumn } from 'typeorm';
 import { Club } from './Club.entity';
 import { User } from './User.entity';
 
 @Entity()
 export class RequestJoin {
-  @OneToOne(() => User, (User) => User.email)
-  userId: string;
+  @PrimaryColumn()
+  @ManyToOne(() => User, (User) => User.email)
+  userId: User;
 
-  @OneToMany(() => Club, (Club) => Club.id)
+  @ManyToOne(() => Club, (Club) => Club.id)
   clubId: number;
 }
