@@ -30,18 +30,14 @@ export class Club {
   teacher: string;
 
   @OneToMany(() => Member, (member) => member.club)
-  member: Member;
+  member: Member[];
 
-  @Column({ nullable: true })
   @OneToMany(() => RelatedLink, (link) => link.id)
-  relatedLink: string[];
+  relatedLink: RelatedLink[];
 
-  @Column({ nullable: true })
+  @Column('simple-array')
   activitiesUrl: string[];
 
-  @Column({ nullable: true })
-  clubMember: string[];
-
   @OneToMany(() => Image, (Image) => Image.clubId)
-  image: Image;
+  image: Image[];
 }
