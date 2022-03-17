@@ -25,5 +25,5 @@ export class User {
   userImg: string;
 
   @OneToMany(() => Member, (member) => member.email)
-  member: Member;
+  member: Member[];
 }
