@@ -9,5 +9,5 @@ export class RequestJoin {
   userId: User;
 
   @ManyToOne(() => Club, (Club) => Club.id)
-  clubId: number;
+  clubId: Club;
 }
