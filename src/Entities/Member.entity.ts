@@ -1,4 +1,4 @@
-import { Entity, ManyToOne, PrimaryColumn } from 'typeorm';
+import { Column, Entity, ManyToOne, PrimaryColumn } from 'typeorm';
 import { Club } from './Club.entity';
 import { User } from './User.entity';
 
@@ -11,4 +11,7 @@ export class Member {
   @PrimaryColumn()
   @ManyToOne(() => Club, (club) => club.id)
   club: Club;
+
+  @Column()
+  scope: 'MEMBER' | 'HEAD';
 }
