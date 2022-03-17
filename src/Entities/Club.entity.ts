@@ -1,4 +1,5 @@
 import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
+import { Image } from './image.entity';
 import { RelatedLink } from './RelatedLink.entity';
 
 @Entity()
@@ -36,4 +37,7 @@ export class Club {
 
   @Column({ nullable: true })
   clubMember: string[];
+
+  @OneToMany(() => Image, (Image) => Image.clubId)
+  image: Image;
 }
