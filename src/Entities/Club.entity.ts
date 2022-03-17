@@ -38,9 +38,6 @@ export class Club {
   @Column('simple-array')
   activitiesUrl: string[];
 
-  @Column('simple-array')
-  clubMember: string[];
-
   @OneToMany(() => Image, (Image) => Image.clubId)
   image: Image[];
 }
