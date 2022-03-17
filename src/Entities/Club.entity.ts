@@ -1,4 +1,5 @@
 import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
+import { Member } from './Member.entity';
 import { RelatedLink } from './RelatedLink.entity';
 
 @Entity()
@@ -26,6 +27,9 @@ export class Club {
 
   @Column({ nullable: true })
   teacher: string;
+
+  @OneToMany(() => Member, (member) => member.club)
+  member: Member;
 
   @Column({ nullable: true })
   @OneToMany(() => RelatedLink, (link) => link.id)
