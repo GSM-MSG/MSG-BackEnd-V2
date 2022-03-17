@@ -11,5 +11,26 @@ export class Club {
   type: string;
 
   @Column()
-  photo: string;
+  bannerUrl: string;
+
+  @Column()
+  title: string;
+
+  @Column()
+  description: string;
+
+  @Column()
+  contact: string;
+
+  @Column()
+  teacher: string;
+
+  @Column()
+  relatedLink: [];
+
+  @Column()
+  activities: [];
+
+  @Column()
+  member: [];
 }
