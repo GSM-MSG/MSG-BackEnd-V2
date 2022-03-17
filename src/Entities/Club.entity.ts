@@ -1,5 +1,7 @@
-import { Column, PrimaryGeneratedColumn } from 'typeorm';
+import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
+import { RelatedLink } from './RelatedLink.entity';
 
+@Entity()
 export class Club {
   @PrimaryGeneratedColumn()
   id: number;
@@ -16,21 +18,22 @@ export class Club {
   @Column()
   title: string;
 
-  @Column()
+  @Column({ nullable: true })
   description: string;
 
   @Column()
   contact: string;
 
-  @Column()
+  @Column({ nullable: true })
   teacher: string;
 
-  @Column()
-  relatedLink: [];
+  @Column({ nullable: true })
+  @OneToMany(() => RelatedLink, (link) => link.id)
+  relatedLink: string[];
 
-  @Column()
-  activities: [];
+  @Column({ nullable: true })
+  activitiesUrl: string[];
 
-  @Column()
-  member: [];
+  @Column({ nullable: true })
+  clubMember: string[];
 }
