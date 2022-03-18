@@ -2,6 +2,8 @@ import { Injectable } from '@nestjs/common';
 import * as nodemailer from 'nodemailer';
 import Mail from 'nodemailer/lib/mailer';
 import { EmailOptions } from 'src/types/EmailOptions';
+import { EmailHtml } from 'src/lib/EmailHtml';
+import { MAIL, PASS } from 'src/lib/EmailLib';
 
 @Injectable()
 export class EmailService {
@@ -9,31 +11,29 @@ export class EmailService {
 
   constructor() {
     this.transporter = nodemailer.createTransport({
-      service: 'Gmail',
+      service: 'naver',
+      host: 'smtp.naver.com',
+      port: 587,
       auth: {
-        user: 'YOUR_GMAIL',
-        pass: 'YOUR_PASSWORD',
+        user: MAIL,
+        pass: PASS,
       },
+      from: MAIL,
     });
   }
 
-  async sendMemberJoinVerification(
-    emailAddress: string,
-    signupVerifyToken: string,
-  ) {
-    const url = `${process.env.BASE_URL}/auth/verify?signupVerifyToken=${signupVerifyToken}`;
+  async userVerify(emailAddress: string, signupVerifyToken: string) {
+    const baseUrl: string = process.env.BASE_URL;
+    const frontUrl: string = process.env.FRONT_URL;
 
     const mailOptions: EmailOptions = {
+      from: MAIL,
       to: emailAddress,
-      subject: '가입 인증 메일',
-      html: `
-        가입확인 버튼를 누르시면 가입 인증이 완료됩니다.<br/>
-        <form action="${url}" method="POST">
-          <button>가입확인</button>
-        </form>
-      `,
+      subject: 'GCMS 가입 인증 메일',
+      html: EmailHtml(baseUrl, signupVerifyToken, frontUrl),
     };
 
-    return await this.transporter.sendMail(mailOptions);
+    const result = await this.transporter.sendMail(mailOptions);
+    console.log(result);
   }
 }

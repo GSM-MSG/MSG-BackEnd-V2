@@ -21,7 +21,7 @@ export class User {
   @Column()
   num: number;
 
-  @Column()
+  @Column({ nullable: true })
   userImg: string;
 
   @OneToMany(() => Member, (member) => member.email)

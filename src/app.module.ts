@@ -16,7 +16,5 @@ import entities from './Entities';
     }),
     AuthModule,
   ],
-  controllers: [],
-  providers: [],
 })
 export class AppModule {}

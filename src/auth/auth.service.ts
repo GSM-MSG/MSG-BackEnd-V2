@@ -1,9 +1,13 @@
-import { Injectable } from '@nestjs/common';
+import {
+  ForbiddenException,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { User } from 'src/Entities/User.entity';
 import { Repository } from 'typeorm';
 import { RegisterDto } from './dto/register.dto';
-import bcrypt from 'bcrypt';
+import * as bcrypt from 'bcrypt';
 import { EmailService } from 'src/email/email.service';
 
 @Injectable()
@@ -15,6 +19,10 @@ export class AuthService {
 
   async register(data: RegisterDto): Promise<void> {
     const hash = await bcrypt.hash(data.password, 10);
+    const isVerified = await bcrypt.hash(data.email, 10);
+
+    if (await this.userRepository.findOne({ where: { email: data.email } }))
+      throw new ForbiddenException();
 
     const User = this.userRepository.create({
       email: data.email,
@@ -24,8 +32,10 @@ export class AuthService {
       name: '변찬우',
       num: 9,
       userImg: null,
-      isVerified: false,
+      isVerified,
     });
+
+    this.emailService.userVerify(`${data.email}@gsm.hs.kr`, isVerified);
 
     this.userRepository.save(User);
   }
