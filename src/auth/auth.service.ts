@@ -4,11 +4,13 @@ import { User } from 'src/Entities/User.entity';
 import { Repository } from 'typeorm';
 import { RegisterDto } from './dto/register.dto';
 import bcrypt from 'bcrypt';
+import { EmailService } from 'src/email/email.service';
 
 @Injectable()
 export class AuthService {
   constructor(
     @InjectRepository(User) private userRepository: Repository<User>,
+    private emailService: EmailService,
   ) {}
 
   async register(data: RegisterDto): Promise<void> {
