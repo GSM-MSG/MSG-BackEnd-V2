@@ -1,16 +1,18 @@
 import { Module } from '@nestjs/common';
+import { ConfigModule } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { AuthModule } from './auth/auth.module';
 import entities from './Entities';
 @Module({
   imports: [
+    ConfigModule.forRoot(),
     TypeOrmModule.forRoot({
       type: 'mysql',
-      host: 'localhost',
+      host: process.env.DATABASE_HOST,
       port: 3306,
-      username: 'root',
-      password: '1234',
-      database: 'msg',
+      username: process.env.DATABASE_NAME,
+      password: process.env.DATABASE_PASSWORD,
+      database: process.env.DATABASE,
       entities: [...entities],
       synchronize: true,
     }),
