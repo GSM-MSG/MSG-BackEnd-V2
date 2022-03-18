@@ -28,5 +28,5 @@ export class User {
   member: Member[];
 
   @Column()
-  isVerified: boolean;
+  isVerified: string;
 }
