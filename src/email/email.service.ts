@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, Logger } from '@nestjs/common';
 import * as nodemailer from 'nodemailer';
 import Mail from 'nodemailer/lib/mailer';
 import { EmailOptions } from 'src/types/EmailOptions';
@@ -22,18 +22,19 @@ export class EmailService {
     });
   }
 
-  async userVerify(emailAddress: string, signupVerifyToken: string) {
-    const baseUrl: string = process.env.BASE_URL;
+  async userVerify(emailAddress: string, VerifyToken: string) {
     const frontUrl: string = process.env.FRONT_URL;
 
     const mailOptions: EmailOptions = {
       from: MAIL,
       to: emailAddress,
       subject: 'GCMS 가입 인증 메일',
-      html: EmailHtml(baseUrl, signupVerifyToken, frontUrl),
+      html: EmailHtml(`${frontUrl}/auth?token=${VerifyToken}`),
     };
 
-    const result = await this.transporter.sendMail(mailOptions);
-    console.log(result);
+    const result: { accepted: string[] } = await this.transporter.sendMail(
+      mailOptions,
+    );
+    Logger.log(`Send mail to ${result.accepted[0]}`);
   }
 }

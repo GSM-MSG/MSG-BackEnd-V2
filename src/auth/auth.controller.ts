@@ -1,4 +1,4 @@
-import { Body, Controller, Head, Post, Query } from '@nestjs/common';
+import { Body, Controller, Head, HttpCode, Post, Query } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { RegisterDto } from './dto/register.dto';
 
@@ -7,10 +7,11 @@ export class AuthController {
   constructor(private authService: AuthService) {}
 
   @Post('register')
+  @HttpCode(201)
   register(@Body() data: RegisterDto): Promise<void> {
     return this.authService.register(data);
   }
 
   @Head('verify')
-  verifyHead(@Query('signupVerifyToken') signupVerifyToken: string) {}
+  verifyHead(@Query('token') signupVerifyToken: string) {}
 }
