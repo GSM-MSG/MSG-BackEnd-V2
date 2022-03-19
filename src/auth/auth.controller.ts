@@ -6,11 +6,13 @@ import {
   HttpCode,
   Post,
   Query,
+  UseGuards,
 } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { LoginDto } from './dto/login.dto';
 import { RegisterDto } from './dto/register.dto';
-import { Public } from './decorators';
+import { Public, User } from './decorators';
+import { RtGuard } from './guards';
 
 @Controller('auth')
 export class AuthController {
@@ -42,8 +44,13 @@ export class AuthController {
     return this.authService.login(data);
   }
 
-  @Get('test')
-  test() {
-    return '<h1>Hello world</h1>';
+  @Public()
+  @UseGuards(new RtGuard())
+  @Post('refresh')
+  refresh(
+    @User('email') email: string,
+    @User('refreshToken') refreshToken: string,
+  ) {
+    return this.authService.refresh(email, refreshToken);
   }
 }

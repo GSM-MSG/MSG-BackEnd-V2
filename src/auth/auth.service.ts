@@ -98,6 +98,20 @@ export class AuthService {
     return token;
   }
 
+  async refresh(email: string, refreshToken: string) {
+    const user = this.userRepository.findOne({ where: { email } });
+    if (!user) throw new UnauthorizedException('Not Found User');
+
+    if (!(await bcrypt.compare(refreshToken, (await user).refreshToken)))
+      throw new UnauthorizedException('Not matched Token');
+
+    const tokens = await this.getToken(email);
+    const hash: string = await bcrypt.hash(tokens.refresh_token, 10);
+    await this.userRepository.update(email, { refreshToken: hash });
+
+    return tokens;
+  }
+
   findStudent(email: string) {
     return students.find((i) => i.email === email);
   }
