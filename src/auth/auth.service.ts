@@ -84,32 +84,43 @@ export class AuthService {
       where: { email: data.email },
     });
 
-    if (!user) throw new UnauthorizedException('Not Found User');
+    if (!user || user.isVerified)
+      throw new UnauthorizedException('Not Found User');
 
     if (!(await bcrypt.compare(data.password, user.password)))
       throw new UnauthorizedException('Not matched password');
 
     const token = await this.getToken(data.email);
 
+    const hash = await bcrypt.hash(token.refresh_token, 10);
+
     this.userRepository.update(data.email, {
-      refreshToken: token.refresh_token,
+      refreshToken: hash,
     });
 
     return token;
   }
 
   async refresh(email: string, refreshToken: string) {
-    const user = this.userRepository.findOne({ where: { email } });
-    if (!user) throw new UnauthorizedException('Not Found User');
+    const user = await this.userRepository.findOne({ where: { email } });
+    if (!user || !user.refreshToken)
+      throw new UnauthorizedException('Not found user or Not signed in');
 
-    if (!(await bcrypt.compare(refreshToken, (await user).refreshToken)))
-      throw new UnauthorizedException('Not matched Token');
+    const matched = await bcrypt.compare(refreshToken, user.refreshToken);
+    if (!matched) throw new UnauthorizedException('Not matched Token');
 
     const tokens = await this.getToken(email);
     const hash: string = await bcrypt.hash(tokens.refresh_token, 10);
     await this.userRepository.update(email, { refreshToken: hash });
 
     return tokens;
+  }
+
+  async logout(email: string) {
+    if (!(await this.userRepository.findOne({ where: { email } })))
+      throw new UnauthorizedException('Not Found User');
+
+    await this.userRepository.update(email, { refreshToken: null });
   }
 
   findStudent(email: string) {

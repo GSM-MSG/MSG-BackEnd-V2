@@ -53,4 +53,10 @@ export class AuthController {
   ) {
     return this.authService.refresh(email, refreshToken);
   }
+
+  @Post('logout')
+  @HttpCode(200)
+  logout(@User('email') email: string) {
+    return this.authService.logout(email);
+  }
 }
