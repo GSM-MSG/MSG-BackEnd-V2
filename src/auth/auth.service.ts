@@ -53,8 +53,12 @@ export class AuthService {
     if (!email || !token)
       throw new BadRequestException('Not have email or token');
 
-    if (!(await this.userRepository.findOne({ where: { email: email } })))
-      throw new BadRequestException('Not Found User');
+    const user = await this.userRepository.findOne({ where: { email: email } });
+
+    if (!user) throw new BadRequestException('Not Found User');
+
+    if (!(token === user.isVerified))
+      throw new ForbiddenException('Warning user');
 
     await this.userRepository.update(email, { isVerified: null });
   }
