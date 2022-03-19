@@ -1,4 +1,12 @@
-import { Body, Controller, Head, HttpCode, Post, Query } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Get,
+  Head,
+  HttpCode,
+  Post,
+  Query,
+} from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { RegisterDto } from './dto/register.dto';
 
@@ -13,7 +21,13 @@ export class AuthController {
   }
 
   @Head('verify')
-  verifyHead(@Query('token') token: string, @Query('user') email: string) {
-    return this.authService.verifyHead(email, token);
+  @HttpCode(200)
+  isVerify(@Query('email') email: string) {
+    return this.authService.isVerify(email);
+  }
+
+  @Get('verify')
+  verify(@Query('token') token: string, @Query('user') email: string) {
+    return this.authService.verify(email, token);
   }
 }

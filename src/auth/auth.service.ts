@@ -3,6 +3,7 @@ import {
   ForbiddenException,
   Injectable,
   Logger,
+  UnauthorizedException,
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { User } from 'src/Entities/User.entity';
@@ -49,7 +50,7 @@ export class AuthService {
     this.userRepository.save(User);
   }
 
-  async verifyHead(email: string, token: string) {
+  async verify(email: string, token: string) {
     if (!email || !token)
       throw new BadRequestException('Not have email or token');
 
@@ -61,6 +62,15 @@ export class AuthService {
       throw new ForbiddenException('Warning user');
 
     await this.userRepository.update(email, { isVerified: null });
+  }
+
+  async isVerify(email: string) {
+    if (!email) throw new BadRequestException('Not have email');
+
+    const user = await this.userRepository.findOne({ where: { email } });
+    if (!user) throw new BadRequestException('Not Found User');
+
+    if (user.isVerified) throw new UnauthorizedException();
   }
 
   findStudent(email: string) {
