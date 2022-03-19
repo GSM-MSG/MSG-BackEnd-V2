@@ -27,6 +27,9 @@ export class User {
   @OneToMany(() => Member, (member) => member.email)
   member: Member[];
 
-  @Column()
-  isVerified: string;
+  @Column({ nullable: true })
+  isVerified: string | null;
+
+  @Column({ nullable: true })
+  refreshToken: string | null;
 }
