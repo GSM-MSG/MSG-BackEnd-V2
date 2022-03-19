@@ -29,4 +29,7 @@ export class User {
 
   @Column({ nullable: true })
   isVerified: string | null;
+
+  @Column({ nullable: true })
+  refreshToken: string | null;
 }
