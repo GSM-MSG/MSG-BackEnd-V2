@@ -39,3 +39,4 @@ lerna-debug.log*
 .env
 EmailLib.ts
 students.ts
+Constants.ts

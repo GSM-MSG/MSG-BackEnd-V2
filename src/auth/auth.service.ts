@@ -12,12 +12,16 @@ import { RegisterDto } from './dto/register.dto';
 import * as bcrypt from 'bcrypt';
 import { EmailService } from 'src/email/email.service';
 import students from '../lib/students';
+import { LoginDto } from './dto/login.dto';
+import { JwtService } from '@nestjs/jwt';
+import { accessToken, refreshToken } from 'src/lib/Constants';
 
 @Injectable()
 export class AuthService {
   constructor(
     @InjectRepository(User) private userRepository: Repository<User>,
     private emailService: EmailService,
+    private jwtService: JwtService,
   ) {}
 
   async register(data: RegisterDto): Promise<void> {
@@ -56,7 +60,7 @@ export class AuthService {
 
     const user = await this.userRepository.findOne({ where: { email: email } });
 
-    if (!user) throw new BadRequestException('Not Found User');
+    if (!user) throw new UnauthorizedException('Not Found User');
 
     if (!(token === user.isVerified))
       throw new ForbiddenException('Warning user');
@@ -68,12 +72,55 @@ export class AuthService {
     if (!email) throw new BadRequestException('Not have email');
 
     const user = await this.userRepository.findOne({ where: { email } });
-    if (!user) throw new BadRequestException('Not Found User');
+    if (!user) throw new UnauthorizedException('Not Found User');
 
     if (user.isVerified) throw new UnauthorizedException();
   }
 
+  async login(
+    data: LoginDto,
+  ): Promise<{ refresh_token: string; access_token: string }> {
+    const user = await this.userRepository.findOne({
+      where: { email: data.email },
+    });
+
+    if (!user) throw new UnauthorizedException('Not Found User');
+
+    if (!(await bcrypt.compare(data.password, user.password)))
+      throw new UnauthorizedException('Not matched password');
+
+    const token = await this.getToken(data.email);
+
+    this.userRepository.update(data.email, {
+      refreshToken: token.refresh_token,
+    });
+
+    return token;
+  }
+
   findStudent(email: string) {
     return students.find((i) => i.email === email);
+  }
+
+  async getToken(email: string) {
+    const [at, rt] = await Promise.all([
+      this.jwtService.signAsync(
+        {
+          email,
+        },
+        { expiresIn: 60 * 15, secret: accessToken },
+      ),
+      this.jwtService.signAsync(
+        {
+          email,
+        },
+        { expiresIn: 60 * 60 * 24 * 7, secret: refreshToken },
+      ),
+    ]);
+
+    return {
+      access_token: at,
+      refresh_token: rt,
+    };
   }
 }
