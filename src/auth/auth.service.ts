@@ -21,7 +21,7 @@ export class AuthService {
 
   async register(data: RegisterDto): Promise<void> {
     if (await this.userRepository.findOne({ where: { email: data.email } }))
-      throw new ForbiddenException();
+      throw new ForbiddenException('already exist user');
 
     const student = this.findStudent(`${data.email}@gsm.hs.kr`);
     if (!student) {
@@ -32,7 +32,11 @@ export class AuthService {
     const hash = await bcrypt.hash(data.password, 10);
     const isVerified = await bcrypt.hash(data.email, 10);
 
-    this.emailService.userVerify(`${data.email}@gsm.hs.kr`, isVerified);
+    this.emailService.userVerify(
+      `${data.email}@gsm.hs.kr`,
+      isVerified,
+      data.email,
+    );
 
     const User = this.userRepository.create({
       ...student,
@@ -43,6 +47,16 @@ export class AuthService {
     });
 
     this.userRepository.save(User);
+  }
+
+  async verifyHead(email: string, token: string) {
+    if (!email || !token)
+      throw new BadRequestException('Not have email or token');
+
+    if (!(await this.userRepository.findOne({ where: { email: email } })))
+      throw new BadRequestException('Not Found User');
+
+    await this.userRepository.update(email, { isVerified: null });
   }
 
   findStudent(email: string) {

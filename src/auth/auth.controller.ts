@@ -13,5 +13,7 @@ export class AuthController {
   }
 
   @Head('verify')
-  verifyHead(@Query('token') signupVerifyToken: string) {}
+  verifyHead(@Query('token') token: string, @Query('user') email: string) {
+    return this.authService.verifyHead(email, token);
+  }
 }
