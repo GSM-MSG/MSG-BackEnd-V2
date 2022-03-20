@@ -3,7 +3,6 @@ import {
   ForbiddenException,
   Injectable,
   Logger,
-  UnauthorizedException,
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { User } from 'src/Entities/User.entity';
@@ -60,7 +59,7 @@ export class AuthService {
 
     const user = await this.userRepository.findOne({ where: { email: email } });
 
-    if (!user) throw new UnauthorizedException('Not Found User');
+    if (!user) throw new ForbiddenException('Not Found User');
 
     if (!(token === user.isVerified))
       throw new ForbiddenException('Warning user');
@@ -72,9 +71,9 @@ export class AuthService {
     if (!email) throw new BadRequestException('Not have email');
 
     const user = await this.userRepository.findOne({ where: { email } });
-    if (!user) throw new UnauthorizedException('Not Found User');
+    if (!user) throw new ForbiddenException('Not Found User');
 
-    if (user.isVerified) throw new UnauthorizedException();
+    if (user.isVerified) throw new ForbiddenException('Unauthenticated user');
   }
 
   async login(
@@ -85,10 +84,10 @@ export class AuthService {
     });
 
     if (!user || user.isVerified)
-      throw new UnauthorizedException('Not Found User');
+      throw new ForbiddenException('Not Found User');
 
     if (!(await bcrypt.compare(data.password, user.password)))
-      throw new UnauthorizedException('Not matched password');
+      throw new ForbiddenException('Not matched password');
 
     const token = await this.getToken(data.email);
 
@@ -104,10 +103,10 @@ export class AuthService {
   async refresh(email: string, refreshToken: string) {
     const user = await this.userRepository.findOne({ where: { email } });
     if (!user || !user.refreshToken)
-      throw new UnauthorizedException('Not found user or Not signed in');
+      throw new ForbiddenException('Not found user or Not signed in');
 
     const matched = await bcrypt.compare(refreshToken, user.refreshToken);
-    if (!matched) throw new UnauthorizedException('Not matched Token');
+    if (!matched) throw new ForbiddenException('Not matched Token');
 
     const tokens = await this.getToken(email);
     const hash: string = await bcrypt.hash(tokens.refresh_token, 10);
@@ -118,7 +117,7 @@ export class AuthService {
 
   async logout(email: string) {
     if (!(await this.userRepository.findOne({ where: { email } })))
-      throw new UnauthorizedException('Not Found User');
+      throw new ForbiddenException('Not Found User');
 
     await this.userRepository.update(email, { refreshToken: null });
   }
@@ -143,9 +142,13 @@ export class AuthService {
       ),
     ]);
 
+    const now = new Date();
+    const expiredAt = new Date(now.setMinutes(now.getMinutes() - 15));
+
     return {
       access_token: at,
       refresh_token: rt,
+      expiredAt,
     };
   }
 }
