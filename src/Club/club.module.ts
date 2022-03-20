@@ -6,7 +6,7 @@ import { ClubController } from './club.controller';
 import { ClubService } from './club.service';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([Club,RelatedLink,Image])],
+  imports: [TypeOrmModule.forFeature([Club, RelatedLink])],
   controllers: [ClubController],
   providers: [ClubService],
 })
