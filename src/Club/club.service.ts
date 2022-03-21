@@ -16,4 +16,24 @@ export class ClubService {
       );
     }
   }
+  async CreateClub() {}
+  async DleteClub(clubName: string, clubType: string) {
+    const club = this.club.findOne({
+      where: { name: clubName, type: clubType },
+    });
+    if (!club) {
+      throw new HttpException(
+        '존재하지않는동아리입니다.',
+        HttpStatus.BAD_REQUEST,
+      );
+    }
+    if (clubType === 'MAJOR' || 'EDITORIAL' || 'FREEDOM') {
+      await this.club.delete({ name: clubName, type: clubType });
+    } else {
+      throw new HttpException(
+        '잘못된 동아리 유형입니다.',
+        HttpStatus.BAD_REQUEST,
+      );
+    }
+  }
 }
