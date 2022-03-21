@@ -28,8 +28,5 @@ export class User {
   member: Member[];
 
   @Column({ nullable: true })
-  isVerified: string | null;
-
-  @Column({ nullable: true })
   refreshToken: string | null;
 }
