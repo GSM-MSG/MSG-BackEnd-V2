@@ -4,15 +4,12 @@ import {
   Head,
   HttpCode,
   Post,
-  Query,
   UseGuards,
 } from '@nestjs/common';
 import { AuthService } from './auth.service';
-import { LoginDto } from './dto/login.dto';
-import { RegisterDto } from './dto/register.dto';
 import { Public, User } from './decorators';
 import { RtGuard } from './guards';
-import { VerifyDto } from './dto/verify.dto';
+import { LoginDto, RegisterDto, VerifyDto, verifyHeadDto } from './dto';
 
 @Controller('auth')
 export class AuthController {
@@ -28,12 +25,13 @@ export class AuthController {
   @Public()
   @Head('verify')
   @HttpCode(200)
-  isVerify(@Query('email') email: string) {
-    return this.authService.isVerify(email);
+  isVerify(@Body() data: verifyHeadDto) {
+    return this.authService.isVerify(data);
   }
 
   @Public()
   @Post('verify')
+  @HttpCode(201)
   verify(@Body() data: VerifyDto) {
     return this.authService.verify(data);
   }

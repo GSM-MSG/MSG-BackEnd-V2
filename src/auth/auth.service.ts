@@ -7,15 +7,13 @@ import {
 import { InjectRepository } from '@nestjs/typeorm';
 import { User } from 'src/Entities/User.entity';
 import { Repository } from 'typeorm';
-import { RegisterDto } from './dto/register.dto';
 import * as bcrypt from 'bcrypt';
 import { EmailService } from 'src/email/email.service';
 import students from '../lib/students';
-import { LoginDto } from './dto/login.dto';
 import { JwtService } from '@nestjs/jwt';
 import { accessToken, refreshToken } from 'src/lib/Constants';
-import { VerifyDto } from './dto/verify.dto';
 import { verifyData } from './lib/verifyData';
+import { LoginDto, RegisterDto, VerifyDto, verifyHeadDto } from './dto';
 
 @Injectable()
 export class AuthService {
@@ -42,18 +40,24 @@ export class AuthService {
     if (!user) throw new ForbiddenException('Not Found User');
 
     const num = `${Math.floor(Math.random() * 9999)}`;
-    const verifyNum = num.length === 3 ? '0' + num : num;
+    const code = num.length === 3 ? '0' + num : num;
 
-    verifyData[email] = verifyNum;
+    verifyData[email] = {
+      code,
+      expiredAt: new Date(new Date().setMinutes(new Date().getMinutes() + 5)),
+    };
 
-    this.emailService.userVerify(`${email}@gsm.hs.kr`, verifyNum);
+    this.emailService.userVerify(`${email}@gsm.hs.kr`, code);
   }
 
-  async isVerify(email: string) {
-    if (!email) throw new BadRequestException('Not have email');
+  async isVerify({ email, code }: verifyHeadDto) {
+    if (verifyData[email].code !== code)
+      throw new ForbiddenException('인증 실패');
 
-    const user = await this.userRepository.findOne({ where: { email } });
-    if (!user) throw new ForbiddenException('Not Found User');
+    if (verifyData[email].expiredAt <= new Date())
+      throw new ForbiddenException('시간 초과');
+
+    verifyData[email].expiredAt = null;
   }
 
   async login(

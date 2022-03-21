@@ -22,12 +22,12 @@ export class EmailService {
     });
   }
 
-  async userVerify(emailAddress: string, VerifyToken: string) {
+  async userVerify(emailAddress: string, code: string) {
     const mailOptions: EmailOptions = {
       from: MAIL,
       to: emailAddress,
       subject: 'GCMS 가입 인증 메일',
-      html: EmailHtml(VerifyToken),
+      html: EmailHtml(code),
     };
 
     const result: { accepted: string[] } = await this.transporter.sendMail(
