@@ -1,4 +1,4 @@
-export const EmailHtml = (url: string) => `<!DOCTYPE html>
+export const EmailHtml = (verifyNum: string) => `<!DOCTYPE html>
 <html lang="ko">
   <head>
     <meta charset="UTF-8" />
@@ -11,27 +11,20 @@ export const EmailHtml = (url: string) => `<!DOCTYPE html>
         margin: 0 auto;
         text-align: center;
       }
-      .verify a {
+      .verify > span {
         padding: 1rem 2rem;
-        border-radius: 1rem;
-        text-decoration: none;
-        background: #54a0ff;
-        color: #fff;
-        font-size: 1.5rem;
-        font-family: inherit;
+        font-size: 2rem;
         font-weight: bold;
-        cursor: pointer;
-        transition: 0.2s;
-      }
-      .verify a:hover {
-        background: #2e87f3;
+        background: #4c53ff;
+        color: #fff;
+        border-radius: 1rem;
       }
     </style>
   </head>
   <body>
     <div class="verify">
-      <h1>GCMS 가입 인증 메일</h1>
-      <a href="${url}">인증하기</a>
+      <h1>GCMS 가입 인증 메일 번호</h1>
+      <span>${verifyNum}</span>
     </div>
   </body>
 </html>

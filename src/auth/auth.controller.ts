@@ -1,7 +1,6 @@
 import {
   Body,
   Controller,
-  Get,
   Head,
   HttpCode,
   Post,
@@ -13,6 +12,7 @@ import { LoginDto } from './dto/login.dto';
 import { RegisterDto } from './dto/register.dto';
 import { Public, User } from './decorators';
 import { RtGuard } from './guards';
+import { VerifyDto } from './dto/verify.dto';
 
 @Controller('auth')
 export class AuthController {
@@ -33,9 +33,9 @@ export class AuthController {
   }
 
   @Public()
-  @Get('verify')
-  verify(@Query('token') token: string, @Query('user') email: string) {
-    return this.authService.verify(email, token);
+  @Post('verify')
+  verify(@Body() data: VerifyDto) {
+    return this.authService.verify(data);
   }
 
   @Public()

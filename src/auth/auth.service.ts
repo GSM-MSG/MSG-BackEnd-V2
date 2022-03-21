@@ -14,6 +14,8 @@ import students from '../lib/students';
 import { LoginDto } from './dto/login.dto';
 import { JwtService } from '@nestjs/jwt';
 import { accessToken, refreshToken } from 'src/lib/Constants';
+import { VerifyDto } from './dto/verify.dto';
+import { verifyData } from './lib/verifyData';
 
 @Injectable()
 export class AuthService {
@@ -32,39 +34,19 @@ export class AuthService {
       Logger.error(`Not Found ${data.email}`);
       throw new BadRequestException(`Not Found User ${data.email}@gsm.hs.kr`);
     }
-
-    const hash = await bcrypt.hash(data.password, 10);
-    const isVerified = await bcrypt.hash(data.email, 10);
-
-    this.emailService.userVerify(
-      `${data.email}@gsm.hs.kr`,
-      isVerified,
-      data.email,
-    );
-
-    const User = this.userRepository.create({
-      ...student,
-      email: data.email,
-      password: hash,
-      userImg: null,
-      isVerified,
-    });
-
-    this.userRepository.save(User);
   }
 
-  async verify(email: string, token: string) {
-    if (!email || !token)
-      throw new BadRequestException('Not have email or token');
-
-    const user = await this.userRepository.findOne({ where: { email: email } });
+  async verify({ email }: VerifyDto) {
+    const user = this.findStudent(email);
 
     if (!user) throw new ForbiddenException('Not Found User');
 
-    if (!(token === user.isVerified))
-      throw new ForbiddenException('Warning user');
+    const num = `${Math.floor(Math.random() * 9999)}`;
+    const verifyNum = num.length === 3 ? '0' + num : num;
 
-    await this.userRepository.update(email, { isVerified: null });
+    verifyData[email] = verifyNum;
+
+    this.emailService.userVerify(`${email}@gsm.hs.kr`, verifyNum);
   }
 
   async isVerify(email: string) {
@@ -72,8 +54,6 @@ export class AuthService {
 
     const user = await this.userRepository.findOne({ where: { email } });
     if (!user) throw new ForbiddenException('Not Found User');
-
-    if (user.isVerified) throw new ForbiddenException('Unauthenticated user');
   }
 
   async login(
@@ -83,8 +63,7 @@ export class AuthService {
       where: { email: data.email },
     });
 
-    if (!user || user.isVerified)
-      throw new ForbiddenException('Not Found User');
+    if (!user) throw new ForbiddenException('Not Found User');
 
     if (!(await bcrypt.compare(data.password, user.password)))
       throw new ForbiddenException('Not matched password');
