@@ -1,9 +1,4 @@
-import {
-  BadRequestException,
-  ForbiddenException,
-  Injectable,
-  Logger,
-} from '@nestjs/common';
+import { ForbiddenException, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { User } from 'src/Entities/User.entity';
 import { Repository } from 'typeorm';
@@ -24,18 +19,40 @@ export class AuthService {
   ) {}
 
   async register(data: RegisterDto): Promise<void> {
-    if (await this.userRepository.findOne({ where: { email: data.email } }))
-      throw new ForbiddenException('already exist user');
+    const a = await this.userRepository.findOne({
+      where: { email: data.email },
+    });
+    if (a) throw new ForbiddenException('already exist user');
+
+    if (!verifyData[data.email] || verifyData[data.email].expiredAt)
+      throw new ForbiddenException(
+        `Not Authentication User ${data.email}@gsm.hs.kr`,
+      );
 
     const student = this.findStudent(`${data.email}@gsm.hs.kr`);
-    if (!student) {
-      Logger.error(`Not Found ${data.email}`);
-      throw new BadRequestException(`Not Found User ${data.email}@gsm.hs.kr`);
-    }
+
+    const hash = await bcrypt.hash(data.password, 10);
+
+    const user = this.userRepository.create({
+      ...student,
+      email: data.email,
+      password: hash,
+      userImg: null,
+    });
+
+    this.userRepository.save(user);
+
+    delete verifyData[data.email];
+    console.log(verifyData);
   }
 
   async verify({ email }: VerifyDto) {
-    const user = this.findStudent(email);
+    if (await this.userRepository.findOne({ where: { email: email } }))
+      throw new ForbiddenException('already exist user');
+
+    const user = this.findStudent(`${email}@gsm.hs.kr`);
+
+    console.log(user);
 
     if (!user) throw new ForbiddenException('Not Found User');
 
@@ -48,16 +65,20 @@ export class AuthService {
     };
 
     this.emailService.userVerify(`${email}@gsm.hs.kr`, code);
+    console.log(verifyData);
   }
 
   async isVerify({ email, code }: verifyHeadDto) {
     if (verifyData[email].code !== code)
-      throw new ForbiddenException('인증 실패');
+      throw new ForbiddenException('Failed Authentication');
 
-    if (verifyData[email].expiredAt <= new Date())
-      throw new ForbiddenException('시간 초과');
+    if (verifyData[email].expiredAt <= new Date()) {
+      delete verifyData[email];
+      throw new ForbiddenException('Time excess');
+    }
 
     verifyData[email].expiredAt = null;
+    console.log(verifyData);
   }
 
   async login(
