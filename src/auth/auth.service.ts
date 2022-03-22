@@ -1,4 +1,8 @@
-import { ForbiddenException, Injectable } from '@nestjs/common';
+import {
+  ConflictException,
+  ForbiddenException,
+  Injectable,
+} from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { User } from 'src/Entities/User.entity';
 import { Repository } from 'typeorm';
@@ -22,7 +26,7 @@ export class AuthService {
     const a = await this.userRepository.findOne({
       where: { email: data.email },
     });
-    if (a) throw new ForbiddenException('already exist user');
+    if (a) throw new ConflictException('already exist user');
 
     if (!verifyData[data.email] || verifyData[data.email].expiredAt)
       throw new ForbiddenException(
@@ -48,7 +52,7 @@ export class AuthService {
 
   async verify({ email }: VerifyDto) {
     if (await this.userRepository.findOne({ where: { email: email } }))
-      throw new ForbiddenException('already exist user');
+      throw new ConflictException('already exist user');
 
     const user = this.findStudent(`${email}@gsm.hs.kr`);
 
