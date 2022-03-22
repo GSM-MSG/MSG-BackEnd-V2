@@ -87,7 +87,7 @@ export class AuthService {
 
   async login(
     data: LoginDto,
-  ): Promise<{ refresh_token: string; access_token: string }> {
+  ): Promise<{ refreshToken: string; accessToken: string }> {
     const user = await this.userRepository.findOne({
       where: { email: data.email },
     });
@@ -99,7 +99,7 @@ export class AuthService {
 
     const token = await this.getToken(data.email);
 
-    const hash = await bcrypt.hash(token.refresh_token, 10);
+    const hash = await bcrypt.hash(token.refreshToken, 10);
 
     this.userRepository.update(data.email, {
       refreshToken: hash,
@@ -117,7 +117,7 @@ export class AuthService {
     if (!matched) throw new ForbiddenException('Not matched Token');
 
     const tokens = await this.getToken(email);
-    const hash: string = await bcrypt.hash(tokens.refresh_token, 10);
+    const hash: string = await bcrypt.hash(tokens.refreshToken, 10);
     await this.userRepository.update(email, { refreshToken: hash });
 
     return tokens;
@@ -156,8 +156,8 @@ export class AuthService {
     ).toISOString();
 
     return {
-      access_token: at,
-      refresh_token: rt,
+      accessToken: at,
+      refreshToken: rt,
       expiredAt,
     };
   }
