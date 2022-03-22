@@ -47,7 +47,6 @@ export class AuthService {
     this.userRepository.save(user);
 
     delete verifyData[data.email];
-    console.log(verifyData);
   }
 
   async verify({ email }: VerifyDto) {
@@ -55,8 +54,6 @@ export class AuthService {
       throw new ConflictException('already exist user');
 
     const user = this.findStudent(`${email}@gsm.hs.kr`);
-
-    console.log(user);
 
     if (!user) throw new ForbiddenException('Not Found User');
 
@@ -69,7 +66,6 @@ export class AuthService {
     };
 
     this.emailService.userVerify(`${email}@gsm.hs.kr`, code);
-    console.log(verifyData);
   }
 
   async isVerify({ email, code }: verifyHeadDto) {
@@ -82,7 +78,6 @@ export class AuthService {
     }
 
     verifyData[email].expiredAt = null;
-    console.log(verifyData);
   }
 
   async login(
