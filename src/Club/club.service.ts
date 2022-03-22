@@ -1,12 +1,16 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Club } from 'src/Entities/Club.entity';
+import { RelatedLink } from 'src/Entities/RelatedLink.entity';
 import { Repository } from 'typeorm';
 import { CreateClubDto } from './dto/createClub.dto';
 
 @Injectable()
 export class ClubService {
-  constructor(@InjectRepository(Club) private club: Repository<Club>) {}
+  constructor(
+    @InjectRepository(Club) private club: Repository<Club>,
+    @InjectRepository(RelatedLink) private relatedLink: Repository<RelatedLink>,
+  ) {}
   async list(clubType: string) {
     if (!clubType) {
       throw new HttpException('동아리타입이 없습니다.', HttpStatus.BAD_REQUEST);
@@ -30,6 +34,21 @@ export class ClubService {
         HttpStatus.BAD_REQUEST,
       );
     }
+    const clubData = {
+      title: createClubData.title,
+      description: createClubData.description,
+      type: createClubData.Type,
+      bannerUrl: createClubData.bannerUrl,
+      contact: createClubData.contact,
+      teacher: createClubData.teacher,
+    };
+    for (let i = 0; i < createClubData.relatedLink.length; i++) {
+      await this.relatedLink.save({
+        name: createClubData.relatedLink[i].name,
+        url: createClubData.relatedLink[i].url,
+      });
+    }
+    await this.club.save(clubData);
   }
   async DleteClub(clubtitle: string, clubType: string) {
     const club = this.club.findOne({

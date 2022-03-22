@@ -14,9 +14,12 @@ export class CreateClubDto {
   @IsString()
   contact: string;
 
+  @IsString()
+  Type: string;
+
   @IsOptional()
   @IsArray()
-  relatedLink: relatedLinkDto;
+  relatedLink: relatedLinkDto[];
 
   @IsOptional()
   @IsString()
