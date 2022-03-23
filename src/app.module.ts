@@ -1,7 +1,9 @@
 import { Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
+import { AuthModule } from './auth/auth.module';
 import entities from './Entities';
+
 @Module({
   imports: [
     ConfigModule.forRoot(),
@@ -15,8 +17,7 @@ import entities from './Entities';
       entities: [...entities],
       synchronize: true,
     }),
+    AuthModule,
   ],
-  controllers: [],
-  providers: [],
 })
 export class AppModule {}
