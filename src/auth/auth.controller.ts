@@ -4,6 +4,7 @@ import {
   Head,
   HttpCode,
   Post,
+  Query,
   UseGuards,
 } from '@nestjs/common';
 import { AuthService } from './auth.service';
@@ -25,7 +26,7 @@ export class AuthController {
   @Public()
   @Head('verify')
   @HttpCode(200)
-  isVerify(@Body() data: verifyHeadDto) {
+  isVerify(@Query() data: verifyHeadDto) {
     return this.authService.isVerify(data);
   }
 
