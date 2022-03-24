@@ -4,6 +4,8 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { AuthModule } from './auth/auth.module';
 import { CheckModule } from './check/check.module';
 import entities from './Entities';
+import { AtStrategy } from './strategies/atStrategy';
+import { RtStrategy } from './strategies/rtStrategy';
 
 @Module({
   imports: [
@@ -21,5 +23,6 @@ import entities from './Entities';
     AuthModule,
     CheckModule,
   ],
+  providers: [AtStrategy, RtStrategy],
 })
 export class AppModule {}
