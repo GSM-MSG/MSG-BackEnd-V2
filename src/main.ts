@@ -5,6 +5,9 @@ import { AtGuard } from './auth/guards';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
+  app.enableCors({
+    origin: '*',
+  });
   app.useGlobalPipes(new ValidationPipe());
   app.useGlobalGuards(new AtGuard(new Reflector()));
   await app.listen(3000);

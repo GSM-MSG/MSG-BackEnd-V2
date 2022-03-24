@@ -69,7 +69,7 @@ export class AuthService {
   }
 
   async isVerify({ email, code }: verifyHeadDto) {
-    if (verifyData[email].code !== code)
+    if (!verifyData[email] || verifyData[email].code !== code)
       throw new ForbiddenException('Failed Authentication');
 
     if (verifyData[email].expiredAt <= new Date()) {
