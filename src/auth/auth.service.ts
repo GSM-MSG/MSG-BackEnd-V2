@@ -26,12 +26,10 @@ export class AuthService {
     const a = await this.userRepository.findOne({
       where: { email: data.email },
     });
-    if (a) throw new ConflictException('already exist user');
+    if (a) throw new ConflictException('존재하는 사용자입니다.');
 
     if (!verifyData[data.email] || verifyData[data.email].expiredAt)
-      throw new ForbiddenException(
-        `Not Authentication User ${data.email}@gsm.hs.kr`,
-      );
+      throw new ForbiddenException(`인증하지 않은 사용자입니다`);
 
     const student = this.findStudent(`${data.email}@gsm.hs.kr`);
 
@@ -51,11 +49,11 @@ export class AuthService {
 
   async verify({ email }: VerifyDto) {
     if (await this.userRepository.findOne({ where: { email: email } }))
-      throw new ConflictException('already exist user');
+      throw new ConflictException('이미 존재하는 사용자입니다');
 
     const user = this.findStudent(`${email}@gsm.hs.kr`);
 
-    if (!user) throw new ForbiddenException('Not Found User');
+    if (!user) throw new ForbiddenException('GSM에 존재하지 않는 사용자입니다');
 
     const num = `${Math.floor(Math.random() * 9999)}`;
     const code = num.length === 3 ? '0' + num : num;
@@ -70,11 +68,11 @@ export class AuthService {
 
   async isVerify({ email, code }: verifyHeadDto) {
     if (!verifyData[email] || verifyData[email].code !== code)
-      throw new ForbiddenException('Failed Authentication');
+      throw new ForbiddenException();
 
     if (verifyData[email].expiredAt <= new Date()) {
       delete verifyData[email];
-      throw new ForbiddenException('Time excess');
+      throw new ForbiddenException();
     }
 
     verifyData[email].expiredAt = null;
@@ -87,10 +85,10 @@ export class AuthService {
       where: { email: data.email },
     });
 
-    if (!user) throw new ForbiddenException('Not Found User');
+    if (!user) throw new ForbiddenException('사용자를 찾을 수 없습니다');
 
     if (!(await bcrypt.compare(data.password, user.password)))
-      throw new ForbiddenException('Not matched password');
+      throw new ForbiddenException('비밀번호가 맞지 않습니다.');
 
     const token = await this.getToken(data.email);
 
