@@ -15,7 +15,7 @@ export class CreateClubDto {
   contact: string;
 
   @IsString()
-  Type: string;
+  type: string;
 
   @IsOptional()
   @IsArray()
@@ -27,7 +27,7 @@ export class CreateClubDto {
 
   @IsOptional()
   @IsArray()
-  activities: string[];
+  activitiUrl: string[];
 
   @IsOptional()
   @IsArray()

@@ -25,7 +25,7 @@ export class ClubService {
     }
   }
   async CreateClub(createClubData: CreateClubDto) {
-    const { title, description, bannerUrl, contact, teacher, relatedLink } = {
+    const { title, description, bannerUrl, contact, teacher, type } = {
       ...createClubData,
     };
     const club = await this.club.create({
@@ -34,7 +34,10 @@ export class ClubService {
       bannerUrl,
       contact,
       teacher,
+      type,
     });
+    this.club.save(club);
+    console.log(club.id);
   }
   async DleteClub(clubtitle: string, clubType: string) {
     const club = this.club.findOne({

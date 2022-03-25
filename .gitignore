@@ -36,3 +36,6 @@ lerna-debug.log*
 
 # dotenv
 .env
+students.ts
+Constants.ts
+EmailLib.ts
