@@ -25,30 +25,16 @@ export class ClubService {
     }
   }
   async CreateClub(createClubData: CreateClubDto) {
-    const club = await this.club.findOne({
-      where: { title: createClubData.title },
-    });
-    if (club) {
-      throw new HttpException(
-        '이미 존재하는 동아리 입니다.',
-        HttpStatus.BAD_REQUEST,
-      );
-    }
-    const clubData = {
-      title: createClubData.title,
-      description: createClubData.description,
-      type: createClubData.Type,
-      bannerUrl: createClubData.bannerUrl,
-      contact: createClubData.contact,
-      teacher: createClubData.teacher,
+    const { title, description, bannerUrl, contact, teacher, relatedLink } = {
+      ...createClubData,
     };
-    for (let i = 0; i < createClubData.relatedLink.length; i++) {
-      await this.relatedLink.save({
-        name: createClubData.relatedLink[i].name,
-        url: createClubData.relatedLink[i].url,
-      });
-    }
-    await this.club.save(clubData);
+    const club = await this.club.create({
+      title,
+      description,
+      bannerUrl,
+      contact,
+      teacher,
+    });
   }
   async DleteClub(clubtitle: string, clubType: string) {
     const club = this.club.findOne({
