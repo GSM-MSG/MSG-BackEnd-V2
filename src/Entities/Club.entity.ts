@@ -9,9 +9,6 @@ export class Club {
   id: number;
 
   @Column()
-  name: string;
-
-  @Column()
   type: string;
 
   @Column()
@@ -35,9 +32,6 @@ export class Club {
   @OneToMany(() => RelatedLink, (link) => link.id)
   relatedLink: RelatedLink[];
 
-  @Column('simple-array')
-  activitiesUrl: string[];
-
   @OneToMany(() => Image, (Image) => Image.clubId)
-  image: Image[];
+  activityUrls: Image[];
 }
