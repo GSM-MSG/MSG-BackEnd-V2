@@ -27,7 +27,7 @@ export class CreateClubDto {
 
   @IsOptional()
   @IsArray()
-  activitiUrl: string[];
+  activityUrls: string[];
 
   @IsOptional()
   @IsArray()
