@@ -33,5 +33,5 @@ export class Club {
   relatedLink: RelatedLink[];
 
   @OneToMany(() => Image, (Image) => Image.clubId)
-  activityUrl: Image[];
+  activityUrls: Image[];
 }
