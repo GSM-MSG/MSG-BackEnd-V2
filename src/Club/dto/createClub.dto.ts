@@ -19,7 +19,7 @@ export class CreateClubDto {
 
   @IsOptional()
   @IsArray()
-  relatedLink: relatedLinkDto[];
+  relatedLink: relatedLinkDto;
 
   @IsOptional()
   @IsString()

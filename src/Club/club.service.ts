@@ -1,7 +1,10 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Club } from 'src/Entities/Club.entity';
+import { Image } from 'src/Entities/image.entity';
+import { Member } from 'src/Entities/Member.entity';
 import { RelatedLink } from 'src/Entities/RelatedLink.entity';
+import { User } from 'src/Entities/User.entity';
 import { Repository } from 'typeorm';
 import { CreateClubDto } from './dto/createClub.dto';
 
@@ -9,7 +12,10 @@ import { CreateClubDto } from './dto/createClub.dto';
 export class ClubService {
   constructor(
     @InjectRepository(Club) private club: Repository<Club>,
-    @InjectRepository(RelatedLink) private relatedLink: Repository<RelatedLink>,
+    @InjectRepository(RelatedLink) private RelatedLink: Repository<RelatedLink>,
+    @InjectRepository(Member) private Member: Repository<Member>,
+    @InjectRepository(User) private User: Repository<User>,
+    @InjectRepository(Image) private Image: Repository<Image>,
   ) {}
   async list(clubType: string) {
     if (!clubType) {
@@ -24,11 +30,21 @@ export class ClubService {
       );
     }
   }
-  async CreateClub(createClubData: CreateClubDto) {
-    const { title, description, bannerUrl, contact, teacher, type } = {
+  async CreateClub(createClubData: CreateClubDto, userId) {
+    const {
+      title,
+      description,
+      bannerUrl,
+      contact,
+      teacher,
+      type,
+      relatedLink,
+      member,
+      activityUrls,
+    } = {
       ...createClubData,
     };
-    const club = await this.club.create({
+    const clubData = this.club.create({
       title,
       description,
       bannerUrl,
@@ -36,10 +52,33 @@ export class ClubService {
       teacher,
       type,
     });
-    this.club.save(club);
-    console.log(club.id);
+    this.club.save(clubData);
+
+    const club = await this.club.findOne({ title: title, type: type });
+    this.RelatedLink.save(
+      this.RelatedLink.create({
+        name: relatedLink.name,
+        url: relatedLink.url,
+        club: club,
+      }),
+    );
+
+    const user = await this.User.findOne({ email: userId });
+    this.Member.save(
+      this.Member.create({ email: user, club: club, scope: 'HEAD' }),
+    );
+    member.forEach(async (userId) => {
+      const user = await this.User.findOne({ email: userId });
+      this.Member.save(
+        this.Member.create({ email: user, club: club, scope: 'MEMBER' }),
+      );
+    });
+
+    activityUrls.forEach((image) => {
+      this.Image.save({ clubId: club.id, url: image });
+    });
   }
-  async DleteClub(clubtitle: string, clubType: string) {
+  async DeleteClub(clubtitle: string, clubType: string) {
     const club = this.club.findOne({
       where: { title: clubtitle, type: clubType },
     });

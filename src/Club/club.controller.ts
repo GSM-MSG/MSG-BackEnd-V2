@@ -12,13 +12,13 @@ export class ClubController {
   }
   @Delete('/')
   async deleteClub(@Body() deleteClubData: deleteClubdto) {
-    return await this.clubService.DleteClub(
+    return await this.clubService.DeleteClub(
       deleteClubData.q,
       deleteClubData.type,
     );
   }
   @Post('/')
-  async createClub(@Body() createClubData: CreateClubDto) {
-    await this.clubService.CreateClub(createClubData);
+  async createClub(@Body() createClubData: CreateClubDto, userId) {
+    await this.clubService.CreateClub(createClubData, userId);
   }
 }
