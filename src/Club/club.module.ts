@@ -7,9 +7,19 @@ import { User } from 'src/Entities/User.entity';
 import { ClubController } from './club.controller';
 import { ClubService } from './club.service';
 import { Image } from 'src/Entities/image.entity';
+import { RequestJoin } from 'src/Entities/RequestJoin.entity';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([Club, RelatedLink, Member, User, Image])],
+  imports: [
+    TypeOrmModule.forFeature([
+      Club,
+      RelatedLink,
+      Member,
+      User,
+      Image,
+      RequestJoin,
+    ]),
+  ],
   controllers: [ClubController],
   providers: [ClubService],
 })

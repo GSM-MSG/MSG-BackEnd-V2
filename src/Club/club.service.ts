@@ -4,6 +4,7 @@ import { Club } from 'src/Entities/Club.entity';
 import { Image } from 'src/Entities/image.entity';
 import { Member } from 'src/Entities/Member.entity';
 import { RelatedLink } from 'src/Entities/RelatedLink.entity';
+import { RequestJoin } from 'src/Entities/RequestJoin.entity';
 import { User } from 'src/Entities/User.entity';
 import { Repository } from 'typeorm';
 import { CreateClubDto } from './dto/createClub.dto';
@@ -16,6 +17,7 @@ export class ClubService {
     @InjectRepository(Member) private Member: Repository<Member>,
     @InjectRepository(User) private User: Repository<User>,
     @InjectRepository(Image) private Image: Repository<Image>,
+    @InjectRepository(RequestJoin) private RequestJoin: Repository<RequestJoin>,
   ) {}
   async list(clubType: string) {
     if (!clubType) {
@@ -96,5 +98,11 @@ export class ClubService {
         HttpStatus.BAD_REQUEST,
       );
     }
+  }
+  async applyClub(clubtype: string, clubname: string, userId: string) {
+    const club = await this.club.findOne({ type: clubtype, title: clubname });
+    const user = await this.User.findOne({ email: userId });
+    const ReqUser = this.RequestJoin.create({ clubId: club, userId: user });
+    this.RequestJoin.save(ReqUser);
   }
 }
