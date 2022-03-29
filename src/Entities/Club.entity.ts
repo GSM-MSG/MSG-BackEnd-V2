@@ -30,7 +30,7 @@ export class Club {
   member: Member[];
 
   @OneToMany(() => RelatedLink, (link) => link.id)
-  relatedLink: RelatedLink[];
+  relatedLink: RelatedLink;
 
   @OneToMany(() => Image, (Image) => Image.clubId)
   activityUrls: Image[];

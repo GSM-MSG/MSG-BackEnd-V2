@@ -10,5 +10,5 @@ export class Image {
   clubId: number;
 
   @Column()
-  uri: string;
+  url: string;
 }
