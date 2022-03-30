@@ -105,4 +105,15 @@ export class ClubService {
     const ReqUser = this.RequestJoin.create({ clubId: club, userId: user });
     this.RequestJoin.save(ReqUser);
   }
+  async cancleClub(clubtype: string, clubname: string, userId: string) {
+    const club = await this.club.findOne({ type: clubtype, title: clubname });
+    const user = await this.User.findOne({ email: userId });
+
+    const applyUser = await this.RequestJoin.findOne({
+      clubId: club,
+      userId: user,
+    });
+
+    await this.RequestJoin.delete(applyUser);
+  }
 }

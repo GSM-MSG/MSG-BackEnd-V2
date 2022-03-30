@@ -23,7 +23,10 @@ export class ClubController {
   }
   @Post('/apply')
   async applyClub(@Body() clubData: ClubDatadto, @Body('email') email: string) {
-    console.log(email);
     return this.clubService.applyClub(clubData.type, clubData.q, email);
+  }
+  @Post('cancle')
+  async cancle(@Body() clubData: ClubDatadto, @Body('email') email: string) {
+    return this.clubService.cancleClub(clubData.type, clubData.q, email);
   }
 }
