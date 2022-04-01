@@ -127,4 +127,14 @@ export class ClubService {
     await this.RequestJoin.delete(acceptUser);
     this.Member.save({ club: club, email: user, scope: 'MEMBER' });
   }
+  async rejectClub(clubtype: string, clubname: string, userId: string) {
+    const club = await this.club.findOne({ type: clubtype, title: clubname });
+    const user = await this.User.findOne({ email: userId });
+
+    const rejectUser = await this.RequestJoin.findOne({
+      clubId: club,
+      userId: user,
+    });
+    await this.RequestJoin.delete(rejectUser);
+  }
 }
