@@ -137,4 +137,11 @@ export class ClubService {
     });
     await this.RequestJoin.delete(rejectUser);
   }
+  async applicantList(clubtype: string, clubname: string) {
+    const club = await this.club.findOne({ type: clubtype, title: clubname });
+
+    const applicantUser = this.RequestJoin.createQueryBuilder('RequestJoin');
+
+    console.log(applicantUser);
+  }
 }
