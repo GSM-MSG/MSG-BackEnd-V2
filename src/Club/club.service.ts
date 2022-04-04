@@ -1,9 +1,4 @@
-import {
-  ConsoleLogger,
-  HttpException,
-  HttpStatus,
-  Injectable,
-} from '@nestjs/common';
+import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Club } from 'src/Entities/Club.entity';
 import { Image } from 'src/Entities/image.entity';
@@ -143,13 +138,19 @@ export class ClubService {
     await this.RequestJoin.delete(rejectUser);
   }
   async applicantList(clubtype: string, clubname: string) {
+    let list = new Array();
     const club = await this.club.findOne({ type: clubtype, title: clubname });
-
     const applicantUser = await this.RequestJoin.createQueryBuilder('Join')
       .innerJoin('Join.clubId', 'User')
       .where('Join.clubId=:clubId', { clubId: club.id })
       .getRawMany();
-
-    applicantUser.forEach(async (userId) => {});
+    for (let i = 0; i < applicantUser.length; i++) {
+      const user = await this.User.findOne({
+        email: applicantUser[i].Join_userIdEmail,
+      });
+      list.push(user);
+      console.log(list);
+    }
+    return list;
   }
 }
