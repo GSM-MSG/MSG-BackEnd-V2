@@ -1,4 +1,10 @@
-import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
+import {
+  ConsoleLogger,
+  Head,
+  HttpException,
+  HttpStatus,
+  Injectable,
+} from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Club } from 'src/Entities/Club.entity';
 import { Image } from 'src/Entities/image.entity';
@@ -46,18 +52,20 @@ export class ClubService {
     } = {
       ...createClubData,
     };
-    const clubData = this.club.create({
-      title,
-      description,
-      bannerUrl,
-      contact,
-      teacher,
-      type,
-    });
-    this.club.save(clubData);
-
+    await this.club.save(
+      this.club.create({
+        title,
+        description,
+        bannerUrl,
+        contact,
+        teacher,
+        type,
+      }),
+    );
     const club = await this.club.findOne({ title: title, type: type });
-    this.RelatedLink.save(
+    console.log(club);
+
+    await this.RelatedLink.save(
       this.RelatedLink.create({
         name: relatedLink.name,
         url: relatedLink.url,
@@ -66,13 +74,15 @@ export class ClubService {
     );
 
     const user = await this.User.findOne({ email: userId });
-    this.Member.save(
+    await this.Member.save(
       this.Member.create({ email: user, club: club, scope: 'HEAD' }),
     );
-    member.forEach(async (userId) => {
-      const user = await this.User.findOne({ email: userId });
-      this.Member.save(
-        this.Member.create({ email: user, club: club, scope: 'MEMBER' }),
+    member.forEach(async (user) => {
+      console.log(userId);
+      const User = await this.User.findOne({ email: user });
+      console.log(User);
+      await this.Member.save(
+        this.Member.create({ email: User, club: club, scope: 'MEMBER' }),
       );
     });
 
@@ -141,7 +151,7 @@ export class ClubService {
     let list = new Array();
     const club = await this.club.findOne({ type: clubtype, title: clubname });
     const applicantUser = await this.RequestJoin.createQueryBuilder('Join')
-      .innerJoin('Join.clubId', 'User')
+      .innerJoin('Join.clubId', 'userId')
       .where('Join.clubId=:clubId', { clubId: club.id })
       .getRawMany();
     for (let i = 0; i < applicantUser.length; i++) {
@@ -149,8 +159,43 @@ export class ClubService {
         email: applicantUser[i].Join_userIdEmail,
       });
       list.push(user);
-      console.log(list);
     }
     return list;
+  }
+  async detailPage(clubtype: string, clubname: string) {
+    let HeadData = {};
+    let Member = [];
+    const club = await this.club.findOne({ type: clubtype, title: clubname });
+    const clubMember = await this.Member.createQueryBuilder('member')
+      .innerJoin('member.club', 'userId')
+      .where('member.club=:club', { club: club.id })
+      .getRawMany();
+    for (let i = 0; i < clubMember.length; i++) {
+      if (clubMember[i].member_scope === 'HEAD') {
+        const head = await this.User.findOne({
+          email: clubMember[i].member_emailEmail,
+        });
+        HeadData = head;
+      }
+      if (clubMember[i].member_scope === 'MEMBER') {
+        const member = await this.User.findOne({
+          email: clubMember[i].member_emailEmail,
+        });
+        Member.push(member);
+      }
+    }
+    const relatedlink = await this.RelatedLink.findOne({ club: club });
+
+    const activityUrls = (await this.Image.find({ clubId: club.id })).map(
+      (value: Image, index: number): String => value.url,
+    );
+
+    return {
+      club,
+      head: HeadData,
+      member: Member,
+      relatedLink: relatedlink,
+      activityUrls: activityUrls,
+    };
   }
 }

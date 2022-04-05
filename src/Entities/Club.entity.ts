@@ -2,7 +2,6 @@ import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
 import { Member } from './Member.entity';
 import { Image } from './image.entity';
 import { RelatedLink } from './RelatedLink.entity';
-import { RequestJoin } from './RequestJoin.entity';
 
 @Entity()
 export class Club {

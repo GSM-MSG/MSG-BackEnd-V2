@@ -18,8 +18,11 @@ export class ClubController {
     );
   }
   @Post('/')
-  async createClub(@Body() createClubData: CreateClubDto, userId) {
-    await this.clubService.CreateClub(createClubData, userId);
+  async createClub(
+    @Body() createClubData: CreateClubDto,
+    @Body('email') email: string,
+  ) {
+    await this.clubService.CreateClub(createClubData, email);
   }
   @Post('/apply')
   async applyClub(@Body() clubData: ClubDatadto, @Body('email') email: string) {
@@ -40,5 +43,12 @@ export class ClubController {
   @Get('/applicant')
   async applicantList(@Body() ClubData: ClubDatadto) {
     return this.clubService.applicantList(ClubData.type, ClubData.q);
+  }
+  @Get('/detail')
+  async detailPage(
+    @Query('q') clubname: string,
+    @Query('type') clubtype: string,
+  ) {
+    return this.clubService.detailPage(clubtype, clubname);
   }
 }
