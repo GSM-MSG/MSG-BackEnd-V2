@@ -1,4 +1,10 @@
-import { Column, Entity, ManyToOne, PrimaryGeneratedColumn } from 'typeorm';
+import {
+  Column,
+  Entity,
+  JoinColumn,
+  ManyToOne,
+  PrimaryGeneratedColumn,
+} from 'typeorm';
 import { Club } from './Club.entity';
 import { User } from './User.entity';
 
@@ -8,6 +14,7 @@ export class Member {
   id: number;
 
   @ManyToOne(() => User, (user) => user.email)
+  @JoinColumn({ name: 'email' })
   email: User;
 
   @ManyToOne(() => Club, (club) => club.id)

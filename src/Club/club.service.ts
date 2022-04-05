@@ -1,10 +1,4 @@
-import {
-  ConsoleLogger,
-  Head,
-  HttpException,
-  HttpStatus,
-  Injectable,
-} from '@nestjs/common';
+import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Club } from 'src/Entities/Club.entity';
 import { Image } from 'src/Entities/image.entity';
@@ -152,11 +146,11 @@ export class ClubService {
     const club = await this.club.findOne({ type: clubtype, title: clubname });
     const applicantUser = await this.RequestJoin.createQueryBuilder('Join')
       .innerJoin('Join.clubId', 'userId')
-      .where('Join.clubId=:clubId', { clubId: club.id })
+      .where('Join.clubId=:clubId', { clubId: club })
       .getRawMany();
     for (let i = 0; i < applicantUser.length; i++) {
       const user = await this.User.findOne({
-        email: applicantUser[i].Join_userIdEmail,
+        email: applicantUser[i].Join_userId,
       });
       list.push(user);
     }
@@ -168,7 +162,7 @@ export class ClubService {
     const club = await this.club.findOne({ type: clubtype, title: clubname });
     const clubMember = await this.Member.createQueryBuilder('member')
       .innerJoin('member.club', 'userId')
-      .where('member.club=:club', { club: club.id })
+      .where('member.club=:club', { club: club })
       .getRawMany();
     for (let i = 0; i < clubMember.length; i++) {
       if (clubMember[i].member_scope === 'HEAD') {
