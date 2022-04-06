@@ -3,6 +3,10 @@ import { ConfigModule } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { ClubModule } from './club/club.module';
 import entities from './Entities';
+import { AuthModule } from './auth/auth.module';
+import { CheckModule } from './check/check.module';
+import { AtStrategy } from './strategies/atStrategy';
+import { RtStrategy } from './strategies/rtStrategy';
 
 @Module({
   imports: [
@@ -21,6 +25,9 @@ import entities from './Entities';
       synchronize: true,
     }),
     ClubModule,
+    AuthModule,
+    CheckModule,
   ],
+  providers: [AtStrategy, RtStrategy],
 })
 export class AppModule {}
