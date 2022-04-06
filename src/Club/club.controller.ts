@@ -1,7 +1,9 @@
 import { Body, Controller, Delete, Get, Post, Query } from '@nestjs/common';
+import { find } from 'rxjs';
 import { ClubService } from './club.service';
 import { CreateClubDto } from './dto/createClub.dto';
 import { deleteClubdto } from './dto/deleteClub.dto';
+import { findClubDto } from './dto/findClub.dto';
 
 @Controller('club')
 export class ClubController {
@@ -20,5 +22,9 @@ export class ClubController {
   @Post('/')
   async createClub(@Body() createClubData: CreateClubDto) {
     await this.clubService.CreateClub(createClubData);
+  }
+  @Get('/members')
+  async findMembers(@Body() findClubData: findClubDto){
+    console.log(findClubData)
   }
 }
