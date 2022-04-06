@@ -46,6 +46,12 @@ export class ClubService {
     } = {
       ...createClubData,
     };
+    if (this.club.findOne({ title: title, type: type })) {
+      throw new HttpException(
+        '이미 존재하는 동아리입니다',
+        HttpStatus.CONFLICT,
+      );
+    }
     await this.club.save(
       this.club.create({
         title,
@@ -57,7 +63,6 @@ export class ClubService {
       }),
     );
     const club = await this.club.findOne({ title: title, type: type });
-    console.log(club);
 
     await this.RelatedLink.save(
       this.RelatedLink.create({
@@ -72,9 +77,7 @@ export class ClubService {
       this.Member.create({ email: user, club: club, scope: 'HEAD' }),
     );
     member.forEach(async (user) => {
-      console.log(userId);
       const User = await this.User.findOne({ email: user });
-      console.log(User);
       await this.Member.save(
         this.Member.create({ email: User, club: club, scope: 'MEMBER' }),
       );
@@ -142,52 +145,53 @@ export class ClubService {
     await this.RequestJoin.delete(rejectUser);
   }
   async applicantList(clubtype: string, clubname: string) {
-    let list = new Array();
     const club = await this.club.findOne({ type: clubtype, title: clubname });
     const applicantUser = await this.RequestJoin.createQueryBuilder('Join')
       .innerJoin('Join.clubId', 'userId')
-      .where('Join.clubId=:clubId', { clubId: club })
+      .where('Join.clubId=:clubId', { clubId: club.id })
       .getRawMany();
-    for (let i = 0; i < applicantUser.length; i++) {
-      const user = await this.User.findOne({
-        email: applicantUser[i].Join_userId,
-      });
-      list.push(user);
-    }
-    return list;
+    const list = applicantUser.map(async (element) => {
+      const user = await this.User.findOne({ email: element.Join_userId });
+      delete user.password;
+      return user;
+    });
+    return Promise.all(list);
   }
   async detailPage(clubtype: string, clubname: string) {
-    let HeadData = {};
-    let Member = [];
     const club = await this.club.findOne({ type: clubtype, title: clubname });
+
     const clubMember = await this.Member.createQueryBuilder('member')
       .innerJoin('member.club', 'userId')
-      .where('member.club=:club', { club: club })
+      .where('member.club=:clubId', { clubId: club.id })
       .getRawMany();
-    for (let i = 0; i < clubMember.length; i++) {
-      if (clubMember[i].member_scope === 'HEAD') {
-        const head = await this.User.findOne({
-          email: clubMember[i].member_emailEmail,
-        });
-        HeadData = head;
-      }
-      if (clubMember[i].member_scope === 'MEMBER') {
-        const member = await this.User.findOne({
-          email: clubMember[i].member_emailEmail,
-        });
-        Member.push(member);
-      }
-    }
+
+    const email = clubMember.filter((member) => {
+      return member.member_scope === 'HEAD';
+    });
+    console.log(email);
+    const head = await this.Member.findOne({ email: email[0] });
+    console.log(clubMember);
+
+    console.log(head);
+
+    const member = clubMember
+      .filter((member) => {
+        return member.member_scope === 'MEMBER';
+      })
+      .flatMap(async (member) => {
+        return await this.User.findOne({ email: member.member_email });
+      });
+
     const relatedlink = await this.RelatedLink.findOne({ club: club });
 
     const activityUrls = (await this.Image.find({ clubId: club.id })).map(
-      (value: Image, index: number): String => value.url,
+      (value: Image): String => value.url,
     );
 
     return {
       club,
-      head: HeadData,
-      member: Member,
+      head: head,
+      member: Promise.all(member),
       relatedLink: relatedlink,
       activityUrls: activityUrls,
     };
