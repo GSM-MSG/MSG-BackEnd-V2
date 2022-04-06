@@ -1,4 +1,5 @@
 import { Body, Controller, Delete, Get, Post, Query } from '@nestjs/common';
+import { User } from 'src/auth/decorators';
 import { ClubService } from './club.service';
 import { ClubDatadto } from './dto/ClubData.dto';
 import { CreateClubDto } from './dto/createClub.dto';
@@ -20,24 +21,24 @@ export class ClubController {
   @Post('/')
   async createClub(
     @Body() createClubData: CreateClubDto,
-    @Body('email') email: string,
+    @User('email') email: string,
   ) {
     await this.clubService.CreateClub(createClubData, email);
   }
   @Post('/apply')
-  async applyClub(@Body() clubData: ClubDatadto, @Body('email') email: string) {
+  async applyClub(@Body() clubData: ClubDatadto, @User('email') email: string) {
     return this.clubService.applyClub(clubData.type, clubData.q, email);
   }
   @Post('/cancle')
-  async cancle(@Body() clubData: ClubDatadto, @Body('email') email: string) {
+  async cancle(@Body() clubData: ClubDatadto, @User('email') email: string) {
     return this.clubService.cancleClub(clubData.type, clubData.q, email);
   }
   @Post('/accept')
-  async accept(@Body() clubData: ClubDatadto, @Body('email') email: string) {
+  async accept(@Body() clubData: ClubDatadto, @User('email') email: string) {
     return this.clubService.acceptClub(clubData.type, clubData.q, email);
   }
   @Post('/reject')
-  async reject(@Body() ClubData: ClubDatadto, @Body('email') email: string) {
+  async reject(@Body() ClubData: ClubDatadto, @User('email') email: string) {
     return this.clubService.rejectClub(ClubData.type, ClubData.q, email);
   }
   @Get('/applicant')

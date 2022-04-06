@@ -46,7 +46,7 @@ export class ClubService {
     } = {
       ...createClubData,
     };
-    if (this.club.findOne({ title: title, type: type })) {
+    if (await this.club.findOne({ title: title, type: type })) {
       throw new HttpException(
         '이미 존재하는 동아리입니다',
         HttpStatus.CONFLICT,
@@ -158,42 +158,37 @@ export class ClubService {
     return Promise.all(list);
   }
   async detailPage(clubtype: string, clubname: string) {
-    const club = await this.club.findOne({ type: clubtype, title: clubname });
-
-    const clubMember = await this.Member.createQueryBuilder('member')
-      .innerJoin('member.club', 'userId')
-      .where('member.club=:clubId', { clubId: club.id })
-      .getRawMany();
-
-    const email = clubMember.filter((member) => {
-      return member.member_scope === 'HEAD';
-    });
-    console.log(email);
-    const head = await this.Member.findOne({ email: email[0] });
-    console.log(clubMember);
-
-    console.log(head);
-
-    const member = clubMember
-      .filter((member) => {
-        return member.member_scope === 'MEMBER';
-      })
-      .flatMap(async (member) => {
-        return await this.User.findOne({ email: member.member_email });
-      });
-
-    const relatedlink = await this.RelatedLink.findOne({ club: club });
-
-    const activityUrls = (await this.Image.find({ clubId: club.id })).map(
-      (value: Image): String => value.url,
+    const club = await this.club.findOne(
+      { type: clubtype, title: clubname },
+      { relations: ['activityUrls'] },
     );
 
-    return {
-      club,
-      head: head,
-      member: Promise.all(member),
-      relatedLink: relatedlink,
-      activityUrls: activityUrls,
-    };
+    // const clubMember = await this.Member.createQueryBuilder('member')
+    //   .innerJoin('member.club', 'userId')
+    //   .where('member.club=:clubId', { clubId: club.id })
+    //   .getRawMany();
+
+    // const member = clubMember
+    //   .filter(async (member) => member.member_scope === 'MEMBER')
+    //   .map(async (member) => {
+    //     const user = this.User.findOne({ email: member.member_email });
+    //     delete (await user).password;
+    //     return user;
+    //   });
+
+    // const relatedlink = await this.RelatedLink.findOne({ club: club });
+
+    // const activityUrls = (await this.Image.find({ clubId: club.id })).map(
+    //   (value: Image): String => value.url,
+    // );
+
+    // return {
+    //   club,
+    //   head: {},
+    //   member: member,
+    //   relatedLink: relatedlink,
+    //   activityUrls: activityUrls,
+    // };
+    return club;
   }
 }
