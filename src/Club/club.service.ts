@@ -63,13 +63,10 @@ export class ClubService {
       { relations: ['member', 'member.user'] },
     );
     let result = true;
-    clubData.member.forEach((i) => {
-      if (clubData.member[i.user.email] === email) {
-        result = false;
-        return false;
-      }
+    result = !!clubData.member.find((member) => {
+      return member.user.email === email;
     });
-    if (result) {
+    if (!result) {
       throw new HttpException(
         '동아리 원이 아닙니다',
         HttpStatus.NOT_ACCEPTABLE,
