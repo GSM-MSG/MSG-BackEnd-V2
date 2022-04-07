@@ -13,11 +13,9 @@ export class RequestJoin {
   @PrimaryGeneratedColumn()
   id: number;
 
-  @ManyToOne(() => Club, (Club) => Club.id)
-  @JoinColumn({ name: 'clubId' })
+  @ManyToOne(() => Club, (club) => club.id)
   clubId: Club;
 
-  @ManyToOne(() => User, (User) => User.email)
-  @JoinColumn({ name: 'userId' })
+  @ManyToOne(() => User, (user) => user.email)
   userId: User;
 }

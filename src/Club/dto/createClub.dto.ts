@@ -1,4 +1,4 @@
-import { IsString, IsOptional, IsArray } from 'class-validator';
+import { IsString, IsOptional, IsArray, IsObject } from 'class-validator';
 import { relatedLinkDto } from './relatedLink.dto';
 
 export class CreateClubDto {
@@ -18,7 +18,7 @@ export class CreateClubDto {
   type: string;
 
   @IsOptional()
-  @IsArray()
+  @IsObject()
   relatedLink: relatedLinkDto;
 
   @IsOptional()

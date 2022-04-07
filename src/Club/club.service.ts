@@ -6,7 +6,7 @@ import { Member } from 'src/Entities/Member.entity';
 import { RelatedLink } from 'src/Entities/RelatedLink.entity';
 import { RequestJoin } from 'src/Entities/RequestJoin.entity';
 import { User } from 'src/Entities/User.entity';
-import { Repository } from 'typeorm';
+import { Not, Repository } from 'typeorm';
 import { CreateClubDto } from './dto/createClub.dto';
 
 @Injectable()
@@ -68,18 +68,17 @@ export class ClubService {
       this.RelatedLink.create({
         name: relatedLink.name,
         url: relatedLink.url,
-        club: club.id,
+        club: club,
       }),
     );
-
     const user = await this.User.findOne({ email: userId });
     await this.Member.save(
-      this.Member.create({ email: user, club: club, scope: 'HEAD' }),
+      this.Member.create({ user: user, club: club, scope: 'HEAD' }),
     );
     member.forEach(async (user) => {
       const User = await this.User.findOne({ email: user });
       await this.Member.save(
-        this.Member.create({ email: User, club: club, scope: 'MEMBER' }),
+        this.Member.create({ user: User, club: club, scope: 'MEMBER' }),
       );
     });
 
@@ -106,14 +105,14 @@ export class ClubService {
       );
     }
   }
-  async applyClub(clubtype: string, clubname: string, userId: string) {
-    const club = await this.club.findOne({ type: clubtype, title: clubname });
+  async applyClub(clubtype: string, clubtitle: string, userId: string) {
+    const club = await this.club.findOne({ type: clubtype, title: clubtitle });
     const user = await this.User.findOne({ email: userId });
     const ReqUser = this.RequestJoin.create({ clubId: club, userId: user });
     this.RequestJoin.save(ReqUser);
   }
-  async cancleClub(clubtype: string, clubname: string, userId: string) {
-    const club = await this.club.findOne({ type: clubtype, title: clubname });
+  async cancleClub(clubtype: string, clubtitle: string, userId: string) {
+    const club = await this.club.findOne({ type: clubtype, title: clubtitle });
     const user = await this.User.findOne({ email: userId });
 
     const applyUser = await this.RequestJoin.findOne({
@@ -123,8 +122,8 @@ export class ClubService {
 
     await this.RequestJoin.delete(applyUser);
   }
-  async acceptClub(clubtype: string, clubname: string, userId: string) {
-    const club = await this.club.findOne({ type: clubtype, title: clubname });
+  async acceptClub(clubtype: string, clubtitle: string, userId: string) {
+    const club = await this.club.findOne({ type: clubtype, title: clubtitle });
     const user = await this.User.findOne({ email: userId });
 
     const acceptUser = await this.RequestJoin.findOne({
@@ -134,8 +133,8 @@ export class ClubService {
     await this.RequestJoin.delete(acceptUser);
     this.Member.save({ club: club, email: user, scope: 'MEMBER' });
   }
-  async rejectClub(clubtype: string, clubname: string, userId: string) {
-    const club = await this.club.findOne({ type: clubtype, title: clubname });
+  async rejectClub(clubtype: string, clubtitle: string, userId: string) {
+    const club = await this.club.findOne({ type: clubtype, title: clubtitle });
     const user = await this.User.findOne({ email: userId });
 
     const rejectUser = await this.RequestJoin.findOne({
@@ -144,22 +143,21 @@ export class ClubService {
     });
     await this.RequestJoin.delete(rejectUser);
   }
-  async applicantList(clubtype: string, clubname: string) {
-    const club = await this.club.findOne({ type: clubtype, title: clubname });
-    const applicantUser = await this.RequestJoin.createQueryBuilder('Join')
-      .innerJoin('Join.clubId', 'userId')
-      .where('Join.clubId=:clubId', { clubId: club.id })
-      .getRawMany();
-    const list = applicantUser.map(async (element) => {
-      const user = await this.User.findOne({ email: element.Join_userId });
-      delete user.password;
-      return user;
+  async applicantList(clubtype: string, clubtitle: string) {
+    const ReqUserData = await this.club.findOne(
+      { title: clubtitle, type: clubtype },
+      { relations: ['requestJoin', 'requestJoin.userId'] },
+    );
+
+    return ReqUserData.requestJoin.map((member) => {
+      delete member.userId.password;
+      delete member.userId.refreshToken;
+      return member.userId;
     });
-    return Promise.all(list);
   }
-  async detailPage(clubtype: string, clubname: string) {
+  async detailPage(clubtype: string, clubtitle: string) {
     const club = await this.club.findOne(
-      { type: clubtype, title: clubname },
+      { type: clubtype, title: clubtitle },
       { relations: ['activityUrls', 'relatedLink'] },
     );
 
@@ -167,22 +165,6 @@ export class ClubService {
     //   .innerJoin('member.club', 'userId')
     //   .where('member.club=:clubId', { clubId: club.id })
     //   .getRawMany();
-
-    // const member = clubMember
-    //   .filter(async (member) => member.member_scope === 'MEMBER')
-    //   .map(async (member) => {
-    //     const user = this.User.findOne({ email: member.member_email });
-    //     delete (await user).password;
-    //     return user;
-    //   });
-
-    // return {
-    //   club,
-    //   head: {},
-    //   member: member,
-    //   relatedLink: relatedlink,
-    //   activityUrls: activityUrls,
-    // };
     return club;
   }
 }

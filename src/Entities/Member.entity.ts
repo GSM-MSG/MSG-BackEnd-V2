@@ -14,8 +14,7 @@ export class Member {
   id: number;
 
   @ManyToOne(() => User, (user) => user.email)
-  @JoinColumn({ name: 'email' })
-  email: User;
+  user: User;
 
   @ManyToOne(() => Club, (club) => club.id)
   club: Club;
