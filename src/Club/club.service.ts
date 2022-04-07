@@ -72,11 +72,11 @@ export class ClubService {
         HttpStatus.NOT_ACCEPTABLE,
       );
     }
-    clubData.member.forEach((i, index) => {
-      delete clubData.member[index].user.password;
-      delete clubData.member[index].user.refreshToken;
-      delete clubData.member[index].scope;
-      delete clubData.member[index].id;
+    clubData.member.map((member) => {
+      delete member.user.password;
+      delete member.user.refreshToken;
+      delete member.scope;
+      delete member.id;
     });
 
     return clubData.member;
