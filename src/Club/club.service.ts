@@ -64,10 +64,6 @@ export class ClubService {
     );
     let result = true;
     clubData.member.forEach((i, index) => {
-      delete clubData.member[index].user.password;
-      delete clubData.member[index].user.refreshToken;
-    });
-    clubData.member.forEach((i, index) => {
       if (clubData.member[index].user.email === email) {
         result = false;
         return false;
@@ -79,6 +75,11 @@ export class ClubService {
         HttpStatus.NOT_ACCEPTABLE,
       );
     }
+    clubData.member.forEach((i, index) => {
+      delete clubData.member[index].user.password;
+      delete clubData.member[index].user.refreshToken;
+    });
+
     return clubData.member;
   }
 }
