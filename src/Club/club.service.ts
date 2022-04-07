@@ -62,24 +62,22 @@ export class ClubService {
       { title: clubTitle, type: clubType },
       { relations: ['member', 'member.user'] },
     );
-    let result = true;
-    clubData.member.forEach((i, index) => {
-      if (clubData.member[index].user.email === email) {
-        result = false;
-        return false;
-      }
-    });
-    if (result) {
+    if (
+      !clubData.member.find((member) => {
+        return member.user.email === email;
+      })
+    ) {
       throw new HttpException(
         '동아리 원이 아닙니다',
         HttpStatus.NOT_ACCEPTABLE,
       );
     }
-    clubData.member.forEach((i, index) => {
-      delete clubData.member[index].user.password;
-      delete clubData.member[index].user.refreshToken;
+    return clubData.member.map((member) => {
+      delete member.user.password;
+      delete member.user.refreshToken;
+      delete member.scope;
+      delete member.id;
+      return member;
     });
-
-    return clubData.member;
   }
 }
