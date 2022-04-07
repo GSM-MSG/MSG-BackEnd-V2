@@ -26,6 +26,6 @@ export class ClubController {
     @Query('type') clubType: string,
     @Query('title') clubTitle: string,
   ) {
-
+    return await this.clubService.findMember(clubType, clubTitle);
   }
 }

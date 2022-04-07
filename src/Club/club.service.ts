@@ -37,7 +37,6 @@ export class ClubService {
       type,
     });
     this.club.save(club);
-    console.log(club.id);
   }
   async DleteClub(clubtitle: string, clubType: string) {
     const club = this.club.findOne({
@@ -57,5 +56,13 @@ export class ClubService {
         HttpStatus.BAD_REQUEST,
       );
     }
+  }
+  async findMember(clubType: string, clubTitle: string) {
+    const clubData = await this.club.findOne(
+      { title: clubTitle, type: clubType },
+      { relations: ['member'] },
+    );
+    console.log(clubData.member[0].email);
+    return clubData;
   }
 }
