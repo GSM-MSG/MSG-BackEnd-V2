@@ -57,15 +57,28 @@ export class ClubService {
       );
     }
   }
-  async findMember(clubType: string, clubTitle: string) {
+  async findMember(clubType: string, clubTitle: string, email: string) {
     const clubData = await this.club.findOne(
       { title: clubTitle, type: clubType },
       { relations: ['member', 'member.user'] },
     );
+    let result = true;
     clubData.member.forEach((i, index) => {
       delete clubData.member[index].user.password;
       delete clubData.member[index].user.refreshToken;
     });
+    clubData.member.forEach((i, index) => {
+      if (clubData.member[index].user.email === email) {
+        result = false;
+        return false;
+      }
+    });
+    if (result) {
+      throw new HttpException(
+        '동아리 원이 아닙니다',
+        HttpStatus.NOT_ACCEPTABLE,
+      );
+    }
     return clubData.member;
   }
 }
