@@ -8,7 +8,7 @@ export class ClubController {
   constructor(private clubService: ClubService) {}
   @Get('/list')
   async list(@Query('type') clubType: string) {
-    return await this.clubService.list(clubType);
+    return this.clubService.list(clubType);
   }
   @Delete('/')
   async deleteClub(@Body() deleteClubData: deleteClubdto) {
@@ -26,6 +26,6 @@ export class ClubController {
     @Query('type') clubType: string,
     @Query('title') clubTitle: string,
   ) {
-    return await this.clubService.findMember(clubType, clubTitle);
+    return this.clubService.findMember(clubType, clubTitle);
   }
 }

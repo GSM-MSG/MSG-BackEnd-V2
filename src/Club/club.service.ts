@@ -60,9 +60,12 @@ export class ClubService {
   async findMember(clubType: string, clubTitle: string) {
     const clubData = await this.club.findOne(
       { title: clubTitle, type: clubType },
-      { relations: ['member'] },
+      { relations: ['member', 'member.user'] },
     );
-    console.log(clubData.member[0].email);
-    return clubData;
+    clubData.member.forEach((i, index) => {
+      delete clubData.member[index].user.password;
+      delete clubData.member[index].user.refreshToken;
+    });
+    return clubData.member;
   }
 }
