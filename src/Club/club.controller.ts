@@ -1,5 +1,5 @@
 import { Body, Controller, Delete, Get, Post, Query } from '@nestjs/common';
-import { User } from 'src/auth/decorators';
+import { Public, User } from 'src/auth/decorators';
 import { ClubService } from './club.service';
 import { ClubDatadto } from './dto/ClubData.dto';
 import { CreateClubDto } from './dto/createClub.dto';
@@ -45,6 +45,7 @@ export class ClubController {
   async applicantList(@Body() ClubData: ClubDatadto) {
     return this.clubService.applicantList(ClubData.type, ClubData.q);
   }
+  @Public()
   @Get('/detail')
   async detailPage(
     @Query('q') clubname: string,

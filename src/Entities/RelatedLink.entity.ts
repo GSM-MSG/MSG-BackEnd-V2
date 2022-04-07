@@ -12,6 +12,6 @@ export class RelatedLink {
   @Column()
   url: string;
 
-  @ManyToOne(() => Club, (club) => club.relatedLink)
-  club: Club;
+  @ManyToOne(() => Club, (club) => club.id)
+  club: number;
 }

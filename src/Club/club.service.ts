@@ -68,7 +68,7 @@ export class ClubService {
       this.RelatedLink.create({
         name: relatedLink.name,
         url: relatedLink.url,
-        club: club,
+        club: club.id,
       }),
     );
 
@@ -160,7 +160,7 @@ export class ClubService {
   async detailPage(clubtype: string, clubname: string) {
     const club = await this.club.findOne(
       { type: clubtype, title: clubname },
-      { relations: ['activityUrls'] },
+      { relations: ['activityUrls', 'relatedLink'] },
     );
 
     // const clubMember = await this.Member.createQueryBuilder('member')
@@ -175,12 +175,6 @@ export class ClubService {
     //     delete (await user).password;
     //     return user;
     //   });
-
-    // const relatedlink = await this.RelatedLink.findOne({ club: club });
-
-    // const activityUrls = (await this.Image.find({ clubId: club.id })).map(
-    //   (value: Image): String => value.url,
-    // );
 
     // return {
     //   club,

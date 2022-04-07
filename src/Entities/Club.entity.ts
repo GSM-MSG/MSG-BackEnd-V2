@@ -29,7 +29,7 @@ export class Club {
   @OneToMany(() => Member, (member) => member.club)
   member: Member[];
 
-  @OneToMany(() => RelatedLink, (link) => link.id)
+  @OneToMany(() => RelatedLink, (link) => link.club)
   relatedLink: RelatedLink;
 
   @OneToMany(() => Image, (Image) => Image.clubId)
