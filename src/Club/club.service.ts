@@ -78,6 +78,8 @@ export class ClubService {
     clubData.member.forEach((i, index) => {
       delete clubData.member[index].user.password;
       delete clubData.member[index].user.refreshToken;
+      delete clubData.member[index].scope;
+      delete clubData.member[index].id;
     });
 
     return clubData.member;
