@@ -63,8 +63,8 @@ export class ClubService {
       { relations: ['member', 'member.user'] },
     );
     let result = true;
-    clubData.member.forEach((i, index) => {
-      if (clubData.member[index].user.email === email) {
+    clubData.member.forEach((i) => {
+      if (clubData.member[i.user.email] === email) {
         result = false;
         return false;
       }
