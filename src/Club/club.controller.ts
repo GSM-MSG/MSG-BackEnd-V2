@@ -1,4 +1,5 @@
 import { Body, Controller, Delete, Get, Post, Query } from '@nestjs/common';
+import { User } from 'src/auth/decorators';
 import { ClubService } from './club.service';
 import { CreateClubDto } from './dto/createClub.dto';
 import { deleteClubdto } from './dto/deleteClub.dto';
@@ -8,7 +9,7 @@ export class ClubController {
   constructor(private clubService: ClubService) {}
   @Get('/list')
   async list(@Query('type') clubType: string) {
-    return await this.clubService.list(clubType);
+    return this.clubService.list(clubType);
   }
   @Delete('/')
   async deleteClub(@Body() deleteClubData: deleteClubdto) {
@@ -20,5 +21,13 @@ export class ClubController {
   @Post('/')
   async createClub(@Body() createClubData: CreateClubDto) {
     await this.clubService.CreateClub(createClubData);
+  }
+  @Get('/members')
+  async findMembers(
+    @Query('type') clubType: string,
+    @Query('title') clubTitle: string,
+    @User('email') email: string,
+  ) {
+    return this.clubService.findMember(clubType, clubTitle, email);
   }
 }

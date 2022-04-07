@@ -24,7 +24,7 @@ export class User {
   @Column({ nullable: true })
   userImg: string;
 
-  @OneToMany(() => Member, (member) => member.email)
+  @OneToMany(() => Member, (member) => member.user)
   member: Member[];
 
   @Column({ nullable: true })
