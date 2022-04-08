@@ -3,6 +3,7 @@ import {
   Controller,
   Delete,
   Get,
+  HttpCode,
   Post,
   Put,
   Query,
@@ -40,10 +41,19 @@ export class ClubController {
     return this.clubService.findMember(clubType, clubTitle, email);
   }
   @Put('/open')
+  @HttpCode(201)
   async openClub(
     @Body() openClubData: openClubdto,
     @User('email') email: string,
   ) {
-    await this.clubService.clubOnOff(openClubData, email , true);
+    await this.clubService.clubOnOff(openClubData, email, true);
+  }
+  @Put('close')
+  @HttpCode(201)
+  async closeClub(
+    @Body() closeClubData: openClubdto,
+    @User('email') email: string,
+  ) {
+    await this.clubService.clubOnOff(closeClubData, email, false);
   }
 }
