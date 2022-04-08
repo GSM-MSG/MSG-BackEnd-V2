@@ -40,7 +40,10 @@ export class ClubController {
     return this.clubService.findMember(clubType, clubTitle, email);
   }
   @Put('/open')
-  async openClub(@Body() openClubData: openClubdto) {
-    await this.clubService.opneClub(openClubData);
+  async openClub(
+    @Body() openClubData: openClubdto,
+    @User('email') email: string,
+  ) {
+    await this.clubService.clubOnOff(openClubData, email , true);
   }
 }
