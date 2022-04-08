@@ -81,7 +81,20 @@ export class ClubService {
       return member;
     });
   }
-  async opneClub(openClubData: openClubdto){
-    
+  async clubOnOff(openClubData: openClubdto, email: string, isOpened: boolean) {
+    const clubData = await this.club.findOne(
+      { title: openClubData.q, type: openClubData.type },
+      { relations: ['member', 'member.user'] },
+    );
+    if (
+      !clubData.member.find((member) => {
+        return member.user.email === email && member.scope === 'HEAD';
+      })
+    )
+      throw new HttpException('동아리 부장이 아닙니다', HttpStatus.FORBIDDEN);
+    await this.club.update(
+      { title: openClubData.q, type: openClubData.type },
+      { isOpened: isOpened },
+    );
   }
 }
