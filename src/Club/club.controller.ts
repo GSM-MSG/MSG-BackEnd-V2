@@ -1,8 +1,17 @@
-import { Body, Controller, Delete, Get, Post, Query } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Delete,
+  Get,
+  Post,
+  Put,
+  Query,
+} from '@nestjs/common';
 import { User } from 'src/auth/decorators';
 import { ClubService } from './club.service';
 import { CreateClubDto } from './dto/createClub.dto';
 import { deleteClubdto } from './dto/deleteClub.dto';
+import { openClubdto } from './dto/openClub.dto';
 
 @Controller('club')
 export class ClubController {
@@ -29,5 +38,9 @@ export class ClubController {
     @User('email') email: string,
   ) {
     return this.clubService.findMember(clubType, clubTitle, email);
+  }
+  @Put('/open')
+  async openClub(@Body() openClubData: openClubdto) {
+    await this.clubService.opneClub(openClubData);
   }
 }
