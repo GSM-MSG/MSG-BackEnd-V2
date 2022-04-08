@@ -4,6 +4,7 @@ import { Club } from 'src/Entities/Club.entity';
 import { RelatedLink } from 'src/Entities/RelatedLink.entity';
 import { Repository } from 'typeorm';
 import { CreateClubDto } from './dto/createClub.dto';
+import { openClubdto } from './dto/openClub.dto';
 
 @Injectable()
 export class ClubService {
@@ -79,5 +80,8 @@ export class ClubService {
       delete member.id;
       return member;
     });
+  }
+  async opneClub(openClubData: openClubdto){
+    
   }
 }
