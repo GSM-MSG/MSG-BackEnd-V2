@@ -235,6 +235,17 @@ export class ClubService {
       { title: kickUserData.q, type: kickUserData.type },
       { relations: ['member', 'member.user'] },
     );
+    if (
+      clubData.member.find((member) => {
+        return (
+          member.user.email === kickUserData.userId && member.scope === 'HEAD'
+        );
+      })
+    )
+      throw new HttpException(
+        '부장은 자기 자신을 방출 할 수 없습니다',
+        HttpStatus.FORBIDDEN,
+      );
     const userData = await this.User.findOne({
       email: kickUserData.userId,
     });
