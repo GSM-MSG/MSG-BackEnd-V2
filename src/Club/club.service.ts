@@ -8,6 +8,7 @@ import { RequestJoin } from 'src/Entities/RequestJoin.entity';
 import { User } from 'src/Entities/User.entity';
 import { Not, Repository } from 'typeorm';
 import { CreateClubDto } from './dto/createClub.dto';
+import { kickUserDto } from './dto/kickuser.dto';
 import { openClubdto } from './dto/openClub.dto';
 
 @Injectable()
@@ -228,5 +229,32 @@ export class ClubService {
       { title: openClubData.q, type: openClubData.type },
       { isOpened: isOpened },
     );
+  }
+  async kickUser(kickUserData: kickUserDto, email: string) {
+    const clubData = await this.club.findOne(
+      { title: kickUserData.q, type: kickUserData.type },
+      { relations: ['member', 'member.user'] },
+    );
+    if (
+      clubData.member.find((member) => {
+        return (
+          member.user.email === kickUserData.userId && member.scope === 'HEAD'
+        );
+      })
+    )
+      throw new HttpException(
+        '부장은 자기 자신을 방출 할 수 없습니다',
+        HttpStatus.FORBIDDEN,
+      );
+    const userData = await this.User.findOne({
+      email: kickUserData.userId,
+    });
+    if (
+      !clubData.member.find((member) => {
+        return member.user.email === email && member.scope === 'HEAD';
+      })
+    )
+      throw new HttpException('동아리 부장이 아닙니다', HttpStatus.FORBIDDEN);
+    await this.Member.delete({ club: clubData, user: userData });
   }
 }

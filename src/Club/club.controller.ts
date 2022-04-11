@@ -12,6 +12,7 @@ import { User } from 'src/auth/decorators';
 import { ClubService } from './club.service';
 import { ClubDatadto } from './dto/ClubData.dto';
 import { CreateClubDto } from './dto/createClub.dto';
+import { kickUserDto } from './dto/kickuser.dto';
 import { openClubdto } from './dto/openClub.dto';
 
 @Controller('club')
@@ -85,5 +86,13 @@ export class ClubController {
     @User('email') email: string,
   ) {
     await this.clubService.clubOnOff(closeClubData, email, false);
+  }
+  @Delete('kick')
+  @HttpCode(201)
+  async kickUser(
+    @Body() kickUserData: kickUserDto,
+    @User('email') email: string,
+  ) {
+    await this.clubService.kickUser(kickUserData, email);
   }
 }
