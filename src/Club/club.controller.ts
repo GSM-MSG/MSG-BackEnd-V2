@@ -18,7 +18,6 @@ export class ClubController {
       deleteClubData.type,
     );
   }
-  @Public()
   @Post('/')
   async createClub(
     @Body() createClubData: CreateClubDto,
@@ -26,7 +25,6 @@ export class ClubController {
   ) {
     await this.clubService.CreateClub(createClubData, email);
   }
-  @Public()
   @Post('/apply')
   async applyClub(@Body() clubData: ClubDatadto, @Body('email') email: string) {
     return this.clubService.applyClub(clubData.type, clubData.q, email);
@@ -43,12 +41,10 @@ export class ClubController {
   async reject(@Body() ClubData: ClubDatadto, @User('email') email: string) {
     return this.clubService.rejectClub(ClubData.type, ClubData.q, email);
   }
-  @Public()
   @Get('/applicant')
   async applicantList(@Body() ClubData: ClubDatadto) {
     return this.clubService.applicantList(ClubData.type, ClubData.q);
   }
-  @Public()
   @Get('/detail')
   async detailPage(
     @Query('q') clubname: string,
