@@ -158,13 +158,34 @@ export class ClubService {
   async detailPage(clubtype: string, clubtitle: string) {
     const club = await this.club.findOne(
       { type: clubtype, title: clubtitle },
-      { relations: ['activityUrls', 'relatedLink'] },
+      { relations: ['activityUrls', 'relatedLink', 'member', 'member.user'] },
     );
+    const head = club.member
+      .filter((member) => {
+        return member.scope === 'HEAD';
+      })
+      .map((member) => {
+        delete member.user.password;
+        delete member.id;
+        delete member.scope;
+        delete member.user.refreshToken;
+        return member;
+      });
 
-    // const clubMember = await this.Member.createQueryBuilder('member')
-    //   .innerJoin('member.club', 'userId')
-    //   .where('member.club=:clubId', { clubId: club.id })
-    //   .getRawMany();
-    return club;
+    const clubmember = club.member
+      .filter((member) => {
+        return member.scope === 'MEMBER';
+      })
+      .map((member) => {
+        delete member.user.password;
+        delete member.id;
+        delete member.scope;
+        delete member.user.refreshToken;
+        return member;
+      });
+
+    delete club.member;
+
+    return { club, head: head[0], member: clubmember };
   }
 }
