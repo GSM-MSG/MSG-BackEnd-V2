@@ -35,7 +35,7 @@ export class Club {
   @Column({ nullable: true })
   teacher: string;
 
-  @Column()
+  @Column({ nullable: true })
   isOpened: boolean;
 
   @OneToMany(() => Member, (member) => member.club)

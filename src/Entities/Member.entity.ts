@@ -1,10 +1,4 @@
-import {
-  Column,
-  Entity,
-  JoinColumn,
-  ManyToOne,
-  PrimaryGeneratedColumn,
-} from 'typeorm';
+import { Column, Entity, ManyToOne, PrimaryGeneratedColumn } from 'typeorm';
 import { Club } from './Club.entity';
 import { User } from './User.entity';
 
@@ -13,11 +7,10 @@ export class Member {
   @PrimaryGeneratedColumn()
   id: number;
 
-
   @ManyToOne(() => User, (user) => user.email, { nullable: true })
   user: User;
 
-  @ManyToOne(() => Club, (club) => club.id)
+  @ManyToOne(() => Club, (club) => club.id, { onDelete: 'CASCADE' })
   club: Club;
 
   @Column()

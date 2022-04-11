@@ -18,6 +18,6 @@ export class RelatedLink {
   @Column()
   url: string;
 
-  @ManyToOne(() => Club, (club) => club.id)
+  @ManyToOne(() => Club, (club) => club.id, { onDelete: 'CASCADE' })
   club: Club;
 }

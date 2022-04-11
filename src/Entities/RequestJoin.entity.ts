@@ -13,7 +13,7 @@ export class RequestJoin {
   @PrimaryGeneratedColumn()
   id: number;
 
-  @ManyToOne(() => Club, (club) => club.id)
+  @ManyToOne(() => Club, (club) => club.id, { onDelete: 'CASCADE' })
   clubId: Club;
 
   @ManyToOne(() => User, (user) => user.email)

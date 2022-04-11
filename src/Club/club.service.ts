@@ -44,6 +44,7 @@ export class ClubService {
       relatedLink,
       member,
       activityUrls,
+      isOpened,
     } = {
       ...createClubData,
     };
@@ -99,10 +100,6 @@ export class ClubService {
       );
     }
     if (clubType === 'MAJOR' || 'EDITORIAL' || 'FREEDOM') {
-      await this.RelatedLink.delete({ club: await club });
-      await this.RequestJoin.delete({ clubId: await club });
-      await this.Image.delete({ clubId: (await club).id });
-      await this.Member.delete({ club: await club });
       await this.club.delete({ title: clubtitle, type: clubType });
     } else {
       throw new HttpException(
