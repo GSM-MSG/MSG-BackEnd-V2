@@ -189,7 +189,7 @@ export class ClubService {
     delete club.member;
 
     return { club, head: head[0], member: clubmember };
-
+  }
   async findMember(clubType: string, clubTitle: string, email: string) {
     const clubData = await this.club.findOne(
       { title: clubTitle, type: clubType },
@@ -228,6 +228,5 @@ export class ClubService {
       { title: openClubData.q, type: openClubData.type },
       { isOpened: isOpened },
     );
-
   }
 }

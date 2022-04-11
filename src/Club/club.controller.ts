@@ -12,7 +12,6 @@ import { User } from 'src/auth/decorators';
 import { ClubService } from './club.service';
 import { ClubDatadto } from './dto/ClubData.dto';
 import { CreateClubDto } from './dto/createClub.dto';
-import { deleteClubdto } from './dto/deleteClub.dto';
 import { openClubdto } from './dto/openClub.dto';
 
 @Controller('club')
