@@ -8,6 +8,7 @@ import { RequestJoin } from 'src/Entities/RequestJoin.entity';
 import { User } from 'src/Entities/User.entity';
 import { Not, Repository } from 'typeorm';
 import { CreateClubDto } from './dto/createClub.dto';
+import { openClubdto } from './dto/openClub.dto';
 
 @Injectable()
 export class ClubService {
@@ -105,6 +106,7 @@ export class ClubService {
       );
     }
   }
+
   async applyClub(clubtype: string, clubtitle: string, userId: string) {
     const club = await this.club.findOne({ type: clubtype, title: clubtitle });
     const user = await this.User.findOne({ email: userId });
@@ -187,5 +189,45 @@ export class ClubService {
     delete club.member;
 
     return { club, head: head[0], member: clubmember };
+
+  async findMember(clubType: string, clubTitle: string, email: string) {
+    const clubData = await this.club.findOne(
+      { title: clubTitle, type: clubType },
+      { relations: ['member', 'member.user'] },
+    );
+    if (
+      !clubData.member.find((member) => {
+        return member.user.email === email;
+      })
+    ) {
+      throw new HttpException(
+        '동아리 원이 아닙니다',
+        HttpStatus.NOT_ACCEPTABLE,
+      );
+    }
+    return clubData.member.map((member) => {
+      delete member.user.password;
+      delete member.user.refreshToken;
+      delete member.scope;
+      delete member.id;
+      return member;
+    });
+  }
+  async clubOnOff(openClubData: openClubdto, email: string, isOpened: boolean) {
+    const clubData = await this.club.findOne(
+      { title: openClubData.q, type: openClubData.type },
+      { relations: ['member', 'member.user'] },
+    );
+    if (
+      !clubData.member.find((member) => {
+        return member.user.email === email && member.scope === 'HEAD';
+      })
+    )
+      throw new HttpException('동아리 부장이 아닙니다', HttpStatus.FORBIDDEN);
+    await this.club.update(
+      { title: openClubData.q, type: openClubData.type },
+      { isOpened: isOpened },
+    );
+
   }
 }

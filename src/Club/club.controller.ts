@@ -1,15 +1,26 @@
-import { Body, Controller, Delete, Get, Post, Query } from '@nestjs/common';
-import { Public, User } from 'src/auth/decorators';
+import {
+  Body,
+  Controller,
+  Delete,
+  Get,
+  HttpCode,
+  Post,
+  Put,
+  Query,
+} from '@nestjs/common';
+import { User } from 'src/auth/decorators';
 import { ClubService } from './club.service';
 import { ClubDatadto } from './dto/ClubData.dto';
 import { CreateClubDto } from './dto/createClub.dto';
+import { deleteClubdto } from './dto/deleteClub.dto';
+import { openClubdto } from './dto/openClub.dto';
 
 @Controller('club')
 export class ClubController {
   constructor(private clubService: ClubService) {}
   @Get('/list')
   async list(@Query('type') clubType: string) {
-    return await this.clubService.list(clubType);
+    return this.clubService.list(clubType);
   }
   @Delete('/')
   async deleteClub(@Body() deleteClubData: ClubDatadto) {
@@ -51,5 +62,29 @@ export class ClubController {
     @Query('type') clubtype: string,
   ) {
     return this.clubService.detailPage(clubtype, clubname);
+  }
+  @Get('/members')
+  async findMembers(
+    @Query('type') clubType: string,
+    @Query('title') clubTitle: string,
+    @User('email') email: string,
+  ) {
+    return this.clubService.findMember(clubType, clubTitle, email);
+  }
+  @Put('/open')
+  @HttpCode(201)
+  async openClub(
+    @Body() openClubData: openClubdto,
+    @User('email') email: string,
+  ) {
+    await this.clubService.clubOnOff(openClubData, email, true);
+  }
+  @Put('close')
+  @HttpCode(201)
+  async closeClub(
+    @Body() closeClubData: openClubdto,
+    @User('email') email: string,
+  ) {
+    await this.clubService.clubOnOff(closeClubData, email, false);
   }
 }

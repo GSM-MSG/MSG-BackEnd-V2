@@ -13,7 +13,8 @@ export class Member {
   @PrimaryGeneratedColumn()
   id: number;
 
-  @ManyToOne(() => User, (user) => user.email)
+
+  @ManyToOne(() => User, (user) => user.email, { nullable: true })
   user: User;
 
   @ManyToOne(() => Club, (club) => club.id)
