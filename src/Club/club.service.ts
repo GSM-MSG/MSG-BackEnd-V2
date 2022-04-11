@@ -275,18 +275,14 @@ export class ClubService {
       })
     )
       throw new HttpException('멤버가 없습니다', HttpStatus.NOT_FOUND);
-    const userDelegationData = await this.User.findOne(
-      { email: userData.userId },
-      { relations: ['member', 'member.user'] },
-    );
+    const userDelegationData = await this.User.findOne({
+      email: userData.userId,
+    });
     await this.Member.update(
       { club: clubData, user: userDelegationData },
       { scope: 'HEAD' },
     );
-    const userHeaderData = await this.User.findOne(
-      { email: email },
-      { relations: ['member', 'member.user'] },
-    );
+    const userHeaderData = await this.User.findOne({ email: email });
     await this.Member.update(
       { club: clubData, user: userHeaderData },
       { scope: 'MEMBER' },
