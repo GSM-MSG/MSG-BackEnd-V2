@@ -89,7 +89,8 @@ export class ClubService {
   }
   async DeleteClub(clubtitle: string, clubType: string) {
     const club = this.club.findOne({
-      where: { title: clubtitle, type: clubType },
+      title: clubtitle,
+      type: clubType,
     });
     if (!club) {
       throw new HttpException(
@@ -98,6 +99,10 @@ export class ClubService {
       );
     }
     if (clubType === 'MAJOR' || 'EDITORIAL' || 'FREEDOM') {
+      await this.RelatedLink.delete({ club: await club });
+      await this.RequestJoin.delete({ clubId: await club });
+      await this.Image.delete({ clubId: (await club).id });
+      await this.Member.delete({ club: await club });
       await this.club.delete({ title: clubtitle, type: clubType });
     } else {
       throw new HttpException(
