@@ -95,4 +95,11 @@ export class ClubController {
   ) {
     await this.clubService.kickUser(kickUserData, email);
   }
+  @Put('/delegation')
+  async delegation(
+    @Body() userData: kickUserDto,
+    @User('email') email: string,
+  ) {
+    await this.clubService.delegation(userData, email);
+  }
 }
