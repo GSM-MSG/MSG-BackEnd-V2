@@ -31,9 +31,9 @@ export class ClubController {
   async applyClub(@Body() clubData: ClubDatadto, @Body('email') email: string) {
     return this.clubService.applyClub(clubData.type, clubData.q, email);
   }
-  @Post('/cancle')
-  async cancle(@Body() clubData: ClubDatadto, @User('email') email: string) {
-    return this.clubService.cancleClub(clubData.type, clubData.q, email);
+  @Post('/cancel')
+  async cancel(@Body() clubData: ClubDatadto, @User('email') email: string) {
+    return this.clubService.cancelClub(clubData.type, clubData.q, email);
   }
   @Post('/accept')
   async accept(@Body() clubData: ClubDatadto, @User('email') email: string) {
