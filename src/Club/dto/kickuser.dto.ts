@@ -6,5 +6,5 @@ export class kickUserDto {
   @IsString()
   type: string;
   @IsString()
-  email: string;
+  userId: string;
 }

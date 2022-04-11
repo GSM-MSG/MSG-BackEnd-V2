@@ -230,5 +230,20 @@ export class ClubService {
       { isOpened: isOpened },
     );
   }
-  async kickUser(kickUserData: kickUserDto, email: string) {}
+  async kickUser(kickUserData: kickUserDto, email: string) {
+    const clubData = await this.club.findOne(
+      { title: kickUserData.q, type: kickUserData.type },
+      { relations: ['member', 'member.user'] },
+    );
+    const userData = await this.User.findOne({
+      email: kickUserData.userId,
+    });
+    if (
+      !clubData.member.find((member) => {
+        return member.user.email === email && member.scope === 'HEAD';
+      })
+    )
+      throw new HttpException('동아리 부장이 아닙니다', HttpStatus.FORBIDDEN);
+    await this.Member.delete({ club: clubData, user: userData });
+  }
 }

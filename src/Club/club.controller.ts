@@ -87,10 +87,12 @@ export class ClubController {
   ) {
     await this.clubService.clubOnOff(closeClubData, email, false);
   }
-  @Put('kick')
+  @Delete('kick')
   @HttpCode(201)
   async kickUser(
     @Body() kickUserData: kickUserDto,
     @User('email') email: string,
-  ) {}
+  ) {
+    await this.clubService.kickUser(kickUserData, email);
+  }
 }
