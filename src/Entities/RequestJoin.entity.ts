@@ -1,4 +1,10 @@
-import { Entity, ManyToOne, PrimaryGeneratedColumn } from 'typeorm';
+import {
+  Column,
+  Entity,
+  JoinColumn,
+  ManyToOne,
+  PrimaryGeneratedColumn,
+} from 'typeorm';
 import { Club } from './Club.entity';
 import { User } from './User.entity';
 
@@ -7,9 +13,9 @@ export class RequestJoin {
   @PrimaryGeneratedColumn()
   id: number;
 
-  @ManyToOne(() => Club, (Club) => Club.id)
+  @ManyToOne(() => Club, (club) => club.id)
   clubId: Club;
 
-  @ManyToOne(() => User, (User) => User.email)
+  @ManyToOne(() => User, (user) => user.email)
   userId: User;
 }

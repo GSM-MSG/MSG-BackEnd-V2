@@ -1,12 +1,11 @@
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { Club } from 'src/Entities/Club.entity';
-import { RelatedLink } from 'src/Entities/RelatedLink.entity';
 import { ClubController } from './club.controller';
 import { ClubService } from './club.service';
+import entities from '../Entities';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([Club, RelatedLink])],
+  imports: [TypeOrmModule.forFeature([...entities])],
   controllers: [ClubController],
   providers: [ClubService],
 })

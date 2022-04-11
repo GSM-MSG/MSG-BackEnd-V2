@@ -1,6 +1,6 @@
 import { IsString } from 'class-validator';
 
-export class deleteClubdto {
+export class ClubDatadto {
   @IsString()
   q: string;
 

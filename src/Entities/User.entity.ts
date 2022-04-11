@@ -1,5 +1,6 @@
 import { Entity, Column, PrimaryColumn, OneToMany } from 'typeorm';
 import { Member } from './Member.entity';
+import { RequestJoin } from './RequestJoin.entity';
 
 @Entity()
 export class User {
@@ -26,6 +27,9 @@ export class User {
 
   @OneToMany(() => Member, (member) => member.user)
   member: Member[];
+
+  @OneToMany(() => RequestJoin, (RequestJoin) => RequestJoin.userId)
+  requestJoin: RequestJoin[];
 
   @Column({ nullable: true })
   refreshToken: string | null;
