@@ -13,11 +13,11 @@ import { UserService } from './user.service';
 @Controller('user')
 export class UserController {
   constructor(private userService: UserService) {}
-  @Get('my')
+  @Get('/my')
   async userData(@User('email') email: string) {
     return await this.userService.getUserData(email);
   }
-  @Put('profile')
+  @Put('/profile')
   @HttpCode(201)
   async editImg(@Body() urlAddress: urlDto, @User('email') email: string) {
     await this.userService.editProfile(urlAddress, email);
