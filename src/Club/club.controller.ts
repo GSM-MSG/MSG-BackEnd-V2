@@ -40,7 +40,7 @@ export class ClubController {
     await this.clubService.CreateClub(createClubData, email);
   }
   @Post('/apply')
-  async applyClub(@Body() clubData: ClubDatadto, @Body('email') email: string) {
+  async applyClub(@Body() clubData: ClubDatadto, @User('email') email: string) {
     return this.clubService.applyClub(clubData.type, clubData.q, email);
   }
   @Post('/cancel')
