@@ -269,22 +269,20 @@ export class ClubService {
       })
     )
       throw new HttpException('동아리 부장이 아닙니다', HttpStatus.FORBIDDEN);
-    if (
-      !clubData.member.find((member) => {
-        return member.user.email === userData.userId;
-      })
-    )
-      throw new HttpException('멤버가 없습니다', HttpStatus.NOT_FOUND);
-    const userDelegationData = await this.User.findOne({
-      email: userData.userId,
+    const member = clubData.member.find((member) => {
+      return member.user.email === userData.userId;
     });
+    if (!member)
+      throw new HttpException('멤버가 없습니다', HttpStatus.NOT_FOUND);
     await this.Member.update(
-      { club: clubData, user: userDelegationData },
+      { club: clubData, user: member.user },
       { scope: 'HEAD' },
     );
-    const userHeaderData = await this.User.findOne({ email: email });
+    const headMember = clubData.member.find((member) => {
+      return member.user.email === email;
+    });
     await this.Member.update(
-      { club: clubData, user: userHeaderData },
+      { club: clubData, user: headMember.user },
       { scope: 'MEMBER' },
     );
   }
