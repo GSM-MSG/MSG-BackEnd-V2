@@ -16,4 +16,5 @@ export class UserService {
     delete userData.password;
     return userData;
   }
+  async editProfile(urlAddress: string, email: string) {}
 }
