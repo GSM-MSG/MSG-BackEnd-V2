@@ -6,4 +6,7 @@ export class ClubDatadto {
 
   @IsString()
   type: string;
+
+  @IsString()
+  userId: string;
 }

@@ -33,7 +33,7 @@ export class ClubController {
   @Post('/')
   async createClub(
     @Body() createClubData: CreateClubDto,
-    @Body('email') email: string,
+    @User('email') email: string,
   ) {
     await this.clubService.CreateClub(createClubData, email);
   }
@@ -54,8 +54,11 @@ export class ClubController {
     return this.clubService.rejectClub(ClubData.type, ClubData.q, email);
   }
   @Get('/applicant')
-  async applicantList(@Body() ClubData: ClubDatadto) {
-    return this.clubService.applicantList(ClubData.type, ClubData.q);
+  async applicantList(
+    @Query('type') clubType: string,
+    @Query('title') clubTitle: string,
+  ) {
+    return this.clubService.applicantList(clubType, clubTitle);
   }
   @Get('/detail')
   async detailPage(
