@@ -2,6 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { User } from 'src/Entities/User.entity';
 import { Repository } from 'typeorm';
+import { urlDto } from './dto/urlAddress.dto';
 
 @Injectable()
 export class UserService {
@@ -15,5 +16,8 @@ export class UserService {
     delete userData.refreshToken;
     delete userData.password;
     return userData;
+  }
+  async editProfile(urlAddress: urlDto, email: string) {
+    await this.user.update({ email: email }, { userImg: urlAddress.url });
   }
 }
