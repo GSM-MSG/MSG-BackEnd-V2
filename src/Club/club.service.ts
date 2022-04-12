@@ -26,7 +26,11 @@ export class ClubService {
       throw new HttpException('동아리타입이 없습니다.', HttpStatus.BAD_REQUEST);
     }
     if (clubType === 'MAJOR' || 'EDITORIAL' || 'FREEDOM') {
-      return this.club.find({ where: { type: clubType } });
+      const clubData = await this.club.find({
+        where: { type: clubType },
+        select: ['type', 'title', 'bannerUrl'],
+      });
+      return clubData;
     } else {
       throw new HttpException(
         '동아리타입이 잘못되었습니다.',
