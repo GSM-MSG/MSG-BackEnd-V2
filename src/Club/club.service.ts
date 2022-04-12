@@ -192,10 +192,15 @@ export class ClubService {
         delete member.user.refreshToken;
         return member;
       });
-
+    const activityurls = club.activityUrls.map((url) => {
+      return url.url;
+    });
+    delete club.relatedLink[0].id;
     delete club.member;
+    delete club.activityUrls;
+    delete club.id;
 
-    return { club, head: head[0], member: clubmember };
+    return { club, activityurls, head: head[0], member: clubmember };
   }
   async findMember(clubType: string, clubTitle: string, email: string) {
     const clubData = await this.club.findOne(

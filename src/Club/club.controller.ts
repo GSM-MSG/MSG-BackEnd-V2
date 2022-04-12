@@ -10,6 +10,7 @@ import {
 } from '@nestjs/common';
 import { Public, User } from 'src/auth/decorators';
 import { ClubService } from './club.service';
+import { acceptUserDto } from './dto/accept.dto';
 import { ClubDatadto } from './dto/ClubData.dto';
 import { CreateClubDto } from './dto/createClub.dto';
 import { kickUserDto } from './dto/kickuser.dto';
@@ -18,6 +19,7 @@ import { openClubdto } from './dto/openClub.dto';
 @Controller('club')
 export class ClubController {
   constructor(private clubService: ClubService) {}
+  @Public()
   @Get('/list')
   async list(@Query('type') clubType: string) {
     return this.clubService.list(clubType);
@@ -46,11 +48,11 @@ export class ClubController {
     return this.clubService.cancelClub(clubData.type, clubData.q, email);
   }
   @Post('/accept')
-  async accept(@Body() clubData: ClubDatadto, @User('email') email: string) {
+  async accept(@Body() clubData: acceptUserDto, @User('email') email: string) {
     return this.clubService.acceptClub(clubData.type, clubData.q, email);
   }
   @Post('/reject')
-  async reject(@Body() ClubData: ClubDatadto, @User('email') email: string) {
+  async reject(@Body() ClubData: acceptUserDto, @User('email') email: string) {
     return this.clubService.rejectClub(ClubData.type, ClubData.q, email);
   }
   @Get('/applicant')
@@ -60,6 +62,7 @@ export class ClubController {
   ) {
     return this.clubService.applicantList(clubType, clubTitle);
   }
+  @Public()
   @Get('/detail')
   async detailPage(
     @Query('q') clubname: string,
