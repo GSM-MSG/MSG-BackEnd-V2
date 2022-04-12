@@ -1,4 +1,10 @@
-import { IsString, IsOptional, IsArray, IsObject } from 'class-validator';
+import {
+  IsString,
+  IsOptional,
+  IsArray,
+  IsObject,
+  IsBoolean,
+} from 'class-validator';
 import { relatedLinkDto } from './relatedLink.dto';
 
 export class CreateClubDto {
@@ -32,4 +38,8 @@ export class CreateClubDto {
   @IsOptional()
   @IsArray()
   member: string[];
+
+  @IsOptional()
+  @IsBoolean()
+  isOpened: Boolean;
 }

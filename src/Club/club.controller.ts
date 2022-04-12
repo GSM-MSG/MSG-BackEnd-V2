@@ -8,7 +8,7 @@ import {
   Put,
   Query,
 } from '@nestjs/common';
-import { User } from 'src/auth/decorators';
+import { Public, User } from 'src/auth/decorators';
 import { ClubService } from './club.service';
 import { ClubDatadto } from './dto/ClubData.dto';
 import { CreateClubDto } from './dto/createClub.dto';
@@ -23,6 +23,7 @@ export class ClubController {
     return this.clubService.list(clubType);
   }
   @Delete('/')
+  @HttpCode(201)
   async deleteClub(@Body() deleteClubData: ClubDatadto) {
     return await this.clubService.DeleteClub(
       deleteClubData.q,

@@ -12,7 +12,9 @@ export class Image {
   @PrimaryGeneratedColumn()
   id: number;
 
-  @ManyToOne(() => Club, (club) => club.id)
+  @ManyToOne(() => Club, (club) => club.id, {
+    onDelete: 'CASCADE',
+  })
   @JoinColumn({ name: 'clubId' })
   clubId: number;
 

@@ -45,6 +45,7 @@ export class ClubService {
       relatedLink,
       member,
       activityUrls,
+      isOpened,
     } = {
       ...createClubData,
     };
@@ -90,7 +91,8 @@ export class ClubService {
   }
   async DeleteClub(clubtitle: string, clubType: string) {
     const club = this.club.findOne({
-      where: { title: clubtitle, type: clubType },
+      title: clubtitle,
+      type: clubType,
     });
     if (!club) {
       throw new HttpException(
