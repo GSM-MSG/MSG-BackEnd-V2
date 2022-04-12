@@ -7,6 +7,7 @@ import { AuthModule } from './auth/auth.module';
 import { CheckModule } from './check/check.module';
 import { AtStrategy } from './strategies/atStrategy';
 import { RtStrategy } from './strategies/rtStrategy';
+import { UserModule } from './user/user.module';
 
 @Module({
   imports: [
@@ -27,6 +28,7 @@ import { RtStrategy } from './strategies/rtStrategy';
     ClubModule,
     AuthModule,
     CheckModule,
+    UserModule,
   ],
   providers: [AtStrategy, RtStrategy],
 })
