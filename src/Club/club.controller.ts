@@ -8,7 +8,7 @@ import {
   Put,
   Query,
 } from '@nestjs/common';
-import { Public, User } from 'src/auth/decorators';
+import { User } from 'src/auth/decorators';
 import { ClubService } from './club.service';
 import { ClubDatadto } from './dto/ClubData.dto';
 import { CreateClubDto } from './dto/createClub.dto';
