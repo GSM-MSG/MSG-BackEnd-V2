@@ -102,7 +102,7 @@ export class ClubService {
     if (!club) {
       throw new HttpException(
         '존재하지않는동아리입니다.',
-        HttpStatus.BAD_REQUEST,
+        HttpStatus.NOT_FOUND,
       );
     }
     if (clubType === 'MAJOR' || 'EDITORIAL' || 'FREEDOM') {
