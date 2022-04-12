@@ -209,8 +209,6 @@ export class ClubService {
     return clubData.member.map((member) => {
       delete member.user.password;
       delete member.user.refreshToken;
-      delete member.scope;
-      delete member.id;
       return member;
     });
   }
@@ -256,5 +254,36 @@ export class ClubService {
     )
       throw new HttpException('동아리 부장이 아닙니다', HttpStatus.FORBIDDEN);
     await this.Member.delete({ club: clubData, user: userData });
+  }
+  async delegation(userData: kickUserDto, email: string) {
+    const clubData = await this.club.findOne(
+      {
+        title: userData.q,
+        type: userData.type,
+      },
+      { relations: ['member', 'member.user'] },
+    );
+    if (
+      !clubData.member.find((member) => {
+        return member.user.email === email && member.scope === 'HEAD';
+      })
+    )
+      throw new HttpException('동아리 부장이 아닙니다', HttpStatus.FORBIDDEN);
+    const member = clubData.member.find((member) => {
+      return member.user.email === userData.userId;
+    });
+    if (!member)
+      throw new HttpException('멤버가 없습니다', HttpStatus.NOT_FOUND);
+    await this.Member.update(
+      { club: clubData, user: member.user },
+      { scope: 'HEAD' },
+    );
+    const headMember = clubData.member.find((member) => {
+      return member.user.email === email;
+    });
+    await this.Member.update(
+      { club: clubData, user: headMember.user },
+      { scope: 'MEMBER' },
+    );
   }
 }
