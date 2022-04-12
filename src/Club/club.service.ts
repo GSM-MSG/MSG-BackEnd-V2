@@ -70,28 +70,32 @@ export class ClubService {
       }),
     );
     const club = await this.club.findOne({ title: title, type: type });
-
-    await this.RelatedLink.save(
-      this.RelatedLink.create({
-        name: relatedLink.name,
-        url: relatedLink.url,
-        club: club,
-      }),
-    );
+    if (relatedLink) {
+      await this.RelatedLink.save(
+        this.RelatedLink.create({
+          name: relatedLink.name,
+          url: relatedLink.url,
+          club: club,
+        }),
+      );
+    }
     const user = await this.User.findOne({ email: userId });
     await this.Member.save(
       this.Member.create({ user: user, club: club, scope: 'HEAD' }),
     );
-    member.forEach(async (user) => {
-      const User = await this.User.findOne({ email: user });
-      await this.Member.save(
-        this.Member.create({ user: User, club: club, scope: 'MEMBER' }),
-      );
-    });
-
-    activityUrls.forEach((image) => {
-      this.Image.save({ clubId: club.id, url: image });
-    });
+    if (member) {
+      member.forEach(async (user) => {
+        const User = await this.User.findOne({ email: user });
+        await this.Member.save(
+          this.Member.create({ user: User, club: club, scope: 'MEMBER' }),
+        );
+      });
+    }
+    if (activityUrls) {
+      activityUrls.forEach((image) => {
+        this.Image.save({ clubId: club.id, url: image });
+      });
+    }
   }
 
   async deleteClub(clubtitle: string, clubType: string) {
@@ -101,7 +105,7 @@ export class ClubService {
     });
     if (!club) {
       throw new HttpException(
-        '존재하지않는동아리입니다.',
+        '존재하지않는 동아리입니다.',
         HttpStatus.NOT_FOUND,
       );
     }
@@ -125,6 +129,15 @@ export class ClubService {
   async cancelClub(clubtype: string, clubtitle: string, userId: string) {
     const club = await this.club.findOne({ type: clubtype, title: clubtitle });
     const user = await this.User.findOne({ email: userId });
+    if (!club) {
+      throw new HttpException(
+        '존재하지않는 동아리입니다.',
+        HttpStatus.NOT_FOUND,
+      );
+    }
+    if (!user) {
+      throw new HttpException('존재하지않는 유저입니다.', HttpStatus.NOT_FOUND);
+    }
 
     const applyUser = await this.RequestJoin.findOne({
       clubId: club,
