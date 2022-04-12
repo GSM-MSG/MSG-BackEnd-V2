@@ -190,7 +190,7 @@ export class ClubService {
         delete member.id;
         delete member.scope;
         delete member.user.refreshToken;
-        return member;
+        return member.user;
       });
     const activityurls = club.activityUrls.map((url) => {
       return url.url;
@@ -200,7 +200,7 @@ export class ClubService {
     delete club.activityUrls;
     delete club.id;
 
-    return { club, activityurls, head: head[0], member: clubmember };
+    return { club, activityurls, head: head[0].user, member: clubmember };
   }
   async findMember(clubType: string, clubTitle: string, email: string) {
     const clubData = await this.club.findOne(

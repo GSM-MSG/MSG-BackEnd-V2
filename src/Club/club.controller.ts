@@ -8,7 +8,7 @@ import {
   Put,
   Query,
 } from '@nestjs/common';
-import { User } from 'src/auth/decorators';
+import { Public, User } from 'src/auth/decorators';
 import { ClubService } from './club.service';
 import { acceptUserDto } from './dto/accept.dto';
 import { ClubDatadto } from './dto/ClubData.dto';
@@ -61,6 +61,7 @@ export class ClubController {
   ) {
     return this.clubService.applicantList(clubType, clubTitle);
   }
+  @Public()
   @Get('/detail')
   async detailPage(
     @Query('q') clubname: string,
@@ -68,11 +69,12 @@ export class ClubController {
   ) {
     return this.clubService.detailPage(clubtype, clubname);
   }
+  @Public()
   @Get('/members')
   async findMembers(
     @Query('type') clubType: string,
-    @Query('title') clubTitle: string,
-    @User('email') email: string,
+    @Query('q') clubTitle: string,
+    @Body('email') email: string,
   ) {
     return this.clubService.findMember(clubType, clubTitle, email);
   }
