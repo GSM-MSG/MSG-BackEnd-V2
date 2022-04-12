@@ -19,7 +19,6 @@ import { openClubdto } from './dto/openClub.dto';
 @Controller('club')
 export class ClubController {
   constructor(private clubService: ClubService) {}
-  @Public()
   @Get('/list')
   async list(@Query('type') clubType: string) {
     return this.clubService.list(clubType);
@@ -62,7 +61,6 @@ export class ClubController {
   ) {
     return this.clubService.applicantList(clubType, clubTitle);
   }
-  @Public()
   @Get('/detail')
   async detailPage(
     @Query('q') clubname: string,
