@@ -26,7 +26,7 @@ export class ClubController {
   @Delete('/')
   @HttpCode(201)
   async deleteClub(@Body() deleteClubData: ClubDatadto) {
-    return await this.clubService.DeleteClub(
+    return await this.clubService.deleteClub(
       deleteClubData.q,
       deleteClubData.type,
     );
@@ -36,7 +36,7 @@ export class ClubController {
     @Body() createClubData: CreateClubDto,
     @User('email') email: string,
   ) {
-    await this.clubService.CreateClub(createClubData, email);
+    await this.clubService.createClub(createClubData, email);
   }
   @Post('/apply')
   async applyClub(@Body() clubData: ClubDatadto, @User('email') email: string) {

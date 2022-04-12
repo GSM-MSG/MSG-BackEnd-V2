@@ -38,7 +38,7 @@ export class ClubService {
       );
     }
   }
-  async CreateClub(createClubData: CreateClubDto, userId) {
+  async createClub(createClubData: CreateClubDto, userId) {
     const {
       title,
       description,
@@ -93,7 +93,8 @@ export class ClubService {
       this.Image.save({ clubId: club.id, url: image });
     });
   }
-  async DeleteClub(clubtitle: string, clubType: string) {
+
+  async deleteClub(clubtitle: string, clubType: string) {
     const club = this.club.findOne({
       title: clubtitle,
       type: clubType,
@@ -120,6 +121,7 @@ export class ClubService {
     const ReqUser = this.RequestJoin.create({ clubId: club, userId: user });
     this.RequestJoin.save(ReqUser);
   }
+
   async cancelClub(clubtype: string, clubtitle: string, userId: string) {
     const club = await this.club.findOne({ type: clubtype, title: clubtitle });
     const user = await this.User.findOne({ email: userId });
@@ -131,6 +133,7 @@ export class ClubService {
 
     await this.RequestJoin.delete(applyUser);
   }
+
   async acceptClub(clubtype: string, clubtitle: string, userId: string) {
     const club = await this.club.findOne({ type: clubtype, title: clubtitle });
     const user = await this.User.findOne({ email: userId });
@@ -142,6 +145,7 @@ export class ClubService {
     await this.RequestJoin.delete(acceptUser);
     this.Member.save({ club: club, email: user, scope: 'MEMBER' });
   }
+
   async rejectClub(clubtype: string, clubtitle: string, userId: string) {
     const club = await this.club.findOne({ type: clubtype, title: clubtitle });
     const user = await this.User.findOne({ email: userId });
@@ -152,6 +156,7 @@ export class ClubService {
     });
     await this.RequestJoin.delete(rejectUser);
   }
+
   async applicantList(clubtype: string, clubtitle: string) {
     const ReqUserData = await this.club.findOne(
       { title: clubtitle, type: clubtype },
@@ -164,6 +169,7 @@ export class ClubService {
       return member.userId;
     });
   }
+
   async detailPage(clubtype: string, clubtitle: string) {
     const club = await this.club.findOne(
       { type: clubtype, title: clubtitle },
