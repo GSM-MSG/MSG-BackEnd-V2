@@ -1,6 +1,6 @@
 import { IsString } from 'class-validator';
 
-export class ClubDatadto {
+export class acceptUserDto {
   @IsString()
   q: string;
 
