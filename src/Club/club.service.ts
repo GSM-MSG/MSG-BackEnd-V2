@@ -6,7 +6,7 @@ import { Member } from 'src/Entities/Member.entity';
 import { RelatedLink } from 'src/Entities/RelatedLink.entity';
 import { RequestJoin } from 'src/Entities/RequestJoin.entity';
 import { User } from 'src/Entities/User.entity';
-import { Not, Repository } from 'typeorm';
+import { Repository } from 'typeorm';
 import { CreateClubDto } from './dto/createClub.dto';
 import { kickUserDto } from './dto/kickuser.dto';
 import { openClubdto } from './dto/openClub.dto';
