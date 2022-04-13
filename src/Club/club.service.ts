@@ -254,6 +254,12 @@ export class ClubService {
       { type: clubtype, title: clubtitle },
       { relations: ['activityUrls', 'relatedLink', 'member', 'member.user'] },
     );
+    if (!club) {
+      throw new HttpException(
+        '존재하지않는 동아리입니다.',
+        HttpStatus.NOT_FOUND,
+      );
+    }
 
     const head = club.member
       .filter((member) => {
