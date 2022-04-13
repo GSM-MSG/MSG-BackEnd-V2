@@ -97,7 +97,7 @@ export class ClubController {
   ) {
     await this.clubService.clubOnOff(openClubData, email, true);
   }
-  @Put('close')
+  @Put('/close')
   @HttpCode(201)
   async closeClub(
     @Body() closeClubData: openClubdto,
@@ -105,7 +105,7 @@ export class ClubController {
   ) {
     await this.clubService.clubOnOff(closeClubData, email, false);
   }
-  @Delete('kick')
+  @Delete('/kick')
   @HttpCode(201)
   async kickUser(
     @Body() kickUserData: kickUserDto,
