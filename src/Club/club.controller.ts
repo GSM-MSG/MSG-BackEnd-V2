@@ -8,9 +8,9 @@ import {
   Put,
   Query,
 } from '@nestjs/common';
-import { User } from 'src/auth/decorators';
+import { Public, User } from 'src/auth/decorators';
 import { ClubService } from './club.service';
-import { acceptUserDto } from './dto/accept.dto';
+import { AcceptUserDto } from './dto/accept.dto';
 import { ClubDatadto } from './dto/ClubData.dto';
 import { CreateClubDto } from './dto/createClub.dto';
 import { kickUserDto } from './dto/kickuser.dto';
@@ -26,7 +26,7 @@ export class ClubController {
   @Delete('/')
   @HttpCode(201)
   async deleteClub(@Body() deleteClubData: ClubDatadto) {
-    return await this.clubService.DeleteClub(
+    return await this.clubService.deleteClub(
       deleteClubData.q,
       deleteClubData.type,
     );
@@ -36,7 +36,7 @@ export class ClubController {
     @Body() createClubData: CreateClubDto,
     @User('email') email: string,
   ) {
-    await this.clubService.CreateClub(createClubData, email);
+    await this.clubService.createClub(createClubData, email);
   }
   @Post('/apply')
   async applyClub(@Body() clubData: ClubDatadto, @User('email') email: string) {
@@ -47,20 +47,32 @@ export class ClubController {
     return this.clubService.cancelClub(clubData.type, clubData.q, email);
   }
   @Post('/accept')
-  async accept(@Body() clubData: acceptUserDto, @User('email') email: string) {
-    return this.clubService.acceptClub(clubData.type, clubData.q, email);
+  async accept(@Body() clubData: AcceptUserDto, @User('email') email: string) {
+    return this.clubService.acceptClub(
+      clubData.type,
+      clubData.q,
+      clubData.userId,
+      email,
+    );
   }
   @Post('/reject')
-  async reject(@Body() ClubData: acceptUserDto, @User('email') email: string) {
-    return this.clubService.rejectClub(ClubData.type, ClubData.q, email);
+  async reject(@Body() ClubData: AcceptUserDto, @User('email') email: string) {
+    return this.clubService.rejectClub(
+      ClubData.type,
+      ClubData.q,
+      ClubData.userId,
+      email,
+    );
   }
   @Get('/applicant')
   async applicantList(
     @Query('type') clubType: string,
-    @Query('title') clubTitle: string,
+    @Query('q') clubTitle: string,
+    @User('email') email: string,
   ) {
-    return this.clubService.applicantList(clubType, clubTitle);
+    return this.clubService.applicantList(clubType, clubTitle, email);
   }
+  @Public()
   @Get('/detail')
   async detailPage(
     @Query('q') clubname: string,
@@ -68,10 +80,11 @@ export class ClubController {
   ) {
     return this.clubService.detailPage(clubtype, clubname);
   }
+  @Public()
   @Get('/members')
   async findMembers(
     @Query('type') clubType: string,
-    @Query('title') clubTitle: string,
+    @Query('q') clubTitle: string,
     @User('email') email: string,
   ) {
     return this.clubService.findMember(clubType, clubTitle, email);
