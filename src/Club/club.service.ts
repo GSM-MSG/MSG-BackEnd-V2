@@ -122,8 +122,21 @@ export class ClubService {
   async applyClub(clubtype: string, clubtitle: string, userId: string) {
     const club = await this.club.findOne({ type: clubtype, title: clubtitle });
     const user = await this.User.findOne({ email: userId });
-    const ReqUser = this.RequestJoin.create({ clubId: club, userId: user });
-    this.RequestJoin.save(ReqUser);
+    if (!club) {
+      throw new HttpException(
+        '존재하지 않는 동아리입니다.',
+        HttpStatus.NOT_FOUND,
+      );
+    }
+    if (!user) {
+      throw new HttpException(
+        '존재하지 않는 유저입니다.',
+        HttpStatus.NOT_FOUND,
+      );
+    }
+    this.RequestJoin.save(
+      this.RequestJoin.create({ clubId: club, userId: user }),
+    );
   }
 
   async cancelClub(clubtype: string, clubtitle: string, userId: string) {
