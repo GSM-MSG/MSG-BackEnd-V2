@@ -160,10 +160,30 @@ export class ClubService {
     await this.RequestJoin.delete(applyUser);
   }
 
-  async acceptClub(clubtype: string, clubtitle: string, userId: string) {
-    const club = await this.club.findOne({ type: clubtype, title: clubtitle });
-    const user = await this.User.findOne({ email: userId });
-
+  async acceptClub(
+    clubtype: string,
+    clubtitle: string,
+    acceptUserId: string,
+    userId: string,
+  ) {
+    const club = await this.club.findOne(
+      { type: clubtype, title: clubtitle },
+      { relations: ['member'] },
+    );
+    const user = await this.User.findOne({ email: acceptUserId });
+    if (!club) {
+      throw new HttpException(
+        '존재하지 않는 동아리입니다.',
+        HttpStatus.NOT_FOUND,
+      );
+    }
+    if (
+      !club.member.filter((member) => {
+        return member.user.email === userId && member.scope == 'HEAD';
+      })
+    ) {
+      throw new HttpException('동아리부장이 아닙니다.', HttpStatus.FORBIDDEN);
+    }
     const acceptUser = await this.RequestJoin.findOne({
       clubId: club,
       userId: user,
