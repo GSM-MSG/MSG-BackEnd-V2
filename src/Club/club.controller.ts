@@ -68,8 +68,9 @@ export class ClubController {
   async applicantList(
     @Query('type') clubType: string,
     @Query('title') clubTitle: string,
+    @User('email') email: string,
   ) {
-    return this.clubService.applicantList(clubType, clubTitle);
+    return this.clubService.applicantList(clubType, clubTitle, email);
   }
   @Public()
   @Get('/detail')

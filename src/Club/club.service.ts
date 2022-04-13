@@ -70,6 +70,12 @@ export class ClubService {
       }),
     );
     const club = await this.club.findOne({ title: title, type: type });
+    if (!club) {
+      throw new HttpException(
+        '동아리가 존재하지 않습니다.',
+        HttpStatus.NOT_FOUND,
+      );
+    }
     if (relatedLink) {
       await this.RelatedLink.save(
         this.RelatedLink.create({
@@ -195,7 +201,7 @@ export class ClubService {
   async rejectClub(
     clubtype: string,
     clubtitle: string,
-    rejectUserId,
+    rejectUserId: string,
     userId: string,
   ) {
     const club = await this.club.findOne({ type: clubtype, title: clubtitle });
@@ -221,13 +227,22 @@ export class ClubService {
     await this.RequestJoin.delete(rejectUser);
   }
 
-  async applicantList(clubtype: string, clubtitle: string) {
-    const ReqUserData = await this.club.findOne(
+  async applicantList(clubtype: string, clubtitle: string, userId: string) {
+    const reqUserData = await this.club.findOne(
       { title: clubtitle, type: clubtype },
-      { relations: ['requestJoin', 'requestJoin.userId'] },
+      { relations: ['requestJoin', 'requestJoin.userId', 'member'] },
     );
-
-    return ReqUserData.requestJoin.map((member) => {
+    if (
+      !reqUserData.member.find((member) => {
+        return member.user.email === userId;
+      })
+    ) {
+      throw new HttpException(
+        '동아리원이 아닙니다.',
+        HttpStatus.NOT_ACCEPTABLE,
+      );
+    }
+    return reqUserData.requestJoin.map((member) => {
       delete member.userId.password;
       delete member.userId.refreshToken;
       return member.userId;
@@ -239,6 +254,7 @@ export class ClubService {
       { type: clubtype, title: clubtitle },
       { relations: ['activityUrls', 'relatedLink', 'member', 'member.user'] },
     );
+
     const head = club.member
       .filter((member) => {
         return member.scope === 'HEAD';
