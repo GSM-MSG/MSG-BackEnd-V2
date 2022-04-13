@@ -10,7 +10,7 @@ import {
 } from '@nestjs/common';
 import { Public, User } from 'src/auth/decorators';
 import { ClubService } from './club.service';
-import { acceptUserDto } from './dto/accept.dto';
+import { AcceptUserDto } from './dto/accept.dto';
 import { ClubDatadto } from './dto/ClubData.dto';
 import { CreateClubDto } from './dto/createClub.dto';
 import { kickUserDto } from './dto/kickuser.dto';
@@ -47,7 +47,7 @@ export class ClubController {
     return this.clubService.cancelClub(clubData.type, clubData.q, email);
   }
   @Post('/accept')
-  async accept(@Body() clubData: acceptUserDto, @User('email') email: string) {
+  async accept(@Body() clubData: AcceptUserDto, @User('email') email: string) {
     return this.clubService.acceptClub(
       clubData.type,
       clubData.q,
