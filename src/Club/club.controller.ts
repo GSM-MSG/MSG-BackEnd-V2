@@ -57,7 +57,12 @@ export class ClubController {
   }
   @Post('/reject')
   async reject(@Body() ClubData: acceptUserDto, @User('email') email: string) {
-    return this.clubService.rejectClub(ClubData.type, ClubData.q, email);
+    return this.clubService.rejectClub(
+      ClubData.type,
+      ClubData.q,
+      ClubData.userId,
+      email,
+    );
   }
   @Get('/applicant')
   async applicantList(
