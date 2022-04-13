@@ -56,7 +56,7 @@ export class ClubController {
     );
   }
   @Post('/reject')
-  async reject(@Body() ClubData: acceptUserDto, @User('email') email: string) {
+  async reject(@Body() ClubData: AcceptUserDto, @User('email') email: string) {
     return this.clubService.rejectClub(
       ClubData.type,
       ClubData.q,
@@ -97,7 +97,7 @@ export class ClubController {
   ) {
     await this.clubService.clubOnOff(openClubData, email, true);
   }
-  @Put('/close')
+  @Put('close')
   @HttpCode(201)
   async closeClub(
     @Body() closeClubData: openClubdto,
@@ -105,7 +105,7 @@ export class ClubController {
   ) {
     await this.clubService.clubOnOff(closeClubData, email, false);
   }
-  @Delete('/kick')
+  @Delete('kick')
   @HttpCode(201)
   async kickUser(
     @Body() kickUserData: kickUserDto,
