@@ -1,4 +1,10 @@
-import { Controller } from '@nestjs/common';
+import { Controller, Post, UploadedFiles } from '@nestjs/common';
+import { ImageService } from './image.service';
 
 @Controller('image')
-export class ImageController {}
+export class ImageController {
+  constructor(private imageService: ImageService) {}
+
+  @Post('')
+  async ImageUpload() {}
+}
