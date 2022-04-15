@@ -29,13 +29,10 @@ export class UserService {
   async editProfile(urlAddress: urlDto, email: string) {
     await this.User.update({ email: email }, { userImg: urlAddress.url });
   }
-  async searchUser(
-    name: string,
-    clubType: string,
-  ) {
+  async searchUser(name: string, clubType: string) {
     if (clubType === 'MAJOR' || clubType == 'FREEDOM') {
-      const data = await this.User.query(
-        "CALL msg.findUserNotJoin('" + clubType + "' , '" + name +"');",
+      return await this.User.query(
+        "CALL msg.findUserNotJoin('" + clubType + "' , '" + name + "');",
       );
     } else if (clubType === 'EDITORIAL') {
       return await this.User.find();
