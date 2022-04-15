@@ -31,10 +31,14 @@ export class UserService {
   }
   async searchUser(name: string, clubType: string) {
     if (clubType === 'MAJOR' || clubType == 'FREEDOM') {
-      const Data = await this.User.query(
+      const data = await this.User.query(
         "CALL msg.findUserNotJoin('" + clubType + "' , '" + name + "');",
       );
-      return Data[0];
+      return data[0].map((user) => {
+        delete user.password;
+        delete user.refreshToken;
+        return user;
+      });
     } else if (clubType === 'EDITORIAL') {
       return await this.User.find();
     } else
