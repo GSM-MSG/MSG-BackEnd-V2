@@ -37,7 +37,7 @@ export class UserService {
   ) {
     if (clubType === 'MAJOR' || clubType == 'FREEDUMB') {
       const data = await this.User.query(
-        "CALL msg.findUserNotJoin('" + clubType + "');",
+        "CALL msg.findUserNotJoin('" + clubType + "' , '" + name +"');",
       );
       console.log(data);
     } else if (clubType === 'EDITORIAL') {
