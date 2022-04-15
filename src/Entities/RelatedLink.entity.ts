@@ -1,9 +1,4 @@
-import {
-  Column,
-  Entity,
-  ManyToOne,
-  PrimaryGeneratedColumn,
-} from 'typeorm';
+import { Column, Entity, OneToOne, PrimaryGeneratedColumn } from 'typeorm';
 import { Club } from './Club.entity';
 
 @Entity()
@@ -17,6 +12,6 @@ export class RelatedLink {
   @Column()
   url: string;
 
-  @ManyToOne(() => Club, (club) => club.id, { onDelete: 'CASCADE' })
+  @OneToOne(() => Club, (club) => club.id, { onDelete: 'CASCADE' })
   club: Club;
 }
