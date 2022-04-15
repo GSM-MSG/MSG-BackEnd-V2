@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Member } from 'src/Entities/Member.entity';
 import { User } from 'src/Entities/User.entity';
@@ -35,10 +35,14 @@ export class UserService {
     index: number,
     size: number,
   ) {
-    if (clubType === 'MAJOR' || clubType == 'EDITORIAL') {
-      const data = await this.User.query('CALL msg.findUserNotJoin(\''+clubType+'\');');
+    if (clubType === 'MAJOR' || clubType == 'FREEDUMB') {
+      const data = await this.User.query(
+        "CALL msg.findUserNotJoin('" + clubType + "');",
+      );
       console.log(data);
-    } else {
-    }
+    } else if (clubType === 'EDITORIAL') {
+      return await this.User.find();
+    } else
+      throw new HttpException('없는 동아리 타입입니다', HttpStatus.BAD_GATEWAY);
   }
 }
