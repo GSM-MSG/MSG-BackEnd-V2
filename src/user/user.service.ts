@@ -35,7 +35,7 @@ export class UserService {
     index: number,
     size: number,
   ) {
-    if (clubType === 'MAJOR' || clubType == 'FREEDUMB') {
+    if (clubType === 'MAJOR' || clubType == 'FREEDOM') {
       const data = await this.User.query(
         "CALL msg.findUserNotJoin('" + clubType + "' , '" + name +"');",
       );
