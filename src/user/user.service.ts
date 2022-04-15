@@ -27,7 +27,7 @@ export class UserService {
     await this.User.update({ email: email }, { userImg: urlAddress.url });
   }
   async searchUser(name: string, clubType: string) {
-    if (clubType === 'MAJOR' || clubType == 'FREEDOM') {
+    if (clubType === 'MAJOR' || clubType === 'FREEDOM') {
       const data = await this.User.query(
         "CALL msg.findUserNotJoin('" + clubType + "' , '" + name + "');",
       );
