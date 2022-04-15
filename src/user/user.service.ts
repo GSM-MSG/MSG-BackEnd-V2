@@ -32,14 +32,11 @@ export class UserService {
   async searchUser(
     name: string,
     clubType: string,
-    index: number,
-    size: number,
   ) {
     if (clubType === 'MAJOR' || clubType == 'FREEDOM') {
       const data = await this.User.query(
         "CALL msg.findUserNotJoin('" + clubType + "' , '" + name +"');",
       );
-      console.log(data);
     } else if (clubType === 'EDITORIAL') {
       return await this.User.find();
     } else

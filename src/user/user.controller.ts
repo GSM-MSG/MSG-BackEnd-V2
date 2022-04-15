@@ -19,9 +19,7 @@ export class UserController {
   async searchUser(
     @Query('name') name: string,
     @Query('type') clubType: string,
-    @Query('index') index: number,
-    @Query('size') size: number,
   ) {
-    await this.userService.searchUser(name, clubType, index, size);
+    await this.userService.searchUser(name, clubType);
   }
 }
