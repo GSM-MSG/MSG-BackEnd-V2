@@ -7,10 +7,7 @@ import { urlDto } from './dto/urlAddress.dto';
 
 @Injectable()
 export class UserService {
-  constructor(
-    @InjectRepository(User) private User: Repository<User>,
-    @InjectRepository(Member) private member: Repository<Member>,
-  ) {}
+  constructor(@InjectRepository(User) private User: Repository<User>) {}
 
   async getUserData(email: string) {
     const userData = await this.User.findOne(
