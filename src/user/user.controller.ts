@@ -8,7 +8,7 @@ export class UserController {
   constructor(private userService: UserService) {}
   @Get('/my')
   async userData(@User('email') email: string) {
-    return await this.userService.getUserData(email);
+    return this.userService.getUserData(email);
   }
   @Put('/profile')
   @HttpCode(201)
@@ -20,6 +20,6 @@ export class UserController {
     @Query('name') name: string,
     @Query('type') clubType: string,
   ) {
-    await this.userService.searchUser(name, clubType);
+    return this.userService.searchUser(name, clubType);
   }
 }
