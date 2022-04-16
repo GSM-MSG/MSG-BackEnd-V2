@@ -14,7 +14,7 @@ import { ImageModule } from './image/image.module';
   imports: [
     ConfigModule.forRoot({
       isGlobal: true,
-      envFilePath: '.env,Image.env',
+      envFilePath: '.env',
     }),
     TypeOrmModule.forRoot({
       type: 'mysql',
