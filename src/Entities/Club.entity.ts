@@ -3,6 +3,7 @@ import {
   Entity,
   JoinColumn,
   OneToMany,
+  OneToOne,
   PrimaryGeneratedColumn,
 } from 'typeorm';
 import { Member } from './Member.entity';
@@ -39,7 +40,7 @@ export class Club {
   @OneToMany(() => Member, (member) => member.club)
   member: Member[];
 
-  @OneToMany(() => RelatedLink, (link) => link.club)
+  @OneToOne(() => RelatedLink, (link) => link.club)
   @JoinColumn()
   relatedLink: RelatedLink;
 
