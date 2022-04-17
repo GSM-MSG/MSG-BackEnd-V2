@@ -6,7 +6,7 @@ export class ImageController {
   constructor(private imageService: ImageService) {}
 
   @Post('')
-  async ImageUpload(@UploadedFiles() files) {
+  async ImageUpload(@UploadedFiles() files: Array<Express.Multer.File>) {
     return this.imageService.uploladFile(files);
   }
 }
