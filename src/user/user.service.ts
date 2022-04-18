@@ -53,6 +53,8 @@ export class UserService {
     const clubData = await this.Club.findOne({
       where: { title: exitclubData.name, type: exitclubData.type },
     });
+    if (!clubData)
+      throw new HttpException('없는 동아리 입니다', HttpStatus.NOT_FOUND);
     const userData = await this.User.findOne({ where: { email: email } });
     await this.Member.delete({ club: clubData, user: userData });
   }
