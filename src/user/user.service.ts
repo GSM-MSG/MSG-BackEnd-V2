@@ -54,24 +54,18 @@ export class UserService {
       where: { title: exitclubData.name, type: exitclubData.type },
       relations: ['member', 'member.user'],
     });
+    const member = clubData.member.find((member) => {
+      return member.user.email === email;
+    });
     if (!clubData)
       throw new HttpException('없는 동아리 입니다', HttpStatus.NOT_FOUND);
-    else if (
-      !clubData.member.find((member) => {
-        return member.user.email === email;
-      })
-    )
+    else if (!member)
       throw new HttpException('동아리 멤버가 아닙니다', HttpStatus.BAD_GATEWAY);
-    else if (
-      clubData.member.find((member) => {
-        return member.user.email === email && member.scope === 'HEAD';
-      })
-    )
+    else if (member.scope === 'HEAD')
       throw new HttpException(
         '동아리 부장은 탈퇴가 불가능합니다',
         HttpStatus.FORBIDDEN,
       );
-    const userData = await this.User.findOne({ where: { email: email } });
-    await this.Member.delete({ club: clubData, user: userData });
+    await this.Member.delete({ club: clubData, user: member.user });
   }
 }
