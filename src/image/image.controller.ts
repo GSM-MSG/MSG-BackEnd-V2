@@ -2,19 +2,16 @@ import {
   Bind,
   Controller,
   Post,
-  UploadedFile,
   UploadedFiles,
   UseInterceptors,
 } from '@nestjs/common';
-import { FileInterceptor, FilesInterceptor } from '@nestjs/platform-express';
-import { Public } from 'src/auth/decorators';
+import { FilesInterceptor } from '@nestjs/platform-express';
 import { ImageService } from './image.service';
 
 @Controller('image')
 export class ImageController {
   constructor(private imageService: ImageService) {}
 
-  @Public()
   @Post('')
   @UseInterceptors(FilesInterceptor('files'))
   @Bind(UploadedFiles())
