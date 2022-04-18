@@ -8,12 +8,13 @@ import { CheckModule } from './check/check.module';
 import { AtStrategy } from './strategies/atStrategy';
 import { RtStrategy } from './strategies/rtStrategy';
 import { UserModule } from './user/user.module';
+import { ImageModule } from './image/image.module';
 
 @Module({
   imports: [
     ConfigModule.forRoot({
       isGlobal: true,
-      envFilePath: '.env',
+      envFilePath: ['.env', 'S3.env'],
     }),
     TypeOrmModule.forRoot({
       type: 'mysql',
@@ -29,6 +30,7 @@ import { UserModule } from './user/user.module';
     AuthModule,
     CheckModule,
     UserModule,
+    ImageModule,
   ],
   providers: [AtStrategy, RtStrategy],
 })
