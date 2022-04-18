@@ -13,7 +13,7 @@ export class ImageService {
 
   async uploladFile(files: Express.Multer.File[]) {
     const list = [];
-    /*files.forEach(async (element) => {
+    for (const element of files) {
       const params = {
         Bucket: this.AWS_S3_BUCKET,
         Key: element.originalname,
@@ -26,29 +26,12 @@ export class ImageService {
         },
       };
       try {
-        const result = this.s3.upload(params).promise().then();
-      } catch (e) {
-        throw new BadRequestException(e);
-      }
-    });*/
-    files.map(async (image) => {
-      const params = {
-        Bucket: this.AWS_S3_BUCKET,
-        Key: image.originalname,
-        Body: image.buffer,
-        ACL: 'public-read',
-        ContenctType: image.mimetype,
-        ContentDisposition: 'inline',
-        CreateBucketConfiguration: {
-          LocationConstraint: this.configService.get<string>('AWS_REGION'),
-        },
-      };
-      try {
         const result = await this.s3.upload(params).promise();
-        console.log(result.Location);
+        list.push(result.Location);
       } catch (e) {
         throw new BadRequestException(e);
       }
-    });
+    }
+    return list;
   }
 }
