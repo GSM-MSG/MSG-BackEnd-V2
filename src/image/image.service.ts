@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { BadRequestException, Injectable } from '@nestjs/common';
 import * as AWS from 'aws-sdk';
 import { ConfigService } from '@nestjs/config';
 
@@ -11,9 +11,9 @@ export class ImageService {
     secretAccessKey: process.env.AWSSecretKey,
   });
 
-  async uploladFile(files: Array<Express.Multer.File>) {
+  async uploladFile(files: Express.Multer.File[]) {
     const list = [];
-    files.forEach(async (element) => {
+    /*files.forEach(async (element) => {
       const params = {
         Bucket: this.AWS_S3_BUCKET,
         Key: element.originalname,
@@ -27,9 +27,28 @@ export class ImageService {
       };
       try {
         const result = this.s3.upload(params).promise().then();
-        list.push((await result).Location);
-      } catch (e) {}
+      } catch (e) {
+        throw new BadRequestException(e);
+      }
+    });*/
+    files.map(async (image) => {
+      const params = {
+        Bucket: this.AWS_S3_BUCKET,
+        Key: image.originalname,
+        Body: image.buffer,
+        ACL: 'public-read',
+        ContenctType: image.mimetype,
+        ContentDisposition: 'inline',
+        CreateBucketConfiguration: {
+          LocationConstraint: this.configService.get<string>('AWS_REGION'),
+        },
+      };
+      try {
+        const result = await this.s3.upload(params).promise();
+        console.log(result.Location);
+      } catch (e) {
+        throw new BadRequestException(e);
+      }
     });
-    return list;
   }
 }
