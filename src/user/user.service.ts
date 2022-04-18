@@ -1,13 +1,19 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
+import { Club } from 'src/Entities/Club.entity';
 import { Member } from 'src/Entities/Member.entity';
 import { User } from 'src/Entities/User.entity';
-import { createQueryBuilder, Repository } from 'typeorm';
+import { Repository } from 'typeorm';
+import { exitDataDto } from './dto/exit.dto';
 import { urlDto } from './dto/urlAddress.dto';
 
 @Injectable()
 export class UserService {
-  constructor(@InjectRepository(User) private User: Repository<User>) {}
+  constructor(
+    @InjectRepository(User) private User: Repository<User>,
+    @InjectRepository(Club) private Club: Repository<Club>,
+    @InjectRepository(Member) private Member: Repository<Member>,
+  ) {}
 
   async getUserData(email: string) {
     const userData = await this.User.findOne(
@@ -37,8 +43,29 @@ export class UserService {
         return user;
       });
     } else if (clubType === 'EDITORIAL') {
-        return await this.User.find({select :["email","name","grade","class","num","userImg"]});
+      return await this.User.find({
+        select: ['email', 'name', 'grade', 'class', 'num', 'userImg'],
+      });
     } else
       throw new HttpException('없는 동아리 타입입니다', HttpStatus.BAD_GATEWAY);
+  }
+  async exitClub(exitclubData: exitDataDto, email: string) {
+    const clubData = await this.Club.findOne({
+      where: { title: exitclubData.name, type: exitclubData.type },
+      relations: ['member', 'member.user'],
+    });
+    const member = clubData.member.find((member) => {
+      return member.user.email === email;
+    });
+    if (!clubData)
+      throw new HttpException('없는 동아리 입니다', HttpStatus.NOT_FOUND);
+    else if (!member)
+      throw new HttpException('동아리 멤버가 아닙니다', HttpStatus.BAD_GATEWAY);
+    else if (member.scope === 'HEAD')
+      throw new HttpException(
+        '동아리 부장은 탈퇴가 불가능합니다',
+        HttpStatus.FORBIDDEN,
+      );
+    await this.Member.delete({ club: clubData, user: member.user });
   }
 }
