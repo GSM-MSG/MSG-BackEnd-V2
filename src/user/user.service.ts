@@ -1,8 +1,7 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Member } from 'src/Entities/Member.entity';
 import { User } from 'src/Entities/User.entity';
-import { createQueryBuilder, Repository } from 'typeorm';
+import { Repository } from 'typeorm';
 import { urlDto } from './dto/urlAddress.dto';
 
 @Injectable()
@@ -37,7 +36,9 @@ export class UserService {
         return user;
       });
     } else if (clubType === 'EDITORIAL') {
-        return await this.User.find({select :["email","name","grade","class","num","userImg"]});
+      return await this.User.find({
+        select: ['email', 'name', 'grade', 'class', 'num', 'userImg'],
+      });
     } else
       throw new HttpException('없는 동아리 타입입니다', HttpStatus.BAD_GATEWAY);
   }
