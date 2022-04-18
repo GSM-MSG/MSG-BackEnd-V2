@@ -62,6 +62,15 @@ export class UserService {
       })
     )
       throw new HttpException('동아리 멤버가 아닙니다', HttpStatus.BAD_GATEWAY);
+    else if (
+      clubData.member.find((member) => {
+        return member.user.email === email && member.scope === 'HEAD';
+      })
+    )
+      throw new HttpException(
+        '동아리 부장은 탈퇴가 불가능합니다',
+        HttpStatus.FORBIDDEN,
+      );
     const userData = await this.User.findOne({ where: { email: email } });
     await this.Member.delete({ club: clubData, user: userData });
   }
