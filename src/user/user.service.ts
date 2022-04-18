@@ -52,16 +52,17 @@ export class UserService {
   async exitClub(exitclubData: exitDataDto, email: string) {
     const clubData = await this.Club.findOne({
       where: { title: exitclubData.name, type: exitclubData.type },
+      relations: ['member', 'member.user'],
     });
     if (!clubData)
       throw new HttpException('없는 동아리 입니다', HttpStatus.NOT_FOUND);
-    const userData = await this.User.findOne({ where: { email: email } });
-    if (
-      !(await this.Member.findOne({
-        where: { club: clubData, user: userData },
-      }))
+    else if (
+      !clubData.member.find((member) => {
+        return member.user.email === email;
+      })
     )
       throw new HttpException('동아리 멤버가 아닙니다', HttpStatus.BAD_GATEWAY);
+    const userData = await this.User.findOne({ where: { email: email } });
     await this.Member.delete({ club: clubData, user: userData });
   }
 }
