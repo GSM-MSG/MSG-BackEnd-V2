@@ -120,4 +120,6 @@ export class ClubController {
   ) {
     await this.clubService.delegation(userData, email);
   }
+  @Put('')
+  async putClub() {}
 }

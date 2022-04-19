@@ -389,4 +389,5 @@ export class ClubService {
       { scope: 'MEMBER' },
     );
   }
+  async putClub() {}
 }
