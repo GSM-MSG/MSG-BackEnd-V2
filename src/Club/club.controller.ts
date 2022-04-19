@@ -13,6 +13,7 @@ import { ClubService } from './club.service';
 import { AcceptUserDto } from './dto/accept.dto';
 import { ClubDatadto } from './dto/clubData.dto';
 import { CreateClubDto } from './dto/createClub.dto';
+import { editClubdto } from './dto/editclub.dto';
 import { kickUserDto } from './dto/kickuser.dto';
 import { openClubdto } from './dto/openClub.dto';
 
@@ -120,6 +121,9 @@ export class ClubController {
   ) {
     await this.clubService.delegation(userData, email);
   }
+  @Public()
   @Put('')
-  async putClub() {}
+  async putClub(@Body() editClubData: editClubdto) {
+    return this.clubService.putClub(editClubData);
+  }
 }

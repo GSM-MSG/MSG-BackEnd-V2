@@ -8,6 +8,7 @@ import { RequestJoin } from 'src/Entities/RequestJoin.entity';
 import { User } from 'src/Entities/User.entity';
 import { Repository } from 'typeorm';
 import { CreateClubDto } from './dto/createClub.dto';
+import { editClubdto } from './dto/editclub.dto';
 import { kickUserDto } from './dto/kickuser.dto';
 import { openClubdto } from './dto/openClub.dto';
 
@@ -389,5 +390,18 @@ export class ClubService {
       { scope: 'MEMBER' },
     );
   }
-  async putClub() {}
+  async putClub(editClubData: editClubdto) {
+    await this.Club.update(
+      { title: editClubData.q, type: editClubData.type },
+      {
+        type: editClubData.type,
+        title: editClubData.title,
+        description: editClubData.description,
+        bannerUrl: editClubData.bannerUrl,
+        contact: editClubData.contact,
+        teacher: editClubData.teacher,
+      },
+    );
+    console.log(editClubData.member);
+  }
 }
