@@ -391,7 +391,13 @@ export class ClubService {
     );
   }
   async putClub(editClubData: editClubdto) {
-    const { relatedLink, new_member, delete_member } = editClubData;
+    const {
+      relatedLink,
+      new_member,
+      delete_member,
+      new_activityUrls,
+      delete_activityUrls,
+    } = editClubData;
     await this.Club.update(
       { title: editClubData.q, type: editClubData.type },
       {
@@ -403,24 +409,47 @@ export class ClubService {
         teacher: editClubData.teacher,
       },
     );
+
     const club = await this.Club.findOne({
       title: editClubData.title,
       type: editClubData.type,
     });
-    await this.RelatedLink.update(
-      { club: club },
-      { name: relatedLink.name, url: relatedLink.url },
-    );
-    delete_member.forEach(async (member) => {
-      const user = await this.User.findOne(member);
-      if (!user) {
-        throw new HttpException(
-          '존재하지 않는 유저입니다.',
-          HttpStatus.NOT_FOUND,
-        );
-      }
-      await this.Member.delete({ user: user });
-    });
+    if (!club) {
+      throw new HttpException(
+        '존재하지 않는 동아리입니다.',
+        HttpStatus.NOT_FOUND,
+      );
+    }
+    if (relatedLink) {
+      await this.RelatedLink.update(
+        { club: club },
+        { name: relatedLink.name, url: relatedLink.url },
+      );
+    }
+    if (delete_member) {
+      delete_member.forEach(async (member) => {
+        const user = await this.User.findOne(member);
+        console.log(user);
+        const clubmember = await this.Member.findOne({
+          user: user,
+          club: club,
+        });
+        console.log(clubmember);
+        if (!user) {
+          throw new HttpException(
+            '존재하지 않는 유저입니다.',
+            HttpStatus.NOT_FOUND,
+          );
+        }
+        if (!(await this.Member.findOne({ user: user, club: club }))) {
+          throw new HttpException(
+            '동아리에 존재하지 않는 유저입니다.',
+            HttpStatus.NOT_FOUND,
+          );
+        }
+        await this.Member.delete({ user: user });
+      });
+    }
     new_member.forEach(async (member) => {
       const user = await this.User.findOne(member);
       if (!user) {
@@ -429,9 +458,37 @@ export class ClubService {
           HttpStatus.NOT_FOUND,
         );
       }
+      if (await this.Member.findOne({ user: user, club: club })) {
+        throw new HttpException(
+          '동아리에 이미 존재하는 유저입니다.',
+          HttpStatus.CONFLICT,
+        );
+      }
       await this.Member.save(
         this.Member.create({ user: user, club: club, scope: 'MEMBER' }),
       );
     });
+    if (new_activityUrls) {
+      new_activityUrls.forEach(async (image) => {
+        if (await this.Image.findOne({ clubId: club.id, url: image })) {
+          throw new HttpException(
+            '동아리에 이미 존재하는 사진입니다.',
+            HttpStatus.CONFLICT,
+          );
+        }
+        this.Image.save(this.Image.create({ clubId: club.id, url: image }));
+      });
+    }
+    if (delete_activityUrls) {
+      delete_activityUrls.forEach(async (image) => {
+        if (!(await this.Image.findOne({ clubId: club.id, url: image }))) {
+          throw new HttpException(
+            '동아리에 존재하지 않는 사진입니다.',
+            HttpStatus.CONFLICT,
+          );
+        }
+        await this.Image.delete({ clubId: club.id, url: image });
+      });
+    }
   }
 }
