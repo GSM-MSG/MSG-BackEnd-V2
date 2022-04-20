@@ -391,6 +391,7 @@ export class ClubService {
     );
   }
   async putClub(editClubData: editClubdto) {
+    const { relatedLink, new_member, delete_member } = editClubData;
     await this.Club.update(
       { title: editClubData.q, type: editClubData.type },
       {
@@ -406,10 +407,31 @@ export class ClubService {
       title: editClubData.title,
       type: editClubData.type,
     });
-    const { relatedLink } = editClubData;
     await this.RelatedLink.update(
       { club: club },
       { name: relatedLink.name, url: relatedLink.url },
     );
+    delete_member.filter(async (member) => {
+      const user = await this.User.findOne(member);
+      if (!user) {
+        throw new HttpException(
+          '존재하지 않는 유저입니다.',
+          HttpStatus.NOT_FOUND,
+        );
+      }
+      await this.Member.delete({ user: user });
+    });
+    new_member.filter(async (member) => {
+      const user = await this.User.findOne(member);
+      if (!user) {
+        throw new HttpException(
+          '존재하지 않는 유저입니다.',
+          HttpStatus.NOT_FOUND,
+        );
+      }
+      await this.Member.save(
+        this.Member.create({ user: user, club: club, scope: 'MEMBER' }),
+      );
+    });
   }
 }
