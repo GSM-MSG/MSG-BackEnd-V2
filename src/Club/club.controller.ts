@@ -121,7 +121,6 @@ export class ClubController {
   ) {
     await this.clubService.delegation(userData, email);
   }
-  @Public()
   @Put('')
   async putClub(@Body() editClubData: editClubdto) {
     return this.clubService.putClub(editClubData);

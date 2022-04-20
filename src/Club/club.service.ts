@@ -402,6 +402,14 @@ export class ClubService {
         teacher: editClubData.teacher,
       },
     );
-    console.log(editClubData.member);
+    const club = await this.Club.findOne({
+      title: editClubData.title,
+      type: editClubData.type,
+    });
+    const { relatedLink } = editClubData;
+    await this.RelatedLink.update(
+      { club: club },
+      { name: relatedLink.name, url: relatedLink.url },
+    );
   }
 }
