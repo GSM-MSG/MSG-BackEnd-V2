@@ -1,11 +1,4 @@
-import {
-  Column,
-  Entity,
-  JoinColumn,
-  OneToMany,
-  OneToOne,
-  PrimaryGeneratedColumn,
-} from 'typeorm';
+import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
 import { Member } from './Member.entity';
 import { Image } from './image.entity';
 import { RelatedLink } from './RelatedLink.entity';
@@ -40,8 +33,7 @@ export class Club {
   @OneToMany(() => Member, (member) => member.club)
   member: Member[];
 
-  @OneToOne(() => RelatedLink, (link) => link.club)
-  @JoinColumn()
+  @OneToMany(() => RelatedLink, (link) => link.club)
   relatedLink: RelatedLink;
 
   @OneToMany(() => Image, (Image) => Image.clubId)
