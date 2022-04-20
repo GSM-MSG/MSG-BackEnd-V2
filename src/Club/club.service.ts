@@ -411,7 +411,7 @@ export class ClubService {
       { club: club },
       { name: relatedLink.name, url: relatedLink.url },
     );
-    delete_member.filter(async (member) => {
+    delete_member.forEach(async (member) => {
       const user = await this.User.findOne(member);
       if (!user) {
         throw new HttpException(
@@ -421,7 +421,7 @@ export class ClubService {
       }
       await this.Member.delete({ user: user });
     });
-    new_member.filter(async (member) => {
+    new_member.forEach(async (member) => {
       const user = await this.User.findOne(member);
       if (!user) {
         throw new HttpException(
