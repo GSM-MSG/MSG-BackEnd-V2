@@ -49,7 +49,11 @@ export class editClubdto {
 
   @IsOptional()
   @IsArray()
-  activityUrls: string[];
+  new_activityUrls: string[];
+
+  @IsOptional()
+  @IsArray()
+  delete_activityUrls: string[];
 
   @IsOptional()
   @IsArray()
