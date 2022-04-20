@@ -398,6 +398,7 @@ export class ClubService {
       new_activityUrls,
       delete_activityUrls,
     } = editClubData;
+    //클럽내용
     await this.Club.update(
       { title: editClubData.q, type: editClubData.type },
       {
@@ -409,7 +410,7 @@ export class ClubService {
         teacher: editClubData.teacher,
       },
     );
-
+    //동아리 정보 찾기
     const club = await this.Club.findOne({
       title: editClubData.title,
       type: editClubData.type,
@@ -420,12 +421,14 @@ export class ClubService {
         HttpStatus.NOT_FOUND,
       );
     }
+    //관련 링크 관련 수정
     if (relatedLink) {
       await this.RelatedLink.update(
         { club: club },
         { name: relatedLink.name, url: relatedLink.url },
       );
     }
+    //삭제시킬 멤버 삭제
     if (delete_member) {
       delete_member.forEach(async (member) => {
         const user = await this.User.findOne(member);
@@ -450,6 +453,7 @@ export class ClubService {
         await this.Member.delete({ user: user });
       });
     }
+    //새로운 멤버 추가
     new_member.forEach(async (member) => {
       const user = await this.User.findOne(member);
       if (!user) {
@@ -468,6 +472,7 @@ export class ClubService {
         this.Member.create({ user: user, club: club, scope: 'MEMBER' }),
       );
     });
+    //새로운 활동사진 추가
     if (new_activityUrls) {
       new_activityUrls.forEach(async (image) => {
         if (await this.Image.findOne({ clubId: club.id, url: image })) {
@@ -479,6 +484,7 @@ export class ClubService {
         this.Image.save(this.Image.create({ clubId: club.id, url: image }));
       });
     }
+    //지울 활동사진 삭제
     if (delete_activityUrls) {
       delete_activityUrls.forEach(async (image) => {
         if (!(await this.Image.findOne({ clubId: club.id, url: image }))) {
