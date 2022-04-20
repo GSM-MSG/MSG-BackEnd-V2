@@ -37,7 +37,11 @@ export class editClubdto {
 
   @IsOptional()
   @IsArray()
-  member: string[];
+  new_member: string[];
+
+  @IsOptional()
+  @IsArray()
+  delete_member: string[];
 
   @IsOptional()
   @IsObject()
