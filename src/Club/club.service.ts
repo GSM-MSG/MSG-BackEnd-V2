@@ -395,19 +395,17 @@ export class ClubService {
       { scope: 'MEMBER' },
     );
   }
-  async putClub(editClubData: editClubdto) {
+  async editClub(editClubData: editClubdto) {
     const {
-      relatedLink,
-      new_member,
-      delete_member,
       new_activityUrls,
+      new_member,
       delete_activityUrls,
+      delete_member,
+      relatedLink,
     } = editClubData;
-    //클럽내용
     await this.Club.update(
       { title: editClubData.q, type: editClubData.type },
       {
-        type: editClubData.type,
         title: editClubData.title,
         description: editClubData.description,
         bannerUrl: editClubData.bannerUrl,
@@ -415,113 +413,36 @@ export class ClubService {
         teacher: editClubData.teacher,
       },
     );
-    //동아리 정보 찾기
-    const club = await this.Club.findOne({
-      title: editClubData.title,
-      type: editClubData.type,
-    });
+    const club = await this.Club.findOne(
+      {
+        title: editClubData.title,
+        type: editClubData.type,
+      },
+      { relations: ['related_link'] },
+    );
     if (!club) {
       throw new HttpException(
         '존재하지 않는 동아리입니다.',
         HttpStatus.NOT_FOUND,
       );
     }
-    //관련 링크 관련 수정
     if (relatedLink) {
-      await this.RelatedLink.update(
-        { club: club },
-        { name: relatedLink.name, url: relatedLink.url },
-      );
-    }
-    //삭제시킬 멤버 삭제
-    if (delete_member) {
-      try {
-        delete_member.forEach(async (member) => {
-          const user = await this.User.findOne(member);
-          const clubmember = await this.Member.findOne({
-            user: user,
+      if (!club.relatedLink) {
+        await this.RelatedLink.save(
+          this.RelatedLink.create({
+            name: relatedLink.name,
+            url: relatedLink.url,
             club: club,
-          });
-          if (!user)
-            throw new HttpException(
-              '존재하지 않는 유저입니다.',
-              HttpStatus.NOT_FOUND,
-            );
-          if (!clubmember) {
-            throw new HttpException(
-              '동아리에 존재하지 않는 유저입니다.',
-              HttpStatus.NOT_FOUND,
-            );
-          }
-          await this.Member.delete({ user: user });
-        });
-      } catch (e) {
-        throw new HttpException('h', e);
+          }),
+        );
+      } else {
+        await this.RelatedLink.update(
+          { club: club },
+          { url: relatedLink.url, name: relatedLink.name },
+        );
       }
     }
-    //새로운 멤버 추가
     if (new_member) {
-      try {
-        new_member.forEach(async (member) => {
-          const user = await this.User.findOne(member);
-          const clubmember = await this.Member.findOne({
-            user: user,
-            club: club,
-          });
-          console.log(clubmember);
-
-          if (!user) {
-            throw new HttpException(
-              '존재하지 않는 유저입니다.',
-              HttpStatus.NOT_FOUND,
-            );
-          }
-          if (clubmember) {
-            throw new HttpException(
-              '동아리에 이미 존재하는 유저입니다.',
-              HttpStatus.CONFLICT,
-            );
-          }
-          await this.Member.save(
-            this.Member.create({ user: user, club: club, scope: 'MEMBER' }),
-          );
-        });
-      } catch (e) {
-        throw new BadRequestException(e);
-      }
     }
-    //새로운 활동사진 추가
-    if (new_activityUrls) {
-      new_activityUrls.forEach(async (image) => {
-        const clubImage = await this.Image.findOne({
-          clubId: club.id,
-          url: image,
-        });
-        if (clubImage) {
-          throw new HttpException(
-            '동아리에 이미 존재하는 사진입니다.',
-            HttpStatus.CONFLICT,
-          );
-        }
-        this.Image.save(this.Image.create({ clubId: club.id, url: image }));
-      });
-    }
-    //지울 활동사진 삭제
-    if (delete_activityUrls) {
-      delete_activityUrls.forEach(async (image) => {
-        const clubImage = await this.Image.findOne({
-          clubId: club.id,
-          url: image,
-        });
-        if (!clubImage) {
-          throw new HttpException(
-            '동아리에 존재하지 않는 사진입니다.',
-            HttpStatus.CONFLICT,
-          );
-        }
-        await this.Image.delete({ clubId: club.id, url: image });
-      });
-    }
-    return 'success';
   }
 }
