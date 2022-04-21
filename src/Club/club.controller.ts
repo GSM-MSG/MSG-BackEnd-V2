@@ -123,7 +123,5 @@ export class ClubController {
   }
   @Public()
   @Put('')
-  async putClub(@Body() editClubData: editClubdto) {
-    return this.clubService.putClub(editClubData);
-  }
+  async putClub(@Body() editClubData: editClubdto) {}
 }

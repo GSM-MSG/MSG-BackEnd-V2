@@ -28,10 +28,6 @@ export class editClubdto {
   contact: string;
 
   @IsOptional()
-  @IsBoolean()
-  isOpened: Boolean;
-
-  @IsOptional()
   @IsString()
   teacher: string;
 

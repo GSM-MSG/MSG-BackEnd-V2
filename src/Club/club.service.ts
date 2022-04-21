@@ -1,4 +1,9 @@
-import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
+import {
+  BadRequestException,
+  HttpException,
+  HttpStatus,
+  Injectable,
+} from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Club } from 'src/Entities/Club.entity';
 import { Image } from 'src/Entities/image.entity';
@@ -430,52 +435,69 @@ export class ClubService {
     }
     //삭제시킬 멤버 삭제
     if (delete_member) {
-      delete_member.forEach(async (member) => {
-        const user = await this.User.findOne(member);
-        console.log(user);
-        const clubmember = await this.Member.findOne({
-          user: user,
-          club: club,
+      try {
+        delete_member.forEach(async (member) => {
+          const user = await this.User.findOne(member);
+          const clubmember = await this.Member.findOne({
+            user: user,
+            club: club,
+          });
+          if (!user)
+            throw new HttpException(
+              '존재하지 않는 유저입니다.',
+              HttpStatus.NOT_FOUND,
+            );
+          if (!clubmember) {
+            throw new HttpException(
+              '동아리에 존재하지 않는 유저입니다.',
+              HttpStatus.NOT_FOUND,
+            );
+          }
+          await this.Member.delete({ user: user });
         });
-        console.log(clubmember);
-        if (!user) {
-          throw new HttpException(
-            '존재하지 않는 유저입니다.',
-            HttpStatus.NOT_FOUND,
-          );
-        }
-        if (!(await this.Member.findOne({ user: user, club: club }))) {
-          throw new HttpException(
-            '동아리에 존재하지 않는 유저입니다.',
-            HttpStatus.NOT_FOUND,
-          );
-        }
-        await this.Member.delete({ user: user });
-      });
+      } catch (e) {
+        throw new HttpException('h', e);
+      }
     }
     //새로운 멤버 추가
-    new_member.forEach(async (member) => {
-      const user = await this.User.findOne(member);
-      if (!user) {
-        throw new HttpException(
-          '존재하지 않는 유저입니다.',
-          HttpStatus.NOT_FOUND,
-        );
+    if (new_member) {
+      try {
+        new_member.forEach(async (member) => {
+          const user = await this.User.findOne(member);
+          const clubmember = await this.Member.findOne({
+            user: user,
+            club: club,
+          });
+          console.log(clubmember);
+
+          if (!user) {
+            throw new HttpException(
+              '존재하지 않는 유저입니다.',
+              HttpStatus.NOT_FOUND,
+            );
+          }
+          if (clubmember) {
+            throw new HttpException(
+              '동아리에 이미 존재하는 유저입니다.',
+              HttpStatus.CONFLICT,
+            );
+          }
+          await this.Member.save(
+            this.Member.create({ user: user, club: club, scope: 'MEMBER' }),
+          );
+        });
+      } catch (e) {
+        throw new BadRequestException(e);
       }
-      if (await this.Member.findOne({ user: user, club: club })) {
-        throw new HttpException(
-          '동아리에 이미 존재하는 유저입니다.',
-          HttpStatus.CONFLICT,
-        );
-      }
-      await this.Member.save(
-        this.Member.create({ user: user, club: club, scope: 'MEMBER' }),
-      );
-    });
+    }
     //새로운 활동사진 추가
     if (new_activityUrls) {
       new_activityUrls.forEach(async (image) => {
-        if (await this.Image.findOne({ clubId: club.id, url: image })) {
+        const clubImage = await this.Image.findOne({
+          clubId: club.id,
+          url: image,
+        });
+        if (clubImage) {
           throw new HttpException(
             '동아리에 이미 존재하는 사진입니다.',
             HttpStatus.CONFLICT,
@@ -487,7 +509,11 @@ export class ClubService {
     //지울 활동사진 삭제
     if (delete_activityUrls) {
       delete_activityUrls.forEach(async (image) => {
-        if (!(await this.Image.findOne({ clubId: club.id, url: image }))) {
+        const clubImage = await this.Image.findOne({
+          clubId: club.id,
+          url: image,
+        });
+        if (!clubImage) {
           throw new HttpException(
             '동아리에 존재하지 않는 사진입니다.',
             HttpStatus.CONFLICT,
@@ -496,5 +522,6 @@ export class ClubService {
         await this.Image.delete({ clubId: club.id, url: image });
       });
     }
+    return 'success';
   }
 }
