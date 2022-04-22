@@ -16,7 +16,9 @@ async function bootstrap() {
     .addTag('cats')
     .build();
   const document = SwaggerModule.createDocument(app, config);
-  SwaggerModule.setup('api', app, document);
+  SwaggerModule.setup('api', app, document, {
+    swaggerOptions: { defaultModelsExpandDepth: -1 },
+  });
   app.useGlobalPipes(new ValidationPipe());
   app.useGlobalGuards(new AtGuard(new Reflector()));
 
