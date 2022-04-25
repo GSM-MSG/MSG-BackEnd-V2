@@ -3,6 +3,7 @@ import { ConfigModule } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { ClubModule } from './club/club.module';
 import entities from './Entities';
+import { User } from './Entities/User.entity';
 import { AuthModule } from './auth/auth.module';
 import { CheckModule } from './check/check.module';
 import { AtStrategy } from './strategies/atStrategy';
@@ -26,6 +27,7 @@ import { ImageModule } from './image/image.module';
       entities: [...entities],
       synchronize: true,
     }),
+    TypeOrmModule.forFeature([User]),
     ClubModule,
     AuthModule,
     CheckModule,
