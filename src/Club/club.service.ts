@@ -397,10 +397,10 @@ export class ClubService {
   }
   async editClub(editClubData: editClubdto, email: string) {
     const {
-      new_activityUrls,
-      new_member,
-      delete_activityUrls,
-      delete_member,
+      newActivityUrls,
+      newMember,
+      deleteActivityUrls,
+      deleteMember,
       relatedLink,
     } = editClubData;
     const club = await this.Club.findOne(
@@ -441,8 +441,8 @@ export class ClubService {
         );
       }
     }
-    if (new_member) {
-      for (const email of new_member) {
+    if (newMember) {
+      for (const email of newMember) {
         const user = await this.User.findOne({ email: email });
         const clubmember = await this.Member.findOne({
           user: user,
@@ -462,8 +462,8 @@ export class ClubService {
         await this.Member.save({ user: user, club: club, scope: 'MEMBER' });
       }
     }
-    if (delete_member) {
-      for (const email of delete_member) {
+    if (deleteMember) {
+      for (const email of deleteMember) {
         console.log(email);
         const user = await this.User.findOne({ email: email });
         const clubmember = await this.Member.findOne({
@@ -485,8 +485,8 @@ export class ClubService {
         await this.Member.delete({ user: user });
       }
     }
-    if (new_activityUrls) {
-      for (const image of new_activityUrls) {
+    if (newActivityUrls) {
+      for (const image of newActivityUrls) {
         const clubImage = await this.Image.findOne({
           clubId: club.id,
           url: image,
@@ -501,8 +501,8 @@ export class ClubService {
           this.Image.create({ url: image, clubId: club.id }),
         );
       }
-      if (delete_activityUrls) {
-        for (const image of delete_activityUrls) {
+      if (deleteActivityUrls) {
+        for (const image of deleteActivityUrls) {
           const clubImage = await this.Image.findOne({
             clubId: club.id,
             url: image,
