@@ -395,7 +395,7 @@ export class ClubService {
       { scope: 'MEMBER' },
     );
   }
-  async editClub(editClubData: editClubdto) {
+  async editClub(editClubData: editClubdto, email: string) {
     const {
       new_activityUrls,
       new_member,
@@ -408,15 +408,22 @@ export class ClubService {
         title: editClubData.q,
         type: editClubData.type,
       },
-      { relations: ['relatedLink'] },
+      { relations: ['relatedLink', 'member', 'member.user'] },
     );
-    console.log(club);
+    const user = await this.User.findOne({ email: email });
 
     if (!club) {
       throw new HttpException(
         '존재하지 않는 동아리입니다.',
         HttpStatus.NOT_FOUND,
       );
+    }
+    if (
+      !club.member.find((member) => {
+        return member.user.email === email && member.scope === 'HEAD';
+      })
+    ) {
+      throw new HttpException('동아리 부장이 아닙니다.', HttpStatus.FORBIDDEN);
     }
     if (relatedLink) {
       if (!club.relatedLink) {
@@ -452,7 +459,6 @@ export class ClubService {
             HttpStatus.CONFLICT,
           );
         }
-        console.log('저장됨');
         await this.Member.save({ user: user, club: club, scope: 'MEMBER' });
       }
     }
@@ -510,7 +516,6 @@ export class ClubService {
           await this.Image.delete({ url: image, clubId: club.id });
         }
       }
-
       await this.Club.update(
         { title: editClubData.q, type: editClubData.type },
         {

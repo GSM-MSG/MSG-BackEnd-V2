@@ -73,7 +73,7 @@ export class ClubController {
   ) {
     return this.clubService.applicantList(clubType, clubTitle, email);
   }
-  @Public()
+
   @Get('/detail')
   async detailPage(
     @Query('q') clubname: string,
@@ -81,7 +81,6 @@ export class ClubController {
   ) {
     return this.clubService.detailPage(clubtype, clubname);
   }
-  @Public()
   @Get('/members')
   async findMembers(
     @Query('type') clubType: string,
@@ -121,9 +120,11 @@ export class ClubController {
   ) {
     await this.clubService.delegation(userData, email);
   }
-  @Public()
   @Put('')
-  async putClub(@Body() editClubData: editClubdto) {
-    await this.clubService.editClub(editClubData);
+  async putClub(
+    @Body() editClubData: editClubdto,
+    @User('email') email: string,
+  ) {
+    await this.clubService.editClub(editClubData, email);
   }
 }
