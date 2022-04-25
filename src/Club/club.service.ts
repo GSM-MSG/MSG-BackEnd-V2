@@ -410,6 +410,7 @@ export class ClubService {
       },
       { relations: ['relatedLink'] },
     );
+    console.log(club);
 
     if (!club) {
       throw new HttpException(
@@ -451,12 +452,35 @@ export class ClubService {
             HttpStatus.CONFLICT,
           );
         }
-        await this.Member.save(
-          this.Member.create({ user: user, club: club, scope: 'MEMBER' }),
-        );
+        console.log('저장됨');
+        await this.Member.save({ user: user, club: club, scope: 'MEMBER' });
       }
     }
-    await this.Club.update(
+    if (delete_member) {
+      for (const email of delete_member) {
+        console.log(email);
+        const user = await this.User.findOne({ email: email });
+        const clubmember = await this.Member.findOne({
+          user: user,
+          club: club,
+        });
+        console.log(clubmember);
+        if (!user) {
+          throw new HttpException(
+            '존재하지 않는 유저입니다.',
+            HttpStatus.NOT_FOUND,
+          );
+        } else if (!clubmember) {
+          throw new HttpException(
+            '동아리에 존재하지 않는 유저입니다.',
+            HttpStatus.CONFLICT,
+          );
+        }
+        await this.Member.delete({ user: user });
+      }
+    }
+
+    /*await this.Club.update(
       { title: editClubData.q, type: editClubData.type },
       {
         title: editClubData.title,
@@ -465,6 +489,6 @@ export class ClubService {
         contact: editClubData.contact,
         teacher: editClubData.teacher,
       },
-    );
+    );*/
   }
 }
