@@ -14,11 +14,36 @@ async function bootstrap() {
     .setDescription('The cats API description')
     .setVersion('1.0')
     .addTag('cats')
+    .addBearerAuth(
+      {
+        type: 'http',
+        scheme: 'bearer',
+        bearerFormat: 'JWT',
+        in: 'header',
+        description: 'Enter JWT token',
+      },
+      'access-token',
+    )
     .build();
+  const options = {
+    swaggerOptions: {
+      authAction: {
+        defaultBearerAuth: {
+          name: 'access-token',
+          schema: {
+            description: 'Default',
+            type: 'http',
+            in: 'header',
+            scheme: 'bearer',
+            bearerFormat: 'JWT',
+          },
+          value: 'thisIsASampleBearerAuthToken123',
+        },
+      },
+    },
+  };
   const document = SwaggerModule.createDocument(app, config);
-  SwaggerModule.setup('api', app, document, {
-    swaggerOptions: { defaultModelsExpandDepth: -1 },
-  });
+  SwaggerModule.setup('api', app, document, options);
   app.useGlobalPipes(new ValidationPipe());
   app.useGlobalGuards(new AtGuard(new Reflector()));
 

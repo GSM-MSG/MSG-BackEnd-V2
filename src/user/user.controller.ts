@@ -9,7 +9,6 @@ import {
 } from '@nestjs/common';
 import {
   ApiBearerAuth,
-  ApiBody,
   ApiHeader,
   ApiOperation,
   ApiResponse,
@@ -28,9 +27,8 @@ export class UserController {
     summary: '유저정보 가져오기',
     description: '요청보낸 유저의 이메일을 통해 유저를 가져옵니다',
   })
-  //@ApiHeader(ApiBearerAuth)
-  @ApiBearerAuth('access-token')
   @ApiResponse({ status: 200, description: '성공' })
+  @ApiBearerAuth('access-token')
   @Get('/my')
   async userData(@User('email') email: string) {
     return this.userService.getUserData(email);
