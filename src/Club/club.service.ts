@@ -495,17 +495,32 @@ export class ClubService {
           this.Image.create({ url: image, clubId: club.id }),
         );
       }
-    }
+      if (delete_activityUrls) {
+        for (const image of delete_activityUrls) {
+          const clubImage = await this.Image.findOne({
+            clubId: club.id,
+            url: image,
+          });
+          if (!clubImage) {
+            throw new HttpException(
+              '동아리에 존재하지 않는 이미지입니다.',
+              HttpStatus.CONFLICT,
+            );
+          }
+          await this.Image.delete({ url: image, clubId: club.id });
+        }
+      }
 
-    /*await this.Club.update(
-      { title: editClubData.q, type: editClubData.type },
-      {
-        title: editClubData.title,
-        description: editClubData.description,
-        bannerUrl: editClubData.bannerUrl,
-        contact: editClubData.contact,
-        teacher: editClubData.teacher,
-      },
-    );*/
+      await this.Club.update(
+        { title: editClubData.q, type: editClubData.type },
+        {
+          title: editClubData.title,
+          description: editClubData.description,
+          bannerUrl: editClubData.bannerUrl,
+          contact: editClubData.contact,
+          teacher: editClubData.teacher,
+        },
+      );
+    }
   }
 }
