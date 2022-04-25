@@ -110,11 +110,21 @@ export class ClubService {
     }
   }
 
-  async deleteClub(clubtitle: string, clubType: string) {
-    const club = this.Club.findOne({
-      title: clubtitle,
-      type: clubType,
-    });
+  async deleteClub(clubtitle: string, clubType: string, email: string) {
+    const club = await this.Club.findOne(
+      {
+        title: clubtitle,
+        type: clubType,
+      },
+      { relations: ['member', 'member.user'] },
+    );
+    if (
+      !club.member.find((member) => {
+        return member.user.email === email && member.scope === 'HEAD';
+      })
+    ) {
+      throw new HttpException('동아리 부장이 아닙니다.', HttpStatus.FORBIDDEN);
+    }
     if (!club) {
       throw new HttpException(
         '존재하지않는 동아리입니다.',
