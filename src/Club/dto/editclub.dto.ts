@@ -33,11 +33,11 @@ export class editClubdto {
 
   @IsOptional()
   @IsArray()
-  new_member: string[];
+  newMember: string[];
 
   @IsOptional()
   @IsArray()
-  delete_member: string[];
+  deleteMember: string[];
 
   @IsOptional()
   @IsObject()
@@ -45,11 +45,11 @@ export class editClubdto {
 
   @IsOptional()
   @IsArray()
-  new_activityUrls: string[];
+  newActivityUrls: string[];
 
   @IsOptional()
   @IsArray()
-  delete_activityUrls: string[];
+  deleteActivityUrls: string[];
 
   @IsOptional()
   @IsArray()
