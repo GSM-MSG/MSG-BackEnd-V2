@@ -36,6 +36,8 @@ export class UserController {
     summary: '프로필 이미지 변경',
     description: 's3로 배포된 사진의 주소를 받아 유저의 프로필을 변경합니다',
   })
+  @ApiBearerAuth('access-token')
+  @ApiResponse({ status: 201, description: '성공' })
   @Put('/profile')
   @HttpCode(201)
   async editImg(@Body() urlAddress: urlDto, @User('email') email: string) {
