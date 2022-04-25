@@ -479,6 +479,23 @@ export class ClubService {
         await this.Member.delete({ user: user });
       }
     }
+    if (new_activityUrls) {
+      for (const image of new_activityUrls) {
+        const clubImage = await this.Image.findOne({
+          clubId: club.id,
+          url: image,
+        });
+        if (clubImage) {
+          throw new HttpException(
+            '동아리에 존재하는 이미지입니다.',
+            HttpStatus.CONFLICT,
+          );
+        }
+        await this.Image.save(
+          this.Image.create({ url: image, clubId: club.id }),
+        );
+      }
+    }
 
     /*await this.Club.update(
       { title: editClubData.q, type: editClubData.type },
