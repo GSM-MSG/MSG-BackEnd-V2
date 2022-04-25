@@ -2,6 +2,7 @@ import {
   ConflictException,
   ForbiddenException,
   Injectable,
+  Logger,
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { User } from 'src/Entities/User.entity';
@@ -62,8 +63,12 @@ export class AuthService {
       code,
       expiredAt: new Date(new Date().setMinutes(new Date().getMinutes() + 5)),
     };
-
-    this.emailService.userVerify(`${email}@gsm.hs.kr`, code);
+    try {
+      this.emailService.userVerify(`${email}@gsm.hs.kr`, code);
+    } catch (e) {
+      console.log(e);
+      Logger.log('이메일 전송 실패');
+    }
   }
 
   async isVerify({ email, code }: verifyHeadDto) {
