@@ -11,8 +11,9 @@ import {
 import { Public, User } from 'src/auth/decorators';
 import { ClubService } from './club.service';
 import { AcceptUserDto } from './dto/accept.dto';
-import { ClubDatadto } from './dto/ClubData.dto';
+import { ClubDatadto } from './dto/clubData.dto';
 import { CreateClubDto } from './dto/createClub.dto';
+import { editClubdto } from './dto/editclub.dto';
 import { kickUserDto } from './dto/kickuser.dto';
 import { openClubdto } from './dto/openClub.dto';
 
@@ -72,7 +73,7 @@ export class ClubController {
   ) {
     return this.clubService.applicantList(clubType, clubTitle, email);
   }
-  @Public()
+
   @Get('/detail')
   async detailPage(
     @Query('q') clubname: string,
@@ -80,7 +81,6 @@ export class ClubController {
   ) {
     return this.clubService.detailPage(clubtype, clubname);
   }
-  @Public()
   @Get('/members')
   async findMembers(
     @Query('type') clubType: string,
@@ -119,5 +119,12 @@ export class ClubController {
     @User('email') email: string,
   ) {
     await this.clubService.delegation(userData, email);
+  }
+  @Put('')
+  async putClub(
+    @Body() editClubData: editClubdto,
+    @User('email') email: string,
+  ) {
+    await this.clubService.editClub(editClubData, email);
   }
 }

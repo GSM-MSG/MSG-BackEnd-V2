@@ -1,4 +1,9 @@
-import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
+import {
+  BadRequestException,
+  HttpException,
+  HttpStatus,
+  Injectable,
+} from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Club } from 'src/Entities/Club.entity';
 import { Image } from 'src/Entities/image.entity';
@@ -8,6 +13,7 @@ import { RequestJoin } from 'src/Entities/RequestJoin.entity';
 import { User } from 'src/Entities/User.entity';
 import { Repository } from 'typeorm';
 import { CreateClubDto } from './dto/createClub.dto';
+import { editClubdto } from './dto/editclub.dto';
 import { kickUserDto } from './dto/kickuser.dto';
 import { openClubdto } from './dto/openClub.dto';
 
@@ -388,5 +394,138 @@ export class ClubService {
       { club: clubData, user: headMember.user },
       { scope: 'MEMBER' },
     );
+  }
+  async editClub(editClubData: editClubdto, email: string) {
+    const {
+      new_activityUrls,
+      new_member,
+      delete_activityUrls,
+      delete_member,
+      relatedLink,
+    } = editClubData;
+    const club = await this.Club.findOne(
+      {
+        title: editClubData.q,
+        type: editClubData.type,
+      },
+      { relations: ['relatedLink', 'member', 'member.user'] },
+    );
+    const user = await this.User.findOne({ email: email });
+
+    if (!club) {
+      throw new HttpException(
+        '존재하지 않는 동아리입니다.',
+        HttpStatus.NOT_FOUND,
+      );
+    }
+    if (
+      !club.member.find((member) => {
+        return member.user.email === email && member.scope === 'HEAD';
+      })
+    ) {
+      throw new HttpException('동아리 부장이 아닙니다.', HttpStatus.FORBIDDEN);
+    }
+    if (relatedLink) {
+      if (!club.relatedLink) {
+        await this.RelatedLink.save(
+          this.RelatedLink.create({
+            name: relatedLink.name,
+            url: relatedLink.url,
+            club: club,
+          }),
+        );
+      } else {
+        await this.RelatedLink.update(
+          { club: club },
+          { url: relatedLink.url, name: relatedLink.name },
+        );
+      }
+    }
+    if (new_member) {
+      for (const email of new_member) {
+        const user = await this.User.findOne({ email: email });
+        const clubmember = await this.Member.findOne({
+          user: user,
+          club: club,
+        });
+        if (!user) {
+          throw new HttpException(
+            '존재하지 않는 유저입니다.',
+            HttpStatus.NOT_FOUND,
+          );
+        } else if (clubmember) {
+          throw new HttpException(
+            '동아리에 이미 있는 유저입니다.',
+            HttpStatus.CONFLICT,
+          );
+        }
+        await this.Member.save({ user: user, club: club, scope: 'MEMBER' });
+      }
+    }
+    if (delete_member) {
+      for (const email of delete_member) {
+        console.log(email);
+        const user = await this.User.findOne({ email: email });
+        const clubmember = await this.Member.findOne({
+          user: user,
+          club: club,
+        });
+        console.log(clubmember);
+        if (!user) {
+          throw new HttpException(
+            '존재하지 않는 유저입니다.',
+            HttpStatus.NOT_FOUND,
+          );
+        } else if (!clubmember) {
+          throw new HttpException(
+            '동아리에 존재하지 않는 유저입니다.',
+            HttpStatus.CONFLICT,
+          );
+        }
+        await this.Member.delete({ user: user });
+      }
+    }
+    if (new_activityUrls) {
+      for (const image of new_activityUrls) {
+        const clubImage = await this.Image.findOne({
+          clubId: club.id,
+          url: image,
+        });
+        if (clubImage) {
+          throw new HttpException(
+            '동아리에 존재하는 이미지입니다.',
+            HttpStatus.CONFLICT,
+          );
+        }
+        await this.Image.save(
+          this.Image.create({ url: image, clubId: club.id }),
+        );
+      }
+      if (delete_activityUrls) {
+        for (const image of delete_activityUrls) {
+          const clubImage = await this.Image.findOne({
+            clubId: club.id,
+            url: image,
+          });
+          if (!clubImage) {
+            throw new HttpException(
+              '동아리에 존재하지 않는 이미지입니다.',
+              HttpStatus.CONFLICT,
+            );
+          }
+          await this.Image.delete({ url: image, clubId: club.id });
+        }
+      }
+      await this.Club.update(
+        { title: editClubData.q, type: editClubData.type },
+        {
+          title: editClubData.title,
+          description: editClubData.description,
+          bannerUrl: editClubData.bannerUrl,
+          contact: editClubData.contact,
+          teacher: editClubData.teacher,
+        },
+      );
+    }
   }
 }
