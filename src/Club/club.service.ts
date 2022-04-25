@@ -403,23 +403,14 @@ export class ClubService {
       delete_member,
       relatedLink,
     } = editClubData;
-    await this.Club.update(
-      { title: editClubData.q, type: editClubData.type },
-      {
-        title: editClubData.title,
-        description: editClubData.description,
-        bannerUrl: editClubData.bannerUrl,
-        contact: editClubData.contact,
-        teacher: editClubData.teacher,
-      },
-    );
     const club = await this.Club.findOne(
       {
-        title: editClubData.title,
+        title: editClubData.q,
         type: editClubData.type,
       },
-      { relations: ['related_link'] },
+      { relations: ['relatedLink'] },
     );
+
     if (!club) {
       throw new HttpException(
         '존재하지 않는 동아리입니다.',
@@ -443,6 +434,37 @@ export class ClubService {
       }
     }
     if (new_member) {
+      for (const email of new_member) {
+        const user = await this.User.findOne({ email: email });
+        const clubmember = await this.Member.findOne({
+          user: user,
+          club: club,
+        });
+        if (!user) {
+          throw new HttpException(
+            '존재하지 않는 유저입니다.',
+            HttpStatus.NOT_FOUND,
+          );
+        } else if (clubmember) {
+          throw new HttpException(
+            '동아리에 이미 있는 유저입니다.',
+            HttpStatus.CONFLICT,
+          );
+        }
+        await this.Member.save(
+          this.Member.create({ user: user, club: club, scope: 'MEMBER' }),
+        );
+      }
     }
+    await this.Club.update(
+      { title: editClubData.q, type: editClubData.type },
+      {
+        title: editClubData.title,
+        description: editClubData.description,
+        bannerUrl: editClubData.bannerUrl,
+        contact: editClubData.contact,
+        teacher: editClubData.teacher,
+      },
+    );
   }
 }
