@@ -5,7 +5,6 @@ import { Club } from 'src/Entities/Club.entity';
 import { Member } from 'src/Entities/Member.entity';
 import { User } from 'src/Entities/User.entity';
 import { Repository } from 'typeorm';
-import { exitDataDto } from './dto/exit.dto';
 import { urlDto } from './dto/urlAddress.dto';
 
 @Injectable()

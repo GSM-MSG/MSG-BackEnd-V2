@@ -16,7 +16,6 @@ import {
 } from '@nestjs/swagger';
 import { User } from 'src/auth/decorators';
 import { ClubDatadto } from 'src/club/dto/clubData.dto';
-import { exitDataDto } from './dto/exit.dto';
 import { urlDto } from './dto/urlAddress.dto';
 import { UserService } from './user.service';
 
