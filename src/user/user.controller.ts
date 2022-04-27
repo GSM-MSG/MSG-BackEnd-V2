@@ -67,7 +67,7 @@ export class UserController {
   }
   @ApiOperation({
     summary: '동아리 탈퇴',
-    description: '유저가 동아리 탈퇴할하는 파트입니다',
+    description: '유저가 동아리 탈퇴하는 파트입니다',
   })
   @ApiBearerAuth('access-token')
   @ApiResponse({ type: ClubDatadto, status: 200 })
