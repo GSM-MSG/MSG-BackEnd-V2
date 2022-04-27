@@ -10,6 +10,7 @@ import {
 } from '@nestjs/common';
 import {
   ApiBearerAuth,
+  ApiBody,
   ApiOperation,
   ApiQuery,
   ApiResponse,
@@ -43,6 +44,12 @@ export class ClubController {
   async list(@Query('type') clubType: string) {
     return this.clubService.list(clubType);
   }
+  @ApiBearerAuth('access-token')
+  @ApiOperation({
+    summary: '클럽 삭제 파트입니다',
+    description: '삭제시킬 동아리 정보를받아서 동아리를 삭제합니다',
+  })
+  @ApiResponse({status : 200,description : '삭제 성공'})
   @Delete('/')
   @HttpCode(201)
   async deleteClub(@Body() deleteClubData: ClubDatadto, email: string) {

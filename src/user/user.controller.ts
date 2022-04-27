@@ -70,7 +70,6 @@ export class UserController {
     description: '유저가 동아리 탈퇴하는 파트입니다',
   })
   @ApiBearerAuth('access-token')
-  @ApiResponse({ type: ClubDatadto, status: 200 })
   @Delete('/exit')
   async exitClub(
     @Body() exitClubData: ClubDatadto,
