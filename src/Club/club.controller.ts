@@ -65,7 +65,7 @@ export class ClubController {
     summary: '클럽 생성 파트입니다',
     description: '클럽 데이터들을 받아 생성합니다',
   })
-  @ApiResponse({ status: 200, description: '동아리 생성 성공' })
+  @ApiResponse({ status: 201, description: '동아리 생성 성공' })
   @Post('/')
   async createClub(
     @Body() createClubData: CreateClubDto,
@@ -74,11 +74,22 @@ export class ClubController {
     await this.clubService.createClub(createClubData, email);
   }
   @ApiBearerAuth('access-token')
-  @ApiResponse({ status: 200, description: '동아리 신청' })
+  @ApiResponse({ status: 201, description: '동아리 신청되었습니다' })
+  @ApiOperation({
+    summary: '동아리 신청',
+    description: '동아리 정보를 받아 가입신청',
+  })
   @Post('/apply')
   async applyClub(@Body() clubData: ClubDatadto, @User('email') email: string) {
     return this.clubService.applyClub(clubData.type, clubData.q, email);
   }
+  @ApiBearerAuth('access-token')
+  @ApiResponse({ status: 204, description: '동아리 신청 취소' })
+  @ApiOperation({
+    summary: '동아리 신청',
+    description: '동아리 정보를 받아 가입신청',
+  })
+  @HttpCode(204)
   @Post('/cancel')
   async cancel(@Body() clubData: ClubDatadto, @User('email') email: string) {
     return this.clubService.cancelClub(clubData.type, clubData.q, email);
