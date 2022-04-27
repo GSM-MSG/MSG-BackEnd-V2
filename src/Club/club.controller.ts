@@ -73,6 +73,8 @@ export class ClubController {
   ) {
     await this.clubService.createClub(createClubData, email);
   }
+  @ApiBearerAuth('access-token')
+  @ApiResponse({ status: 200, description: '동아리 신청' })
   @Post('/apply')
   async applyClub(@Body() clubData: ClubDatadto, @User('email') email: string) {
     return this.clubService.applyClub(clubData.type, clubData.q, email);
