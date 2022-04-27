@@ -8,6 +8,12 @@ import {
   Put,
   Query,
 } from '@nestjs/common';
+import {
+  ApiBearerAuth,
+  ApiOperation,
+  ApiQuery,
+  ApiTags,
+} from '@nestjs/swagger';
 import { User } from 'src/auth/decorators';
 import { ClubService } from './club.service';
 import { AcceptUserDto } from './dto/accept.dto';
@@ -17,9 +23,20 @@ import { editClubdto } from './dto/editclub.dto';
 import { kickUserDto } from './dto/kickuser.dto';
 import { openClubdto } from './dto/openClub.dto';
 
+@ApiTags('CLUB')
 @Controller('club')
 export class ClubController {
   constructor(private clubService: ClubService) {}
+  @ApiBearerAuth('access-token')
+  @ApiOperation({
+    summary: '동아리 리스트 가져오기',
+    description: '동아리들을 가져옵니다',
+  })
+  @ApiQuery({
+    name: 'type',
+    description: '동아리 타입',
+    enum: ['MAJOR', 'FREEDOM', 'EDITORIAL'],
+  })
   @Get('/list')
   async list(@Query('type') clubType: string) {
     return this.clubService.list(clubType);
