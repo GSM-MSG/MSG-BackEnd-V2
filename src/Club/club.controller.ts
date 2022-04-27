@@ -12,6 +12,7 @@ import {
   ApiBearerAuth,
   ApiOperation,
   ApiQuery,
+  ApiResponse,
   ApiTags,
 } from '@nestjs/swagger';
 import { User } from 'src/auth/decorators';
@@ -37,6 +38,7 @@ export class ClubController {
     description: '동아리 타입',
     enum: ['MAJOR', 'FREEDOM', 'EDITORIAL'],
   })
+  @ApiResponse({ status: 200, description: '동아리들 가져옵니다' })
   @Get('/list')
   async list(@Query('type') clubType: string) {
     return this.clubService.list(clubType);
