@@ -49,7 +49,7 @@ export class ClubController {
     summary: '클럽 삭제 파트입니다',
     description: '삭제 시킬 동아리 정보를 받아서 동아리를 삭제합니다',
   })
-  @ApiResponse({status : 201,description : '삭제 성공'})
+  @ApiResponse({ status: 201, description: '삭제 성공' })
   @Delete('/')
   @HttpCode(201)
   async deleteClub(@Body() deleteClubData: ClubDatadto, email: string) {
@@ -59,7 +59,13 @@ export class ClubController {
       email,
     );
   }
-  
+
+  @ApiBearerAuth('access-token')
+  @ApiOperation({
+    summary: '클럽 생성 파트입니다',
+    description: '클럽 데이터들을 받아 생성합니다',
+  })
+  @ApiResponse({ status: 200, description: '동아리 생성 성공' })
   @Post('/')
   async createClub(
     @Body() createClubData: CreateClubDto,
