@@ -15,6 +15,7 @@ import {
   ApiTags,
 } from '@nestjs/swagger';
 import { User } from 'src/auth/decorators';
+import { ClubDatadto } from 'src/club/dto/clubData.dto';
 import { exitDataDto } from './dto/exit.dto';
 import { urlDto } from './dto/urlAddress.dto';
 import { UserService } from './user.service';
@@ -50,11 +51,19 @@ export class UserController {
       '동아리 생성시 멤버를 검색하여 동아리가 이미 있는지 없는지 검색합니다',
   })
   @ApiBearerAuth('access-token')
+  @ApiResponse({ status: 200, description: '검색성공' })
+  @ApiQuery({
+    name: 'q',
+    description: '동아리 이름',
+    example: '클라우드 컴퓨팅',
+  })
+  @ApiQuery({
+    name: 'type',
+    description: '동아리 타입',
+    enum: ['MAJOR', 'FREEDOM', 'EDITORIAL'],
+  })
   @Get('/search')
-  async searchUser(
-    @Query('q') q: string,
-    @Query('type') clubType: string,
-  ) {
+  async searchUser(@Query('q') q: string, @Query('type') clubType: string) {
     return this.userService.searchUser(q, clubType);
   }
   @ApiOperation({
