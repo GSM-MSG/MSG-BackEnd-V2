@@ -86,14 +86,16 @@ export class ClubController {
   @ApiBearerAuth('access-token')
   @ApiResponse({ status: 204, description: '동아리 신청 취소' })
   @ApiOperation({
-    summary: '동아리 신청',
-    description: '동아리 정보를 받아 가입신청',
+    summary: '동아리 신청 취소',
+    description: '동아리 가입신청 한 것을 취소',
   })
   @HttpCode(204)
   @Post('/cancel')
   async cancel(@Body() clubData: ClubDatadto, @User('email') email: string) {
     return this.clubService.cancelClub(clubData.type, clubData.q, email);
   }
+  @ApiBearerAuth('access-token')
+  @ApiResponse({status : 201 , description : '동아리 신청자 수락'})
   @Post('/accept')
   async accept(@Body() clubData: AcceptUserDto, @User('email') email: string) {
     return this.clubService.acceptClub(
