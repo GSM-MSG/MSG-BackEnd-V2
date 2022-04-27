@@ -10,6 +10,7 @@ import {
 import {
   ApiBearerAuth,
   ApiOperation,
+  ApiQuery,
   ApiResponse,
   ApiTags,
 } from '@nestjs/swagger';
@@ -48,12 +49,13 @@ export class UserController {
     description:
       '동아리 생성시 멤버를 검색하여 동아리가 이미 있는지 없는지 검색합니다',
   })
+  @ApiBearerAuth('access-token')
   @Get('/search')
   async searchUser(
-    @Query('name') name: string,
+    @Query('q') q: string,
     @Query('type') clubType: string,
   ) {
-    return this.userService.searchUser(name, clubType);
+    return this.userService.searchUser(q, clubType);
   }
   @ApiOperation({
     summary: '동아리 탈퇴',
