@@ -203,6 +203,12 @@ export class ClubController {
   ) {
     return this.clubService.findMember(clubType, clubTitle, email);
   }
+  @ApiBearerAuth('access-token')
+  @ApiOperation({
+    summary: '클럽 동아리 신청 받는거 오픈하기',
+    description: '동아리 신청 받는 버튼 활성화',
+  })
+  @ApiResponse({status : 201 , description : '성공적으로 열렸습니다'})
   @Put('/open')
   @HttpCode(201)
   async openClub(
