@@ -21,7 +21,6 @@ import { AcceptUserDto } from './dto/accept.dto';
 import { ClubDatadto } from './dto/clubData.dto';
 import { CreateClubDto } from './dto/createClub.dto';
 import { editClubdto } from './dto/editclub.dto';
-import { kickUserDto } from './dto/kickuser.dto';
 
 @ApiTags('CLUB')
 @Controller('club')
@@ -208,7 +207,7 @@ export class ClubController {
     summary: '클럽 동아리 신청 받는거 오픈하기',
     description: '동아리 신청 받는 버튼 활성화',
   })
-  @ApiResponse({status : 201 , description : '성공적으로 열렸습니다'})
+  @ApiResponse({ status: 201, description: '성공적으로 열렸습니다' })
   @Put('/open')
   @HttpCode(201)
   async openClub(
@@ -222,7 +221,7 @@ export class ClubController {
     summary: '클럽 동아리 신청 받는거 비활성화',
     description: '동아리 신청 받는 버튼 비활성화',
   })
-  @ApiResponse({status : 201 , description : '성공적으로 닫혔습니다'})
+  @ApiResponse({ status: 201, description: '성공적으로 닫혔습니다' })
   @Put('/close')
   @HttpCode(201)
   async closeClub(
@@ -231,17 +230,23 @@ export class ClubController {
   ) {
     await this.clubService.clubOnOff(closeClubData, email, false);
   }
+  @ApiBearerAuth('access-token')
+  @ApiOperation({
+    summary: '동아리 멤버 추방',
+    description: '클럽 멤버에 있는 부장이 추방합니다',
+  })
+  @ApiResponse({ status: 201, description: '추방성공했습니다' })
   @Delete('/kick')
   @HttpCode(201)
   async kickUser(
-    @Body() kickUserData: kickUserDto,
+    @Body() kickUserData: AcceptUserDto,
     @User('email') email: string,
   ) {
     await this.clubService.kickUser(kickUserData, email);
   }
   @Put('/delegation')
   async delegation(
-    @Body() userData: kickUserDto,
+    @Body() userData: AcceptUserDto,
     @User('email') email: string,
   ) {
     await this.clubService.delegation(userData, email);
