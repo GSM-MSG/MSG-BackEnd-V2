@@ -1,9 +1,4 @@
-import {
-  BadRequestException,
-  HttpException,
-  HttpStatus,
-  Injectable,
-} from '@nestjs/common';
+import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Club } from 'src/Entities/Club.entity';
 import { Image } from 'src/Entities/image.entity';
@@ -12,10 +7,10 @@ import { RelatedLink } from 'src/Entities/RelatedLink.entity';
 import { RequestJoin } from 'src/Entities/RequestJoin.entity';
 import { User } from 'src/Entities/User.entity';
 import { Repository } from 'typeorm';
+import { ClubDatadto } from './dto/clubData.dto';
 import { CreateClubDto } from './dto/createClub.dto';
 import { editClubdto } from './dto/editclub.dto';
 import { kickUserDto } from './dto/kickuser.dto';
-import { openClubdto } from './dto/openClub.dto';
 
 @Injectable()
 export class ClubService {
@@ -344,7 +339,7 @@ export class ClubService {
       return member;
     });
   }
-  async clubOnOff(openClubData: openClubdto, email: string, isOpened: boolean) {
+  async clubOnOff(openClubData: ClubDatadto, email: string, isOpened: boolean) {
     const clubData = await this.Club.findOne(
       { title: openClubData.q, type: openClubData.type },
       { relations: ['member', 'member.user'] },

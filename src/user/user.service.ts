@@ -1,10 +1,10 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
+import { ClubDatadto } from 'src/club/dto/clubData.dto';
 import { Club } from 'src/Entities/Club.entity';
 import { Member } from 'src/Entities/Member.entity';
 import { User } from 'src/Entities/User.entity';
 import { Repository } from 'typeorm';
-import { exitDataDto } from './dto/exit.dto';
 import { urlDto } from './dto/urlAddress.dto';
 
 @Injectable()
@@ -49,9 +49,9 @@ export class UserService {
     } else
       throw new HttpException('없는 동아리 타입입니다', HttpStatus.BAD_GATEWAY);
   }
-  async exitClub(exitclubData: exitDataDto, email: string) {
+  async exitClub(exitclubData: ClubDatadto, email: string) {
     const clubData = await this.Club.findOne({
-      where: { title: exitclubData.name, type: exitclubData.type },
+      where: { title: exitclubData.q, type: exitclubData.type },
       relations: ['member', 'member.user'],
     });
     const member = clubData.member.find((member) => {
