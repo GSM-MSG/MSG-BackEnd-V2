@@ -305,15 +305,18 @@ export class ClubService {
         delete member.user.refreshToken;
         return member.user;
       });
-    const activityurls = clubData.activityUrls.map((url) => {
-      return url.url;
-    });
-    delete clubData.relatedLink[0].id;
-    delete clubData.member;
-    delete clubData.activityUrls;
-    delete clubData.id;
+    if (clubData.activityUrls) {
+      const activityurls = clubData.activityUrls.map((url) => {
+        return url.url;
+      });
 
-    return { clubData, activityurls, head: head[0].user, member: clubmember };
+      delete clubData.relatedLink[0].id;
+      delete clubData.member;
+      delete clubData.activityUrls;
+      delete clubData.id;
+
+      return { clubData, activityurls, head: head[0].user, member: clubmember };
+    }
   }
   async findMember(clubType: string, clubTitle: string, email: string) {
     const clubData = await this.Club.findOne(
