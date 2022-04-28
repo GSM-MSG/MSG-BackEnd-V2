@@ -68,7 +68,10 @@ export class CreateClubDto {
   teacher: string;
 
   @ApiProperty({
-    example: 'https://avatars.githubusercontent.com/u/81404026?v=4',
+    example: [
+      'https://avatars.githubusercontent.com/u/81404026?v=4',
+      'https://avatars.githubusercontent.com/u/81404026?v=4',
+    ],
     description: '동아리 활동 사진입니다',
     required: true,
   })
