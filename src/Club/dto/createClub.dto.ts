@@ -8,7 +8,7 @@ import {
 } from 'class-validator';
 import { relatedLinkDto } from './relatedLink.dto';
 
-export class CreateClubDto {
+export class createClubDto {
   @ApiProperty({
     example: '클라우드 컴퓨팅',
     description: '동아리 이름',
