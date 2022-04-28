@@ -11,11 +11,16 @@ import { AuthService } from './auth.service';
 import { Public, User } from './decorators';
 import { RtGuard } from './guards';
 import { LoginDto, RegisterDto, VerifyDto, verifyHeadDto } from './dto';
+import { ApiOperation } from '@nestjs/swagger';
 
 @Controller('auth')
 export class AuthController {
   constructor(private authService: AuthService) {}
 
+  @ApiOperation({
+    summary: '회원가입',
+    description: '회원가입 창입니다',
+  })
   @Public()
   @Post('register')
   @HttpCode(201)
