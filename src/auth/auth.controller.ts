@@ -11,8 +11,9 @@ import { AuthService } from './auth.service';
 import { Public, User } from './decorators';
 import { RtGuard } from './guards';
 import { LoginDto, RegisterDto, VerifyDto, verifyHeadDto } from './dto';
-import { ApiOperation, ApiResponse } from '@nestjs/swagger';
+import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 
+@ApiTags('AUTH')
 @Controller('auth')
 export class AuthController {
   constructor(private authService: AuthService) {}
@@ -53,12 +54,22 @@ export class AuthController {
     return this.authService.verify(data);
   }
 
+  @ApiOperation({
+    summary: '로그인',
+    description: '로그인 확인 파트',
+  })
+  @ApiResponse({ status: 200, description: '로그인 성공' })
   @Public()
   @Post('login')
   login(@Body() data: LoginDto) {
     return this.authService.login(data);
   }
 
+  @ApiOperation({
+    summary: 'accessToken 재발급',
+    description: '리프레시 토큰 확인후 액세스토큰 재발급',
+  })
+  @ApiResponse({ status: 200, description: '발급 성공' })
   @Public()
   @UseGuards(new RtGuard())
   @Post('refresh')
