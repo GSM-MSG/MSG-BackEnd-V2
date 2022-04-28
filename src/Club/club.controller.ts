@@ -125,7 +125,7 @@ export class ClubController {
   @ApiOperation({
     summary: '동아리 신청자 리스트',
     description:
-      '동아리에 신청한 사람을 부장이 확인 할 수 있는 리스트 가져오가',
+      '동아리에 신청한 사람을 부장이 확인 할 수 있는 리스트 가져오기',
   })
   @ApiResponse({
     status: 200,
