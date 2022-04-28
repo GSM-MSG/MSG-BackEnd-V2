@@ -95,7 +95,7 @@ export class ClubController {
     return this.clubService.cancelClub(clubData.type, clubData.q, email);
   }
   @ApiBearerAuth('access-token')
-  @ApiResponse({status : 201 , description : '동아리 신청자 수락'})
+  @ApiResponse({ status: 201, description: '동아리 신청자 수락' })
   @Post('/accept')
   async accept(@Body() clubData: AcceptUserDto, @User('email') email: string) {
     return this.clubService.acceptClub(
@@ -105,6 +105,8 @@ export class ClubController {
       email,
     );
   }
+  @ApiBearerAuth('access-token')
+  @ApiResponse({ status: 201, description: '동아리 신청자 거절' })
   @Post('/reject')
   async reject(@Body() ClubData: AcceptUserDto, @User('email') email: string) {
     return this.clubService.rejectClub(
