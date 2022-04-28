@@ -17,9 +17,9 @@ import {
 } from '@nestjs/swagger';
 import { User } from 'src/auth/decorators';
 import { ClubService } from './club.service';
-import { AcceptUserDto } from './dto/accept.dto';
-import { ClubDatadto } from './dto/ClubData.dto';
-import { CreateClubDto } from './dto/createClub.dto';
+import { acceptUserDto } from './dto/accept.dto';
+import { clubDatadto } from './dto/ClubData.dto';
+import { createClubDto } from './dto/createClub.dto';
 import { editClubdto } from './dto/editclub.dto';
 
 @ApiTags('CLUB')
@@ -49,7 +49,7 @@ export class ClubController {
   @ApiResponse({ status: 201, description: '삭제 성공' })
   @Delete('/')
   @HttpCode(201)
-  async deleteClub(@Body() deleteClubData: ClubDatadto, email: string) {
+  async deleteClub(@Body() deleteClubData: clubDatadto, email: string) {
     return await this.clubService.deleteClub(
       deleteClubData.q,
       deleteClubData.type,
@@ -65,7 +65,7 @@ export class ClubController {
   @ApiResponse({ status: 201, description: '동아리 생성 성공' })
   @Post('/')
   async createClub(
-    @Body() createClubData: CreateClubDto,
+    @Body() createClubData: createClubDto,
     @User('email') email: string,
   ) {
     await this.clubService.createClub(createClubData, email);
@@ -77,7 +77,7 @@ export class ClubController {
     description: '동아리 정보를 받아 가입신청',
   })
   @Post('/apply')
-  async applyClub(@Body() clubData: ClubDatadto, @User('email') email: string) {
+  async applyClub(@Body() clubData: clubDatadto, @User('email') email: string) {
     return this.clubService.applyClub(clubData.type, clubData.q, email);
   }
   @ApiBearerAuth('access-token')
@@ -88,7 +88,7 @@ export class ClubController {
   })
   @HttpCode(204)
   @Post('/cancel')
-  async cancel(@Body() clubData: ClubDatadto, @User('email') email: string) {
+  async cancel(@Body() clubData: clubDatadto, @User('email') email: string) {
     return this.clubService.cancelClub(clubData.type, clubData.q, email);
   }
   @ApiBearerAuth('access-token')
@@ -98,7 +98,7 @@ export class ClubController {
   })
   @ApiResponse({ status: 201, description: '동아리 신청자 수락' })
   @Post('/accept')
-  async accept(@Body() clubData: AcceptUserDto, @User('email') email: string) {
+  async accept(@Body() clubData: acceptUserDto, @User('email') email: string) {
     return this.clubService.acceptClub(
       clubData.type,
       clubData.q,
@@ -113,7 +113,7 @@ export class ClubController {
   })
   @ApiResponse({ status: 201, description: '동아리 신청자 거절' })
   @Post('/reject')
-  async reject(@Body() ClubData: AcceptUserDto, @User('email') email: string) {
+  async reject(@Body() ClubData: acceptUserDto, @User('email') email: string) {
     return this.clubService.rejectClub(
       ClubData.type,
       ClubData.q,
@@ -211,7 +211,7 @@ export class ClubController {
   @Put('/open')
   @HttpCode(201)
   async openClub(
-    @Body() openClubData: ClubDatadto,
+    @Body() openClubData: clubDatadto,
     @User('email') email: string,
   ) {
     await this.clubService.clubOnOff(openClubData, email, true);
@@ -225,7 +225,7 @@ export class ClubController {
   @Put('/close')
   @HttpCode(201)
   async closeClub(
-    @Body() closeClubData: ClubDatadto,
+    @Body() closeClubData: clubDatadto,
     @User('email') email: string,
   ) {
     await this.clubService.clubOnOff(closeClubData, email, false);
@@ -239,7 +239,7 @@ export class ClubController {
   @Delete('/kick')
   @HttpCode(201)
   async kickUser(
-    @Body() kickUserData: AcceptUserDto,
+    @Body() kickUserData: acceptUserDto,
     @User('email') email: string,
   ) {
     await this.clubService.kickUser(kickUserData, email);
@@ -254,7 +254,7 @@ export class ClubController {
   @ApiResponse({ status: 404, description: '유저가 없습니다' })
   @Put('/delegation')
   async delegation(
-    @Body() userData: AcceptUserDto,
+    @Body() userData: acceptUserDto,
     @User('email') email: string,
   ) {
     await this.clubService.delegation(userData, email);
