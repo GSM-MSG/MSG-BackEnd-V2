@@ -10,7 +10,6 @@ import {
 } from '@nestjs/common';
 import {
   ApiBearerAuth,
-  ApiBody,
   ApiOperation,
   ApiQuery,
   ApiResponse,
@@ -23,7 +22,6 @@ import { ClubDatadto } from './dto/clubData.dto';
 import { CreateClubDto } from './dto/createClub.dto';
 import { editClubdto } from './dto/editclub.dto';
 import { kickUserDto } from './dto/kickuser.dto';
-import { openClubdto } from './dto/openClub.dto';
 
 @ApiTags('CLUB')
 @Controller('club')
@@ -208,7 +206,7 @@ export class ClubController {
   @Put('/open')
   @HttpCode(201)
   async openClub(
-    @Body() openClubData: openClubdto,
+    @Body() openClubData: ClubDatadto,
     @User('email') email: string,
   ) {
     await this.clubService.clubOnOff(openClubData, email, true);
@@ -216,7 +214,7 @@ export class ClubController {
   @Put('/close')
   @HttpCode(201)
   async closeClub(
-    @Body() closeClubData: openClubdto,
+    @Body() closeClubData: ClubDatadto,
     @User('email') email: string,
   ) {
     await this.clubService.clubOnOff(closeClubData, email, false);
