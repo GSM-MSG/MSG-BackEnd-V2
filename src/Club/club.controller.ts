@@ -217,6 +217,12 @@ export class ClubController {
   ) {
     await this.clubService.clubOnOff(openClubData, email, true);
   }
+  @ApiBearerAuth('access-token')
+  @ApiOperation({
+    summary: '클럽 동아리 신청 받는거 비활성화',
+    description: '동아리 신청 받는 버튼 비활성화',
+  })
+  @ApiResponse({status : 201 , description : '성공적으로 닫혔습니다'})
   @Put('/close')
   @HttpCode(201)
   async closeClub(
