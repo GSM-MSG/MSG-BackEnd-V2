@@ -152,7 +152,25 @@ export class ClubController {
   ) {
     return this.clubService.applicantList(clubType, clubTitle, email);
   }
-
+  @ApiBearerAuth('access-token')
+  @ApiOperation({
+    summary: '동아리 상세 정보',
+    description: '동아리 상세 정보를 가져옵니다',
+  })
+  @ApiResponse({
+    status: 200,
+    description: '동아리 상세 정보 불러오기',
+  })
+  @ApiQuery({
+    name: 'q',
+    description: '동아리 이름',
+    example: '클라우드 컴퓨팅',
+  })
+  @ApiQuery({
+    name: 'type',
+    description: '동아리 타입',
+    enum: ['MAJOR', 'FREEDOM', 'EDITORIAL'],
+  })
   @Get('/detail')
   async detailPage(
     @Query('q') clubname: string,
