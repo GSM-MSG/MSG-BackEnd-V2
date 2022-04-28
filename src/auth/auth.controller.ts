@@ -80,6 +80,11 @@ export class AuthController {
     return this.authService.refresh(email, refreshToken);
   }
 
+  @ApiOperation({
+    summary: '로그아웃',
+    description: '로그아웃을 합니다',
+  })
+  @ApiResponse({ status: 200, description: '로그아웃 성공' })
   @Post('logout')
   @HttpCode(200)
   logout(@User('email') email: string) {
