@@ -259,6 +259,12 @@ export class ClubController {
   ) {
     await this.clubService.delegation(userData, email);
   }
+  @ApiBearerAuth('access-token')
+  @ApiOperation({
+    summary: '동아리 수정',
+    description: '동아리 수정합니다',
+  })
+  @ApiResponse({ status: 201, description: '동아리 수정 성공' })
   @Put('')
   async putClub(
     @Body() editClubData: editClubdto,
