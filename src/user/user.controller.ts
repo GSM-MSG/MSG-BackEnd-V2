@@ -15,7 +15,7 @@ import {
   ApiTags,
 } from '@nestjs/swagger';
 import { User } from 'src/auth/decorators';
-import { ClubDatadto } from 'src/club/dto/clubData.dto';
+import { ClubDatadto } from 'src/Club/dto/ClubData.dto';
 import { urlDto } from './dto/urlAddress.dto';
 import { UserService } from './user.service';
 

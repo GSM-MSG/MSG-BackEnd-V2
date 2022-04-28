@@ -7,7 +7,7 @@ import { RelatedLink } from 'src/Entities/RelatedLink.entity';
 import { RequestJoin } from 'src/Entities/RequestJoin.entity';
 import { User } from 'src/Entities/User.entity';
 import { Repository } from 'typeorm';
-import { ClubDatadto } from './dto/clubData.dto';
+import { ClubDatadto } from './dto/ClubData.dto';
 import { CreateClubDto } from './dto/createClub.dto';
 import { editClubdto } from './dto/editclub.dto';
 import { kickUserDto } from './dto/kickuser.dto';
@@ -39,7 +39,7 @@ export class ClubService {
       );
     }
   }
-  async createClub(createClubData: CreateClubDto, userId) {
+  async createClub(createClubData: CreateClubDto, userId: string) {
     const {
       title,
       description,
@@ -50,10 +50,7 @@ export class ClubService {
       relatedLink,
       member,
       activityUrls,
-      isOpened,
-    } = {
-      ...createClubData,
-    };
+    } = createClubData;
     if (await this.Club.findOne({ title: title, type: type })) {
       throw new HttpException(
         '이미 존재하는 동아리입니다',

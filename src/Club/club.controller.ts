@@ -18,7 +18,7 @@ import {
 import { User } from 'src/auth/decorators';
 import { ClubService } from './club.service';
 import { AcceptUserDto } from './dto/accept.dto';
-import { ClubDatadto } from './dto/clubData.dto';
+import { ClubDatadto } from './dto/ClubData.dto';
 import { CreateClubDto } from './dto/createClub.dto';
 import { editClubdto } from './dto/editclub.dto';
 

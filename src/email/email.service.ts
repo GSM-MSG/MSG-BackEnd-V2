@@ -33,6 +33,8 @@ export class EmailService {
   private getTransporter(accessToken: any) {
     return nodemailer.createTransport({
       service: 'gmail',
+      port: 587,
+      host: 'smtp.gmlail.com',
       auth: {
         type: 'OAuth2',
         user: this.configService.get('CLIENT_EMAIL'),
