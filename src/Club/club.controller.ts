@@ -244,6 +244,14 @@ export class ClubController {
   ) {
     await this.clubService.kickUser(kickUserData, email);
   }
+  @ApiBearerAuth('access-token')
+  @ApiOperation({
+    summary: '부장권한 위임',
+    description: '동아리 멤버에게 권한 위임',
+  })
+  @ApiResponse({ status: 201, description: '권한 위임 성공' })
+  @ApiResponse({ status: 403, description: '부장이 아닙니다' })
+  @ApiResponse({ status: 404, description: '유저가 없습니다' })
   @Put('/delegation')
   async delegation(
     @Body() userData: AcceptUserDto,
