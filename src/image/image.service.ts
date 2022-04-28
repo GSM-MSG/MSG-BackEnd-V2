@@ -5,14 +5,15 @@ import { ConfigService } from '@nestjs/config';
 @Injectable()
 export class ImageService {
   constructor(private configService: ConfigService) {}
-  AWS_S3_BUCKET = this.configService.get<string>(process.env.AWS_S3_BUCKET); //추후 버킷으로 변경
+  AWS_S3_BUCKET = this.configService.get<string>('AWS_BUCKET'); //추후 버킷으로 변경
   s3 = new AWS.S3({
-    accessKeyId: process.env.AWSAccessKeyId,
-    secretAccessKey: process.env.AWSSecretKey,
+    accessKeyId: this.configService.get('AWSAccessKeyId'),
+    secretAccessKey: this.configService.get('AWSSecretKey'),
   });
 
   async uploladFile(files: Express.Multer.File[]) {
     const list = [];
+
     for (const element of files) {
       const params = {
         Bucket: this.AWS_S3_BUCKET,
@@ -22,7 +23,7 @@ export class ImageService {
         ContenctType: element.mimetype,
         ContentDisposition: 'inline',
         CreateBucketConfiguration: {
-          LocationConstraint: this.configService.get<string>(process.env.AWS_RESION),
+          LocationConstraint: this.configService.get<string>('AWS_RESION'),
         },
       };
       try {
