@@ -124,6 +124,26 @@ export class ClubController {
       email,
     );
   }
+  @ApiBearerAuth('access-token')
+  @ApiOperation({
+    summary: '동아리 신청자 리스트',
+    description:
+      '동아리에 신청한 사람을 부장이 확인 할 수 있는 리스트 가져오가',
+  })
+  @ApiResponse({
+    status: 200,
+    description: '동아리 신청한 사람들 리스트 가져옵니다',
+  })
+  @ApiQuery({
+    name: 'q',
+    description: '동아리 이름',
+    example: '클라우드 컴퓨팅',
+  })
+  @ApiQuery({
+    name: 'type',
+    description: '동아리 타입',
+    enum: ['MAJOR', 'FREEDOM', 'EDITORIAL'],
+  })
   @Get('/applicant')
   async applicantList(
     @Query('type') clubType: string,
