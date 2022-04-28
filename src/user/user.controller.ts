@@ -15,7 +15,7 @@ import {
   ApiTags,
 } from '@nestjs/swagger';
 import { User } from 'src/auth/decorators';
-import { ClubDatadto } from 'src/Club/dto/ClubData.dto';
+import { clubDatadto } from 'src/Club/dto/clubData.dto';
 import { urlDto } from './dto/urlAddress.dto';
 import { UserService } from './user.service';
 
@@ -72,7 +72,7 @@ export class UserController {
   @ApiBearerAuth('access-token')
   @Delete('/exit')
   async exitClub(
-    @Body() exitClubData: ClubDatadto,
+    @Body() exitClubData: clubDatadto,
     @User('email') email: string,
   ) {
     await this.userService.exitClub(exitClubData, email);
