@@ -10,10 +10,9 @@ async function bootstrap() {
     origin: '*',
   });
   const config = new DocumentBuilder()
-    .setTitle('Cats example')
-    .setDescription('The cats API description')
+    .setTitle('GCMS Api명세서')
+    .setDescription('Api명세서들을 옮겨놨습니다')
     .setVersion('1.0')
-    .addTag('cats')
     .addBearerAuth(
       {
         type: 'http',
