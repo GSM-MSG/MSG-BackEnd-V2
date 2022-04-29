@@ -49,7 +49,10 @@ export class ClubController {
   @ApiResponse({ status: 201, description: '삭제 성공' })
   @Delete('/')
   @HttpCode(201)
-  async deleteClub(@Body() deleteClubData: clubDatadto, email: string) {
+  async deleteClub(
+    @Body() deleteClubData: clubDatadto,
+    @User('email') email: string,
+  ) {
     return await this.clubService.deleteClub(
       deleteClubData.q,
       deleteClubData.type,
