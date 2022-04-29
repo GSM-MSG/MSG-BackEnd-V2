@@ -43,9 +43,8 @@ export class UserService {
         return user;
       });
     } else if (clubType === 'EDITORIAL') {
-      return await this.User.find({
-        select: ['email', 'name', 'grade', 'class', 'num', 'userImg'],
-      });
+      const data = await this.User.query("CALL msg.findUser('" + name + "');");
+      return data[0];
     } else
       throw new HttpException('없는 동아리 타입입니다', HttpStatus.BAD_GATEWAY);
   }

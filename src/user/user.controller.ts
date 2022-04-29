@@ -62,8 +62,11 @@ export class UserController {
     enum: ['MAJOR', 'FREEDOM', 'EDITORIAL'],
   })
   @Get('/search')
-  async searchUser(@Query('q') q: string, @Query('type') clubType: string) {
-    return this.userService.searchUser(q, clubType);
+  async searchUser(
+    @Query('name') name: string,
+    @Query('type') clubType: string,
+  ) {
+    return this.userService.searchUser(name, clubType);
   }
   @ApiOperation({
     summary: '동아리 탈퇴',
