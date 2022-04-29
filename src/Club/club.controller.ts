@@ -15,7 +15,7 @@ import {
   ApiResponse,
   ApiTags,
 } from '@nestjs/swagger';
-import { Public, User } from 'src/auth/decorators';
+import { User } from 'src/auth/decorators';
 import { ClubService } from './club.service';
 import { acceptUserDto } from './dto/accept.dto';
 import { clubDatadto } from './dto/clubData.dto';
@@ -76,9 +76,8 @@ export class ClubController {
     summary: '동아리 신청',
     description: '동아리 정보를 받아 가입신청',
   })
-  @Public()
   @Post('/apply')
-  async applyClub(@Body() clubData: clubDatadto, @Body('email') email: string) {
+  async applyClub(@Body() clubData: clubDatadto, @User('email') email: string) {
     return this.clubService.applyClub(clubData.type, clubData.q, email);
   }
   @ApiBearerAuth('access-token')
@@ -169,12 +168,11 @@ export class ClubController {
     description: '동아리 타입',
     enum: ['MAJOR', 'FREEDOM', 'EDITORIAL'],
   })
-  @Public()
   @Get('/detail')
   async detailPage(
     @Query('q') clubname: string,
     @Query('type') clubtype: string,
-    @Body('email') email: string,
+    @User('email') email: string,
   ) {
     return this.clubService.detailPage(clubtype, clubname, email);
   }
