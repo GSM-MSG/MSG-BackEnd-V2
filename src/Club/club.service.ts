@@ -324,6 +324,17 @@ export class ClubService {
         isAplicant = false;
       }
 
+      const member = await this.Member.findOne({
+        club: clubData,
+        user: userData,
+      });
+      let scope: string;
+      if (!member) {
+        scope = 'USER';
+      } else if (member) {
+        scope = member.scope;
+      }
+
       delete clubData.relatedLink[0].id;
       delete clubData.member;
       delete clubData.activityUrls;
@@ -334,6 +345,7 @@ export class ClubService {
         activityurls,
         head: head[0].user,
         member: clubmember,
+        scope,
         isAplicant,
       };
     }
