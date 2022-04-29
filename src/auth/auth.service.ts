@@ -150,7 +150,7 @@ export class AuthService {
 
     const now = new Date();
     const expiredAt = new Date(
-      now.setMinutes(now.getMinutes() - 15),
+      now.setMinutes(now.getMinutes() + 15),
     ).toISOString();
 
     return {
