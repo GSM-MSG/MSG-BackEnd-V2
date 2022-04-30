@@ -316,12 +316,12 @@ export class ClubService {
         userId: userData,
         clubId: clubData,
       });
-      let isAplicant: Boolean;
+      let isApplied: Boolean;
 
       if (applicant) {
-        isAplicant = true;
+        isApplied = true;
       } else if (!applicant) {
-        isAplicant = false;
+        isApplied = false;
       }
 
       const member = await this.Member.findOne({
@@ -346,7 +346,7 @@ export class ClubService {
         head: head[0].user,
         member: clubmember,
         scope,
-        isAplicant,
+        isApplied,
       };
     }
   }
