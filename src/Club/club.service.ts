@@ -160,12 +160,18 @@ export class ClubService {
     );
   }
 
-  async cancelClub(clubtype: string, clubtitle: string, userId: string) {
+  async cancelClub(clubtype: string, clubtitle: string, email: string) {
     const clubData = await this.Club.findOne({
       type: clubtype,
       title: clubtitle,
     });
-    const userData = await this.User.findOne({ email: userId });
+    const userData = await this.User.findOne({ email: email });
+    if (!email) {
+      throw new HttpException(
+        '이메일이 존재하지 않습니다.',
+        HttpStatus.UNAUTHORIZED,
+      );
+    }
     if (!clubData) {
       throw new HttpException(
         '존재하지않는 동아리입니다.',
@@ -181,7 +187,7 @@ export class ClubService {
       userId: userData,
     });
 
-    await this.RequestJoin.delete(applyUser);
+    await this.RequestJoin.delete({ ...applyUser });
   }
 
   async acceptClub(
@@ -220,7 +226,7 @@ export class ClubService {
     clubtype: string,
     clubtitle: string,
     rejectUserId: string,
-    userId: string,
+    email: string,
   ) {
     const clubData = await this.Club.findOne({
       type: clubtype,
@@ -228,6 +234,12 @@ export class ClubService {
     });
     const userData = await this.User.findOne({ email: rejectUserId });
 
+    if (!email) {
+      throw new HttpException(
+        '이메일이 존재하지 않습니다.',
+        HttpStatus.UNAUTHORIZED,
+      );
+    }
     if (!clubData) {
       throw new HttpException(
         '존재하지 않는 동아리입니다.',
@@ -236,7 +248,7 @@ export class ClubService {
     }
     if (
       !clubData.member.filter((member) => {
-        return member.user.email === userId && member.scope == 'HEAD';
+        return member.user.email === email && member.scope == 'HEAD';
       })
     ) {
       throw new HttpException('동아리부장이 아닙니다.', HttpStatus.FORBIDDEN);
@@ -245,7 +257,7 @@ export class ClubService {
       clubId: clubData,
       userId: userData,
     });
-    await this.RequestJoin.delete(rejectUser);
+    await this.RequestJoin.delete({ ...rejectUser });
   }
 
   async applicantList(clubtype: string, clubtitle: string, userId: string) {
