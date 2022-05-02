@@ -39,7 +39,7 @@ export class ClubService {
       );
     }
   }
-  async createClub(createClubData: createClubDto, userId: string) {
+  async createClub(createClubData: createClubDto, email: string) {
     const {
       title,
       description,
@@ -55,6 +55,12 @@ export class ClubService {
       throw new HttpException(
         '이미 존재하는 동아리입니다',
         HttpStatus.CONFLICT,
+      );
+    }
+    if (!email) {
+      throw new HttpException(
+        '이메일이 존재하지 않습니다.',
+        HttpStatus.UNAUTHORIZED,
       );
     }
     await this.Club.save(
@@ -83,7 +89,7 @@ export class ClubService {
         }),
       );
     }
-    const userData = await this.User.findOne({ email: userId });
+    const userData = await this.User.findOne({ email: email });
     await this.Member.save(
       this.Member.create({ user: userData, club: clubData, scope: 'HEAD' }),
     );
@@ -121,6 +127,12 @@ export class ClubService {
     ) {
       throw new HttpException('동아리 부장이 아닙니다.', HttpStatus.FORBIDDEN);
     }
+    if (!email) {
+      throw new HttpException(
+        '이메일이 존재하지 않습니다.',
+        HttpStatus.UNAUTHORIZED,
+      );
+    }
     if (!clubData) {
       throw new HttpException(
         '존재하지않는 동아리입니다.',
@@ -137,12 +149,18 @@ export class ClubService {
     }
   }
 
-  async applyClub(clubtype: string, clubtitle: string, userId: string) {
+  async applyClub(clubtype: string, clubtitle: string, email: string) {
     const clubData = await this.Club.findOne({
       type: clubtype,
       title: clubtitle,
     });
-    const userData = await this.User.findOne({ email: userId });
+    if (!email) {
+      throw new HttpException(
+        '이메일이 존재하지 않습니다.',
+        HttpStatus.UNAUTHORIZED,
+      );
+    }
+    const userData = await this.User.findOne({ email: email });
     if (!clubData) {
       throw new HttpException(
         '존재하지 않는 동아리입니다.',
@@ -260,14 +278,20 @@ export class ClubService {
     await this.RequestJoin.delete({ ...rejectUser });
   }
 
-  async applicantList(clubtype: string, clubtitle: string, userId: string) {
+  async applicantList(clubtype: string, clubtitle: string, email: string) {
     const reqUserData = await this.Club.findOne(
       { title: clubtitle, type: clubtype },
       { relations: ['requestJoin', 'requestJoin.userId', 'member'] },
     );
+    if (!email) {
+      throw new HttpException(
+        '이메일이 존재하지 않습니다.',
+        HttpStatus.UNAUTHORIZED,
+      );
+    }
     if (
       !reqUserData.member.find((member) => {
-        return member.user.email === userId;
+        return member.user.email === email;
       })
     ) {
       throw new HttpException(
@@ -289,6 +313,12 @@ export class ClubService {
         relations: ['activityUrls', 'relatedLink', 'member', 'member.user'],
       },
     );
+    if (!email) {
+      throw new HttpException(
+        '이메일이 존재하지 않습니다.',
+        HttpStatus.UNAUTHORIZED,
+      );
+    }
     const userData = await this.User.findOne({ email: email });
     if (!clubData) {
       throw new HttpException(
@@ -367,6 +397,12 @@ export class ClubService {
       { title: clubTitle, type: clubType },
       { relations: ['member', 'member.user'] },
     );
+    if (!email) {
+      throw new HttpException(
+        '이메일이 존재하지 않습니다.',
+        HttpStatus.UNAUTHORIZED,
+      );
+    }
     if (
       !clubData.member.find((member) => {
         return member.user.email === email;
@@ -388,6 +424,12 @@ export class ClubService {
       { title: openClubData.q, type: openClubData.type },
       { relations: ['member', 'member.user'] },
     );
+    if (!email) {
+      throw new HttpException(
+        '이메일이 존재하지 않습니다.',
+        HttpStatus.UNAUTHORIZED,
+      );
+    }
     if (
       !clubData.member.find((member) => {
         return member.user.email === email && member.scope === 'HEAD';
@@ -404,6 +446,12 @@ export class ClubService {
       { title: kickUserData.q, type: kickUserData.type },
       { relations: ['member', 'member.user'] },
     );
+    if (!email) {
+      throw new HttpException(
+        '이메일이 존재하지 않습니다.',
+        HttpStatus.UNAUTHORIZED,
+      );
+    }
     if (
       clubData.member.find((member) => {
         return (
@@ -434,6 +482,12 @@ export class ClubService {
       },
       { relations: ['member', 'member.user'] },
     );
+    if (!email) {
+      throw new HttpException(
+        '이메일이 존재하지 않습니다.',
+        HttpStatus.UNAUTHORIZED,
+      );
+    }
     if (
       !clubData.member.find((member) => {
         return member.user.email === email && member.scope === 'HEAD';
@@ -472,6 +526,12 @@ export class ClubService {
       },
       { relations: ['relatedLink', 'member', 'member.user'] },
     );
+    if (!email) {
+      throw new HttpException(
+        '이메일이 존재하지 않습니다.',
+        HttpStatus.UNAUTHORIZED,
+      );
+    }
 
     if (!clubData) {
       throw new HttpException(
