@@ -99,7 +99,7 @@ export class AuthService {
 
     if (!info || !email) throw new NotFoundException('Not found oauth user');
     else if (email.split('@')[1] !== 'gsm.hs.kr')
-      throw new ForbiddenException();
+      throw new ForbiddenException('Not gsm mail');
 
     const replacedEmail = email.replace('@gsm.hs.kr', '');
     const token = await this.getToken(replacedEmail);
