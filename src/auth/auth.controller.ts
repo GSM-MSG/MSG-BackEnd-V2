@@ -19,7 +19,16 @@ export class AuthController {
   oauthMobileLogin(@Body() data: OauthMobileLoginDto) {
     return this.authService.oauthMobileLogin(data);
   }
-
+  @Public()
+  @ApiOperation({
+    summary: 'OAuth2.0 로그인 - 모바일 파트',
+    description: '유저 확인 후 회원가입/로그인',
+  })
+  @ApiResponse({ status: 200, description: '로그인 또는 회원가입 성공' })
+  @Post('/auth/mobile')
+  oauthMobileLogin(@Body() data: OauthMobileLoginDto) {
+    return this.authService.oauthMobileLogin(data);
+  }
   @ApiOperation({
     summary: 'accessToken 재발급',
     description: '리프레시 토큰 확인후 액세스토큰 재발급',
