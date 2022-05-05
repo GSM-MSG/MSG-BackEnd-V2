@@ -101,8 +101,8 @@ export class AuthService {
     else if (email.split('@')[1] !== 'gsm.hs.kr')
       throw new ForbiddenException();
 
-    const token = await this.getToken(email);
     const replacedEmail = email.replace('@gsm.hs.kr', '');
+    const token = await this.getToken(replacedEmail);
 
     if (
       await this.userRepository.findOne({
