@@ -111,7 +111,7 @@ export class AuthService {
     ) {
       const hash = await bcrypt.hash(token.refreshToken, 10);
 
-      this.userRepository.update(email, {
+      this.userRepository.update(replacedEmail, {
         refreshToken: hash,
       });
 
@@ -124,7 +124,7 @@ export class AuthService {
 
       const user = this.userRepository.create({
         ...student,
-        email: email,
+        email: replacedEmail,
         userImg: register['picture'],
       });
 
