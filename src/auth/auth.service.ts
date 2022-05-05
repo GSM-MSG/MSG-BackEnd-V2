@@ -117,7 +117,7 @@ export class AuthService {
 
       return token;
     } else {
-      const register = this.jwtService.decode(data.idToken, { json: true });
+      const register = this.jwtService.decode(data.idToken);
       const student = this.findStudent(`${email}`);
       if (!student)
         throw new ForbiddenException('GSM에 존재하지 않는 사용자입니다');
