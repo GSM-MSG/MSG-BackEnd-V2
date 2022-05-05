@@ -21,7 +21,6 @@ export class UserService {
       { relations: ['member', 'member.club'] },
     );
     delete userData.refreshToken;
-    delete userData.password;
     const clubs = userData.member.map((member) => {
       return member.club;
     });
@@ -38,7 +37,6 @@ export class UserService {
         "CALL msg.findUserNotJoin('" + clubType + "' , '" + name + "');",
       );
       return data[0].map((user) => {
-        delete user.password;
         delete user.refreshToken;
         return user;
       });
