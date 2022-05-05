@@ -10,15 +10,6 @@ import { OauthMobileLoginDto } from './dto/oauthLogin.dto';
 export class AuthController {
   constructor(private authService: AuthService) {}
 
-  @ApiOperation({
-    summary: 'OAuth2.0 로그인 - 모바일 파트',
-    description: '유저 확인 후 회원가입/로그인',
-  })
-  @ApiResponse({ status: 200, description: '로그인 또는 회원가입 성공' })
-  @Post('/auth/mobile')
-  oauthMobileLogin(@Body() data: OauthMobileLoginDto) {
-    return this.authService.oauthMobileLogin(data);
-  }
   @Public()
   @ApiOperation({
     summary: 'OAuth2.0 로그인 - 모바일 파트',
