@@ -7,33 +7,30 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { User } from 'src/Entities/User.entity';
 import { Repository } from 'typeorm';
 import * as bcrypt from 'bcrypt';
-import { EmailService } from 'src/email/email.service';
 import students from '../lib/students';
 import { JwtService } from '@nestjs/jwt';
-import {
-  accessToken,
-  refreshToken,
-  oauthClientSecret,
-} from 'src/lib/Constants';
 import { OauthMobileLoginDto } from './dto/oauthLogin.dto';
-import { google } from 'googleapis';
+import { Auth, google } from 'googleapis';
+import { ConfigService } from '@nestjs/config';
 
 @Injectable()
 export class AuthService {
+  private oauthClient: Auth.OAuth2Client;
   constructor(
     @InjectRepository(User) private userRepository: Repository<User>,
-    private emailService: EmailService,
     private jwtService: JwtService,
-  ) {}
+    private configService: ConfigService,
+  ) {
+    const clientID = configService.get('GOOGLE_AUTH_CLIENT_ID');
+    const clientSecret = configService.get('GOOGLE_AUTH_CLIENT_SECRET');
+
+    this.oauthClient = new google.auth.OAuth2(clientID, clientSecret);
+  }
 
   async oauthMobileLogin(
     data: OauthMobileLoginDto,
   ): Promise<{ refreshToken: string; accessToken: string }> {
-    const oauthClient = new google.auth.OAuth2({
-      clientId: data.clientId,
-      clientSecret: oauthClientSecret,
-    });
-    const info = await oauthClient.getTokenInfo(data.idToken);
+    const info = await this.oauthClient.getTokenInfo(data.idToken);
     const email = info.email;
 
     if (!info || !email) throw new NotFoundException('Not found oauth user');
@@ -107,13 +104,19 @@ export class AuthService {
         {
           email,
         },
-        { expiresIn: 60 * 15, secret: accessToken },
+        {
+          expiresIn: 60 * 15,
+          secret: this.configService.get('ACCESS_TOKEN_SECRET'),
+        },
       ),
       this.jwtService.signAsync(
         {
           email,
         },
-        { expiresIn: 60 * 60 * 24 * 7, secret: refreshToken },
+        {
+          expiresIn: 60 * 60 * 24 * 7,
+          secret: this.configService.get('REFRESH_TOKEN_SECRET'),
+        },
       ),
     ]);
 
