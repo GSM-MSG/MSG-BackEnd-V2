@@ -1,8 +1,6 @@
 import {
-  ConflictException,
   ForbiddenException,
   Injectable,
-  Logger,
   NotFoundException,
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
@@ -17,8 +15,6 @@ import {
   refreshToken,
   oauthClientSecret,
 } from 'src/lib/Constants';
-import { verifyData } from './lib/verifyData';
-import { LoginDto, RegisterDto, VerifyDto, verifyHeadDto } from './dto';
 import { OauthMobileLoginDto } from './dto/oauthLogin.dto';
 import { google } from 'googleapis';
 
