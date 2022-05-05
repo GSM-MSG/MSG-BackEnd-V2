@@ -1,5 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsString } from 'class-validator';
+import { IsJWT, IsString } from 'class-validator';
 
 export class OauthMobileLoginDto {
   @ApiProperty({
@@ -15,6 +15,6 @@ export class OauthMobileLoginDto {
     description: '모바일 클라이언트에서 OAuth2.0 인증 시 전달되는 유저의 정보',
     required: true,
   })
-  @IsString()
+  @IsJWT()
   idToken: string;
 }
