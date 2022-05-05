@@ -20,6 +20,7 @@ export class AuthController {
   oauthMobileLogin(@Body() data: OauthMobileLoginDto) {
     return this.authService.oauthMobileLogin(data);
   }
+
   @ApiOperation({
     summary: 'accessToken 재발급',
     description: '리프레시 토큰 확인후 액세스토큰 재발급',
