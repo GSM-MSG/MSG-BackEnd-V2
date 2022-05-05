@@ -102,10 +102,11 @@ export class AuthService {
       throw new ForbiddenException();
 
     const token = await this.getToken(email);
+    const replacedEmail = email.replace('@gsm.hs.kr', '');
 
     if (
       await this.userRepository.findOne({
-        where: { email: email },
+        where: { email: replacedEmail },
       })
     ) {
       const hash = await bcrypt.hash(token.refreshToken, 10);
