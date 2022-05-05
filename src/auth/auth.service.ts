@@ -40,7 +40,7 @@ export class AuthService {
     const replacedEmail = email.replace('@gsm.hs.kr', '');
     const student = this.findStudent(`${email}`);
     if (!student)
-      throw new ForbiddenException('GSM에 존재하지 않는 사용자입니다');
+      throw new ForbiddenException('Not exists student in GSMr');
     const token = await this.getToken(replacedEmail);
 
     if (
