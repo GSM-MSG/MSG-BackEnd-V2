@@ -102,6 +102,9 @@ export class AuthService {
       throw new ForbiddenException('Not gsm mail');
 
     const replacedEmail = email.replace('@gsm.hs.kr', '');
+    const student = this.findStudent(`${email}`);
+    if (!student)
+      throw new ForbiddenException('GSM에 존재하지 않는 사용자입니다');
     const token = await this.getToken(replacedEmail);
 
     if (
@@ -118,9 +121,7 @@ export class AuthService {
       return token;
     } else {
       const register = this.jwtService.decode(data.idToken);
-      const student = this.findStudent(`${email}`);
-      if (!student)
-        throw new ForbiddenException('GSM에 존재하지 않는 사용자입니다');
+      
 
       const user = this.userRepository.create({
         ...student,
@@ -132,28 +133,6 @@ export class AuthService {
 
       return token;
     }
-  }
-
-  async login(
-    data: LoginDto,
-  ): Promise<{ refreshToken: string; accessToken: string }> {
-    const user = await this.userRepository.findOne({
-      where: { email: data.email },
-    });
-
-    if (!user) throw new ForbiddenException('사용자를 찾을 수 없습니다');
-
-    // Password로 유저 검사하는 부분 삭제해놓음
-
-    const token = await this.getToken(data.email);
-
-    const hash = await bcrypt.hash(token.refreshToken, 10);
-
-    this.userRepository.update(data.email, {
-      refreshToken: hash,
-    });
-
-    return token;
   }
 
   async refresh(email: string, refreshToken: string) {
