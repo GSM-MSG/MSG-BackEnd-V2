@@ -3,6 +3,7 @@ import {
   ForbiddenException,
   Injectable,
   Logger,
+  NotFoundException,
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { User } from 'src/Entities/User.entity';
@@ -11,9 +12,15 @@ import * as bcrypt from 'bcrypt';
 import { EmailService } from 'src/email/email.service';
 import students from '../lib/students';
 import { JwtService } from '@nestjs/jwt';
-import { accessToken, refreshToken } from 'src/lib/Constants';
+import {
+  accessToken,
+  refreshToken,
+  oauthClientSecret,
+} from 'src/lib/Constants';
 import { verifyData } from './lib/verifyData';
 import { LoginDto, RegisterDto, VerifyDto, verifyHeadDto } from './dto';
+import { OauthMobileLoginDto } from './dto/oauthLogin.dto';
+import { google } from 'googleapis';
 
 @Injectable()
 export class AuthService {
@@ -33,15 +40,12 @@ export class AuthService {
       throw new ForbiddenException(`인증하지 않은 사용자입니다`);
 
     const student = this.findStudent(`${data.email}@gsm.hs.kr`);
-
-    const hash = await bcrypt.hash(data.password, 10);
-
     const user = this.userRepository.create({
       ...student,
       email: data.email,
-      password: hash,
       userImg: null,
     });
+    // password랑 같이 유저 생성하는거 삭제해놓음
 
     this.userRepository.save(user);
 
@@ -83,6 +87,52 @@ export class AuthService {
     verifyData[email].expiredAt = null;
   }
 
+  async oauthMobileLogin(
+    data: OauthMobileLoginDto,
+  ): Promise<{ refreshToken: string; accessToken: string }> {
+    const oauthClient = new google.auth.OAuth2({
+      clientId: data.clientId,
+      clientSecret: oauthClientSecret,
+    });
+    const info = await oauthClient.getTokenInfo(data.idToken);
+    const email = info.email;
+
+    if (!info || !email) throw new NotFoundException('Not found oauth user');
+    else if (email.split('@')[1] !== 'gsm.hs.kr')
+      throw new ForbiddenException();
+
+    const token = await this.getToken(email);
+
+    if (
+      await this.userRepository.findOne({
+        where: { email: email },
+      })
+    ) {
+      const hash = await bcrypt.hash(token.refreshToken, 10);
+
+      this.userRepository.update(email, {
+        refreshToken: hash,
+      });
+
+      return token;
+    } else {
+      const register = this.jwtService.decode(data.idToken, { json: true });
+      const student = this.findStudent(`${email}`);
+      if (!student)
+        throw new ForbiddenException('GSM에 존재하지 않는 사용자입니다');
+
+      const user = this.userRepository.create({
+        ...student,
+        email: email,
+        userImg: register['picture'],
+      });
+
+      this.userRepository.save(user);
+
+      return token;
+    }
+  }
+
   async login(
     data: LoginDto,
   ): Promise<{ refreshToken: string; accessToken: string }> {
@@ -92,8 +142,7 @@ export class AuthService {
 
     if (!user) throw new ForbiddenException('사용자를 찾을 수 없습니다');
 
-    if (!(await bcrypt.compare(data.password, user.password)))
-      throw new ForbiddenException('비밀번호가 맞지 않습니다.');
+    // Password로 유저 검사하는 부분 삭제해놓음
 
     const token = await this.getToken(data.email);
 

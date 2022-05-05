@@ -12,6 +12,7 @@ import { Public, User } from './decorators';
 import { RtGuard } from './guards';
 import { LoginDto, RegisterDto, VerifyDto, verifyHeadDto } from './dto';
 import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
+import { OauthMobileLoginDto } from './dto/oauthLogin.dto';
 
 @ApiTags('AUTH')
 @Controller('auth')
@@ -63,6 +64,16 @@ export class AuthController {
   @Post('login')
   login(@Body() data: LoginDto) {
     return this.authService.login(data);
+  }
+
+  @ApiOperation({
+    summary: 'OAuth2.0 로그인 - 모바일 파트',
+    description: '유저 확인 후 회원가입/로그인',
+  })
+  @ApiResponse({ status: 200, description: '로그인 또는 회원가입 성공' })
+  @Post('/auth/mobile')
+  oauthMobileLogin(@Body() data: OauthMobileLoginDto) {
+    return this.authService.oauthMobileLogin(data);
   }
 
   @ApiOperation({
