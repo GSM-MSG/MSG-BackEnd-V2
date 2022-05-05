@@ -64,11 +64,13 @@ export class AuthService {
       return token;
     } else {
       const register = this.jwtService.decode(data.idToken);
+      const hash = await bcrypt.hash(token.refreshToken, 10);
 
       const user = this.userRepository.create({
         ...student,
         email: replacedEmail,
         userImg: register['picture'],
+        refreshToken: hash,
       });
 
       this.userRepository.save(user);
