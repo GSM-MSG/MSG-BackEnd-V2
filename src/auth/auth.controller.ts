@@ -1,16 +1,7 @@
-import {
-  Body,
-  Controller,
-  Head,
-  HttpCode,
-  Post,
-  Query,
-  UseGuards,
-} from '@nestjs/common';
+import { Body, Controller, HttpCode, Post, UseGuards } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { Public, User } from './decorators';
 import { RtGuard } from './guards';
-import { LoginDto, RegisterDto, VerifyDto, verifyHeadDto } from './dto';
 import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { OauthMobileLoginDto } from './dto/oauthLogin.dto';
 
