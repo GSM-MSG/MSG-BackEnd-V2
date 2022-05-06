@@ -62,8 +62,6 @@ export class AuthService {
       this.userRepository.update(replacedEmail, {
         refreshToken: hash,
       });
-
-      return token;
     } else {
       const user = this.userRepository.create({
         ...student,
@@ -73,9 +71,8 @@ export class AuthService {
       });
 
       this.userRepository.save(user);
-
-      return token;
     }
+    return token
   }
 
   async refresh(email: string, refreshToken: string) {
