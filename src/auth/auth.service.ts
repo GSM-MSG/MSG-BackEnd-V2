@@ -32,7 +32,7 @@ export class AuthService {
     data: OauthMobileLoginDto,
   ): Promise<{ refreshToken: string; accessToken: string }> {
     let payload: Auth.TokenPayload
-    
+
     try {
       const ticket = await this.oauthClient.verifyIdToken({ idToken: data.idToken, audience: this.configService.get('GOOGLE_AUTH_CLIENT_ID') });
       payload = ticket.getPayload();
@@ -43,8 +43,8 @@ export class AuthService {
     const email = payload.email;
 
     if (!payload || !email) throw new NotFoundException('Not found oauth user');
-    else if (email.split('@')[1] !== 'gsm.hs.kr')
-      throw new ForbiddenException('Not gsm mail');
+    else if (payload.hd !== 'gsm.hs.kr')
+      throw new ForbiddenException('Not GSM mail');
 
     const replacedEmail = email.replace('@gsm.hs.kr', '');
     const student = this.findStudent(`${email}`);
