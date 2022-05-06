@@ -1,4 +1,5 @@
 import {
+  BadRequestException,
   ForbiddenException,
   Injectable,
   NotFoundException,
@@ -30,16 +31,26 @@ export class AuthService {
   async oauthMobileLogin(
     data: OauthMobileLoginDto,
   ): Promise<{ refreshToken: string; accessToken: string }> {
-    const info = await this.oauthClient.getTokenInfo(data.idToken);
-    const email = info.email;
+    let payload: Auth.TokenPayload
+    
+    try {
+      const ticket = await this.oauthClient.verifyIdToken({ idToken: data.idToken, audience: this.configService.get('GOOGLE_AUTH_CLIENT_ID') });
+      payload = ticket.getPayload();
+    } catch {
+      throw new BadRequestException('Invalid Token');
+    }
+    
+    const email = payload.email;
 
-    if (!info || !email) throw new NotFoundException('Not found oauth user');
+    if (!payload || !email) throw new NotFoundException('Not found oauth user');
     else if (email.split('@')[1] !== 'gsm.hs.kr')
       throw new ForbiddenException('Not gsm mail');
 
     const replacedEmail = email.replace('@gsm.hs.kr', '');
     const student = this.findStudent(`${email}`);
+
     if (!student) throw new ForbiddenException('Not exists student in GSM');
+
     const token = await this.getToken(replacedEmail);
 
     if (
@@ -55,13 +66,12 @@ export class AuthService {
 
       return token;
     } else {
-      const register = this.jwtService.decode(data.idToken);
       const hash = await bcrypt.hash(token.refreshToken, 10);
 
       const user = this.userRepository.create({
         ...student,
         email: replacedEmail,
-        userImg: register['picture'],
+        userImg: payload.picture,
         refreshToken: hash,
       });
 
