@@ -30,7 +30,7 @@ export class AuthService {
 
   async oauthMobileLogin(
     data: OauthMobileLoginDto,
-  ): Promise<{ refreshToken: string; accessToken: string }> {
+  ) {
     let payload: Auth.TokenPayload
 
     try {
