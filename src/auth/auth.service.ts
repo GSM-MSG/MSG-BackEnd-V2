@@ -71,7 +71,7 @@ export class AuthService {
 
       this.userRepository.save(user);
     }
-    return token
+    return token;
   }
 
   async refresh(email: string, refreshToken: string) {
