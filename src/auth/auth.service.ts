@@ -52,22 +52,19 @@ export class AuthService {
     if (!student) throw new ForbiddenException('Not exists student in GSM');
 
     const token = await this.getToken(replacedEmail);
+    const hash = await bcrypt.hash(token.refreshToken, 10);
 
     if (
       await this.userRepository.findOne({
         where: { email: replacedEmail },
       })
     ) {
-      const hash = await bcrypt.hash(token.refreshToken, 10);
-
       this.userRepository.update(replacedEmail, {
         refreshToken: hash,
       });
 
       return token;
     } else {
-      const hash = await bcrypt.hash(token.refreshToken, 10);
-
       const user = this.userRepository.create({
         ...student,
         email: replacedEmail,
