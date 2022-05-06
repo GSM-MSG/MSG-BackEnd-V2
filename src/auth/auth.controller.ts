@@ -16,7 +16,7 @@ export class AuthController {
     description: '유저 확인 후 회원가입/로그인',
   })
   @ApiResponse({ status: 200, description: '로그인 또는 회원가입 성공' })
-  @Post('/auth/mobile')
+  @Post('/mobile')
   oauthMobileLogin(@Body() data: OauthMobileLoginDto) {
     return this.authService.oauthMobileLogin(data);
   }
