@@ -300,7 +300,6 @@ export class ClubService {
       );
     }
     return reqUserData.requestJoin.map((member) => {
-      delete member.userId.password;
       delete member.userId.refreshToken;
       return member.userId;
     });
@@ -332,7 +331,6 @@ export class ClubService {
         return member.scope === 'HEAD';
       })
       .map((member) => {
-        delete member.user.password;
         delete member.id;
         delete member.scope;
         delete member.user.refreshToken;
@@ -344,7 +342,6 @@ export class ClubService {
         return member.scope === 'MEMBER';
       })
       .map((member) => {
-        delete member.user.password;
         delete member.id;
         delete member.scope;
         delete member.user.refreshToken;
@@ -358,7 +355,7 @@ export class ClubService {
         userId: userData,
         clubId: clubData,
       });
-      let isApplied: Boolean;
+      let isApplied: boolean;
 
       if (applicant) {
         isApplied = true;
@@ -414,7 +411,6 @@ export class ClubService {
       );
     }
     return clubData.member.map((member) => {
-      delete member.user.password;
       delete member.user.refreshToken;
       return member;
     });
