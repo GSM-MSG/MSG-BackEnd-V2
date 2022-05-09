@@ -143,7 +143,9 @@ export class AuthService {
   }
 
   async getToken(email: string) {
-    const [at, rt] = await Promise.all([
+    const now = new Date();
+
+    const [at, rt, AtExpired, RtExpired] = await Promise.all([
       this.jwtService.signAsync(
         {
           email,
@@ -162,9 +164,10 @@ export class AuthService {
           secret: this.configService.get('REFRESH_TOKEN_SECRET'),
         },
       ),
+      new Date(now.setMinutes(now.getMinutes() + 15)),
+      new Date(now.setMinutes(now.getDate() + 7)),
     ]);
 
-    const now = new Date();
     const expiredAt = new Date(
       now.setMinutes(now.getMinutes() + 15),
     ).toISOString();
@@ -172,6 +175,8 @@ export class AuthService {
     return {
       accessToken: at,
       refreshToken: rt,
+      AtExpired,
+      RtExpired,
       expiredAt,
     };
   }

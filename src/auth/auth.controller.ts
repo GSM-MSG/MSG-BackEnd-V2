@@ -5,9 +5,10 @@ import {
   HttpCode,
   Post,
   Req,
+  Res,
   UseGuards,
 } from '@nestjs/common';
-import { Request } from 'express';
+import { Request, Response } from 'express';
 import { AuthService } from './auth.service';
 import { Public, User } from './decorators';
 import { RtGuard } from './guards';
@@ -15,11 +16,15 @@ import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { OauthMobileLoginDto } from './dto/oauthLogin.dto';
 import { AuthGuard } from '@nestjs/passport';
 import { GoogleType } from './types/googleType';
+import { ConfigService } from '@nestjs/config';
 
 @ApiTags('AUTH')
 @Controller('auth')
 export class AuthController {
-  constructor(private authService: AuthService) {}
+  constructor(
+    private authService: AuthService,
+    private configService: ConfigService,
+  ) {}
 
   @Public()
   @ApiOperation({
@@ -35,8 +40,17 @@ export class AuthController {
   @Public()
   @Get('/google/callback')
   @UseGuards(AuthGuard('google'))
-  callback(@Req() req: Request) {
-    return this.authService.webGoogleOauth(req.user as GoogleType);
+  async callback(@Req() req: Request, @Res() res: Response) {
+    const token = await this.authService.webGoogleOauth(req.user as GoogleType);
+    res.cookie('accessToken', token.accessToken, {
+      expires: token.AtExpired,
+      domain: this.configService.get('DOMAIN'),
+    });
+    res.cookie('refreshToken', token.refreshToken, {
+      expires: token.RtExpired,
+      domain: this.configService.get('DOMAIN'),
+    });
+    res.send();
   }
 
   @Public()
