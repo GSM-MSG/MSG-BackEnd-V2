@@ -3,16 +3,18 @@ import {
   ForbiddenException,
   Injectable,
   NotFoundException,
+  UnauthorizedException,
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { User } from 'src/Entities/User.entity';
 import { Repository } from 'typeorm';
 import * as bcrypt from 'bcrypt';
-import students from '../lib/students';
+import students, { StudentType } from '../lib/students';
 import { JwtService } from '@nestjs/jwt';
 import { OauthMobileLoginDto } from './dto/oauthLogin.dto';
 import { Auth, google } from 'googleapis';
 import { ConfigService } from '@nestjs/config';
+import { GoogleType } from './types/googleType';
 
 @Injectable()
 export class AuthService {
@@ -28,26 +30,26 @@ export class AuthService {
     this.oauthClient = new google.auth.OAuth2(clientID, clientSecret);
   }
 
-  async oauthMobileLogin(
-    data: OauthMobileLoginDto,
-  ) {
-    let payload: Auth.TokenPayload
+  async oauthMobileLogin(data: OauthMobileLoginDto) {
+    let payload: Auth.TokenPayload;
 
     try {
-      const ticket = await this.oauthClient.verifyIdToken({ idToken: data.idToken, audience: this.configService.get('GOOGLE_AUTH_CLIENT_ID') });
+      const ticket = await this.oauthClient.verifyIdToken({
+        idToken: data.idToken,
+        audience: this.configService.get('GOOGLE_AUTH_CLIENT_ID'),
+      });
       payload = ticket.getPayload();
     } catch {
       throw new BadRequestException('Invalid Token');
     }
-    
+
     const email = payload.email;
     const student = this.findStudent(`${email}`);
 
     if (!payload || !email) throw new NotFoundException('Not found oauth user');
     else if (payload.hd !== 'gsm.hs.kr')
       throw new ForbiddenException('Not GSM mail');
-    else if (!student) 
-      throw new NotFoundException('Not exists student in GSM');
+    else if (!student) throw new NotFoundException('Not exists student in GSM');
 
     const replacedEmail = email.replace('@gsm.hs.kr', '');
     const token = await this.getToken(replacedEmail);
@@ -72,6 +74,21 @@ export class AuthService {
       this.userRepository.save(user);
     }
     return token;
+  }
+
+  async webGoogleOauth(user: GoogleType) {
+    const User = new Object(user);
+    if (!User.hasOwnProperty('id'))
+      throw new UnauthorizedException('user를 찾을 수 없습니다.');
+    if (user._json.hd !== 'gsm.hs.kr')
+      throw new ForbiddenException('Not GSM mail');
+
+    const student = this.findStudent(user._json.email);
+    if (!student) throw new NotFoundException('Not exists student in GSM');
+
+    const email = user._json.email;
+
+    return this.saveUser(email, user._json.picture, student);
   }
 
   async refresh(email: string, refreshToken: string) {
@@ -100,8 +117,35 @@ export class AuthService {
     return students.find((i) => i.email === email);
   }
 
+  async saveUser(email: string, userImg: string, student: StudentType) {
+    const token = await this.getToken(email);
+    const hash = await bcrypt.hash(token.refreshToken, 10);
+
+    if (
+      await this.userRepository.findOne({
+        where: { email },
+      })
+    ) {
+      this.userRepository.update(email, {
+        refreshToken: hash,
+      });
+    } else {
+      const user = this.userRepository.create({
+        ...student,
+        email,
+        userImg,
+        refreshToken: hash,
+      });
+
+      this.userRepository.save(user);
+    }
+    return token;
+  }
+
   async getToken(email: string) {
-    const [at, rt] = await Promise.all([
+    const now = new Date();
+
+    const [at, rt, AtExpired, RtExpired] = await Promise.all([
       this.jwtService.signAsync(
         {
           email,
@@ -120,9 +164,10 @@ export class AuthService {
           secret: this.configService.get('REFRESH_TOKEN_SECRET'),
         },
       ),
+      new Date(now.setMinutes(now.getMinutes() + 15)),
+      new Date(now.setMinutes(now.getDate() + 7)),
     ]);
 
-    const now = new Date();
     const expiredAt = new Date(
       now.setMinutes(now.getMinutes() + 15),
     ).toISOString();
@@ -130,6 +175,8 @@ export class AuthService {
     return {
       accessToken: at,
       refreshToken: rt,
+      AtExpired,
+      RtExpired,
       expiredAt,
     };
   }
