@@ -16,10 +16,10 @@ export class UserService {
   ) {}
 
   async getUserData(email: string) {
-    const userData = await this.User.findOne(
-      { email: email },
-      { relations: ['member', 'member.club'] },
-    );
+    const userData = await this.User.findOne({
+      where: { email },
+      relations: ['member', 'member.club'],
+    });
     delete userData.refreshToken;
     const clubs = userData.member.map((member) => {
       return member.club;
@@ -36,7 +36,7 @@ export class UserService {
       const data = await this.User.query(
         "CALL msg.findUserNotJoin('" + clubType + "' , '" + name + "');",
       );
-      return data[0].map((user) => {
+      return data[0].map((user: any) => {
         delete user.refreshToken;
         return user;
       });
