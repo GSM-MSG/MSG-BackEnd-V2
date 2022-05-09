@@ -14,8 +14,8 @@ type JwtPayload = {
 export class AtStrategy extends PassportStrategy(Strategy, 'jwt') {
   constructor(
     @InjectRepository(User) private userRepository: Repository<User>,
-    private readonly configService: ConfigService,
   ) {
+    const configService = new ConfigService();
     super({
       jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
       secretOrKey: configService.get('ACCESS_TOKEN_SECRET'),
@@ -23,7 +23,9 @@ export class AtStrategy extends PassportStrategy(Strategy, 'jwt') {
   }
 
   async validate(payload: JwtPayload) {
-    const user = await this.userRepository.findOne(payload.email);
+    const user = await this.userRepository.findOne({
+      where: { email: payload.email },
+    });
     if (!user) return false;
     return payload;
   }
