@@ -1,9 +1,20 @@
-import { Body, Controller, HttpCode, Post, UseGuards } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Get,
+  HttpCode,
+  Post,
+  Req,
+  UseGuards,
+} from '@nestjs/common';
+import { Request } from 'express';
 import { AuthService } from './auth.service';
 import { Public, User } from './decorators';
 import { RtGuard } from './guards';
 import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { OauthMobileLoginDto } from './dto/oauthLogin.dto';
+import { AuthGuard } from '@nestjs/passport';
+import { GoogleType } from './types/googleType';
 
 @ApiTags('AUTH')
 @Controller('auth')
@@ -20,6 +31,18 @@ export class AuthController {
   oauthMobileLogin(@Body() data: OauthMobileLoginDto) {
     return this.authService.oauthMobileLogin(data);
   }
+
+  @Public()
+  @Get('/google/callback')
+  @UseGuards(AuthGuard('google'))
+  callback(@Req() req: Request) {
+    return this.authService.webGoogleOauth(req.user as GoogleType);
+  }
+
+  @Public()
+  @Get('/web')
+  @UseGuards(AuthGuard('google'))
+  webGoogleOauth() {}
 
   @ApiOperation({
     summary: 'accessToken 재발급',
