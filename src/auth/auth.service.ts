@@ -165,7 +165,7 @@ export class AuthService {
         },
       ),
       new Date(now.setMinutes(now.getMinutes() + 15)),
-      new Date(now.setMinutes(now.getDate() + 7)),
+      new Date(now.setDate(now.getDate() + 7)),
     ]);
 
     const expiredAt = new Date(

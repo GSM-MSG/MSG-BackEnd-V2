@@ -44,10 +44,12 @@ export class AuthController {
     const token = await this.authService.webGoogleOauth(req.user as GoogleType);
     res.cookie('accessToken', token.accessToken, {
       expires: token.AtExpired,
+      httpOnly: true,
       domain: this.configService.get('DOMAIN'),
     });
     res.cookie('refreshToken', token.refreshToken, {
       expires: token.RtExpired,
+      httpOnly: true,
       domain: this.configService.get('DOMAIN'),
     });
     res.send();
@@ -71,6 +73,11 @@ export class AuthController {
     @User('refreshToken') refreshToken: string,
   ) {
     return this.authService.refresh(email, refreshToken);
+  }
+
+  @Get('check')
+  check() {
+    return '성공';
   }
 
   @ApiOperation({
