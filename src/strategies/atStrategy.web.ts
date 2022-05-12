@@ -1,15 +1,18 @@
 import { PassportStrategy } from '@nestjs/passport';
 import { Strategy, ExtractJwt } from 'passport-jwt';
-import { Request } from 'express';
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
 import { User } from 'src/Entities/User.entity';
-import * as bcrypt from 'bcrypt';
+import { Repository } from 'typeorm';
 import { ConfigService } from '@nestjs/config';
+import { Request } from 'express';
+
+type JwtPayload = {
+  email: string;
+};
 
 @Injectable()
-export class RtStrategy extends PassportStrategy(Strategy, 'jwt-refresh') {
+export class AtStrategyWeb extends PassportStrategy(Strategy, 'jwtWeb') {
   constructor(
     @InjectRepository(User) private userRepository: Repository<User>,
   ) {
@@ -17,22 +20,20 @@ export class RtStrategy extends PassportStrategy(Strategy, 'jwt-refresh') {
     super({
       jwtFromRequest: ExtractJwt.fromExtractors([
         (req: Request) => {
-          const cookie = req.cookies['refreshToken'];
+          const cookie = req.cookies['accessToken'];
           if (!cookie) return null;
           return cookie;
         },
       ]),
-      secretOrKey: configService.get('REFRESH_TOKEN_SECRET'),
-      passReqToCallback: true,
+      secretOrKey: configService.get('ACCESS_TOKEN_SECRET'),
     });
   }
 
-  async validate(req: Request, payload: { email: string }) {
-    const refreshToken = req.cookies['refreshToken'];
+  async validate(payload: JwtPayload) {
     const user = await this.userRepository.findOne({
       where: { email: payload.email },
     });
-    if (!user || !bcrypt.compare(refreshToken, user.refreshToken)) return false;
-    return { ...payload };
+    if (!user) return false;
+    return payload;
   }
 }

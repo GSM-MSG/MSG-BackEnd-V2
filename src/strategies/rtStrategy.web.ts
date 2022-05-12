@@ -9,7 +9,10 @@ import * as bcrypt from 'bcrypt';
 import { ConfigService } from '@nestjs/config';
 
 @Injectable()
-export class RtStrategy extends PassportStrategy(Strategy, 'jwt-refresh') {
+export class RtStrategyWeb extends PassportStrategy(
+  Strategy,
+  'jwtWeb-refresh',
+) {
   constructor(
     @InjectRepository(User) private userRepository: Repository<User>,
   ) {
