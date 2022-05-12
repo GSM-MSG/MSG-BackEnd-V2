@@ -50,6 +50,7 @@ export class ClubController {
     description: '삭제 시킬 동아리 정보를 받아서 동아리를 삭제합니다',
   })
   @ApiResponse({ status: 201, description: '삭제 성공' })
+  @UseGuards(AuthGuard('jwt'))
   @Delete('/')
   @HttpCode(201)
   async deleteClub(
