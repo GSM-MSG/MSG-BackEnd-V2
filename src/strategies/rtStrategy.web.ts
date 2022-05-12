@@ -9,14 +9,24 @@ import * as bcrypt from 'bcrypt';
 import { ConfigService } from '@nestjs/config';
 
 @Injectable()
-export class RtStrategy extends PassportStrategy(Strategy, 'jwt-refresh') {
+export class RtStrategyWeb extends PassportStrategy(
+  Strategy,
+  'jwtWeb-refresh',
+) {
   constructor(
     @InjectRepository(User) private userRepository: Repository<User>,
   ) {
     const configService = new ConfigService();
     super({
-      jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
-      secretOrKey: configService.get('ACCESS_TOKEN_SECRET'),
+      jwtFromRequest: ExtractJwt.fromExtractors([
+        (req: Request) => {
+          const cookie = req.cookies['refreshToken'];
+          if (!cookie) return null;
+          return cookie;
+        },
+      ]),
+      secretOrKey: configService.get('REFRESH_TOKEN_SECRET'),
+      passReqToCallback: true,
     });
   }
 

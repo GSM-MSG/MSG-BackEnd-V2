@@ -10,6 +10,8 @@ import { AtStrategy } from './strategies/atStrategy';
 import { RtStrategy } from './strategies/rtStrategy';
 import { UserModule } from './user/user.module';
 import { ImageModule } from './image/image.module';
+import { AtStrategyWeb } from './strategies/atStrategy.web';
+import { RtStrategyWeb } from './strategies/rtStrategy.web';
 
 @Module({
   imports: [
@@ -34,6 +36,6 @@ import { ImageModule } from './image/image.module';
     UserModule,
     ImageModule,
   ],
-  providers: [AtStrategy, RtStrategy],
+  providers: [AtStrategy, RtStrategy, AtStrategyWeb, RtStrategyWeb],
 })
 export class AppModule {}
