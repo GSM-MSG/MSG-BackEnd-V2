@@ -1,3 +1,4 @@
+import { UseGuards } from '@nestjs/common';
 import {
   Body,
   Controller,
@@ -8,6 +9,7 @@ import {
   Put,
   Query,
 } from '@nestjs/common';
+import { AuthGuard } from '@nestjs/passport';
 import {
   ApiBearerAuth,
   ApiOperation,
@@ -37,6 +39,7 @@ export class ClubController {
     enum: ['MAJOR', 'FREEDOM', 'EDITORIAL'],
   })
   @ApiResponse({ status: 200, description: '동아리들 가져옵니다' })
+  @UseGuards(AuthGuard('jwt'))
   @Get('/list')
   async list(@Query('type') clubType: string) {
     return this.clubService.list(clubType);
