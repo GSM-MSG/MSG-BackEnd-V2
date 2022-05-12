@@ -52,6 +52,7 @@ export class AuthController {
       httpOnly: true,
       domain: this.configService.get('DOMAIN'),
     });
+    res.redirect(this.configService.get('FRONT_URL'));
     res.send();
   }
 
@@ -68,11 +69,19 @@ export class AuthController {
   @Public()
   @UseGuards(new RtGuard())
   @Post('refresh')
-  refresh(
-    @User('email') email: string,
-    @User('refreshToken') refreshToken: string,
-  ) {
-    return this.authService.refresh(email, refreshToken);
+  async refresh(@User('email') email: string, @Res() res: Response) {
+    const token = await this.authService.refresh(email);
+    res.cookie('accessToken', token.accessToken, {
+      expires: token.AtExpired,
+      httpOnly: true,
+      domain: this.configService.get('DOMAIN'),
+    });
+    res.cookie('refreshToken', token.refreshToken, {
+      expires: token.RtExpired,
+      httpOnly: true,
+      domain: this.configService.get('DOMAIN'),
+    });
+    res.send();
   }
 
   @Get('check')

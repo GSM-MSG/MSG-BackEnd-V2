@@ -17,7 +17,7 @@ export class RtStrategy extends PassportStrategy(Strategy, 'jwt-refresh') {
     super({
       jwtFromRequest: ExtractJwt.fromExtractors([
         (req: Request) => {
-          const cookie = req.cookies['accessToken'];
+          const cookie = req.cookies['refreshToken'];
           if (!cookie) return null;
           return cookie;
         },
@@ -27,10 +27,12 @@ export class RtStrategy extends PassportStrategy(Strategy, 'jwt-refresh') {
     });
   }
 
-  async validate(req: Request, payload: any) {
-    const refreshToken = req.get('authorization').replace('Bearer', '').trim();
-    const user = await this.userRepository.findOne(payload.email);
+  async validate(req: Request, payload: { email: string }) {
+    const refreshToken = req.cookies['refreshToken'];
+    const user = await this.userRepository.findOne({
+      where: { email: payload.email },
+    });
     if (!user || !bcrypt.compare(refreshToken, user.refreshToken)) return false;
-    return { ...payload, refreshToken };
+    return { ...payload };
   }
 }
