@@ -6,7 +6,9 @@ import {
   HttpCode,
   Put,
   Query,
+  UseGuards,
 } from '@nestjs/common';
+import { AuthGuard } from '@nestjs/passport';
 import {
   ApiBearerAuth,
   ApiOperation,
@@ -29,6 +31,7 @@ export class UserController {
   })
   @ApiResponse({ status: 200, description: '성공' })
   @ApiBearerAuth('access-token')
+  @UseGuards(AuthGuard('jwt-web'))
   @Get('/my')
   async userData(@User('email') email: string) {
     return this.userService.getUserData(email);
@@ -39,6 +42,7 @@ export class UserController {
   })
   @ApiBearerAuth('access-token')
   @ApiResponse({ status: 201, description: '성공' })
+  @UseGuards(AuthGuard('jwt-web'))
   @Put('/profile')
   @HttpCode(201)
   async editImg(@Body() urlAddress: urlDto, @User('email') email: string) {
@@ -61,6 +65,7 @@ export class UserController {
     description: '동아리 타입',
     enum: ['MAJOR', 'FREEDOM', 'EDITORIAL'],
   })
+  @UseGuards(AuthGuard('jwt-web'))
   @Get('/search')
   async searchUser(
     @Query('name') name: string,
@@ -73,6 +78,7 @@ export class UserController {
     description: '유저가 동아리 탈퇴하는 파트입니다',
   })
   @ApiBearerAuth('access-token')
+  @UseGuards(AuthGuard('jwt-web'))
   @Delete('/exit')
   async exitClub(
     @Body() exitClubData: clubDatadto,
