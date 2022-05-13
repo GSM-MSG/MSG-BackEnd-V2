@@ -25,7 +25,7 @@ import { createClubDto } from './dto/createClub.dto';
 import { editClubdto } from './dto/editclub.dto';
 
 @ApiTags('CLUB')
-@Controller('club')
+@Controller('club/web')
 export class ClubController {
   constructor(private clubService: ClubService) {}
   @ApiBearerAuth('access-token')
