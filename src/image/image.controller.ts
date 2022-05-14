@@ -27,7 +27,7 @@ export class ImageController {
   @ApiBody({ isArray: true })
   @ApiResponse({ status: 200, description: 's3주소 반환' })
   @Post('')
-  @UseInterceptors(FilesInterceptor('files'))
+  @UseInterceptors(FilesInterceptor('files', 4))
   @Bind(UploadedFiles())
   async ImageUpload(@UploadedFiles() files: Array<Express.Multer.File>) {
     return await this.imageService.uploladFile(files);
