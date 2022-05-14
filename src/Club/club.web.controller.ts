@@ -25,7 +25,7 @@ import { createClubDto } from './dto/createClub.dto';
 import { editClubdto } from './dto/editclub.dto';
 
 @ApiTags('CLUB')
-@Controller('club')
+@Controller('club/web')
 export class ClubController {
   constructor(private clubService: ClubService) {}
   @ApiBearerAuth('access-token')
@@ -39,8 +39,8 @@ export class ClubController {
     enum: ['MAJOR', 'FREEDOM', 'EDITORIAL'],
   })
   @ApiResponse({ status: 200, description: '동아리들 가져옵니다' })
-  @UseGuards(AuthGuard('jwt'))
-  @Get('/list')
+  @UseGuards(AuthGuard('jwt-web'))
+  @Get('/web/list')
   async list(@Query('type') clubType: string) {
     return this.clubService.list(clubType);
   }
@@ -50,7 +50,7 @@ export class ClubController {
     description: '삭제 시킬 동아리 정보를 받아서 동아리를 삭제합니다',
   })
   @ApiResponse({ status: 201, description: '삭제 성공' })
-  @UseGuards(AuthGuard('jwt'))
+  @UseGuards(AuthGuard('jwtWeb'))
   @Delete('/')
   @HttpCode(201)
   async deleteClub(
@@ -70,7 +70,7 @@ export class ClubController {
     description: '클럽 데이터들을 받아 생성합니다',
   })
   @ApiResponse({ status: 201, description: '동아리 생성 성공' })
-  @UseGuards(AuthGuard('jwt'))
+  @UseGuards(AuthGuard('jwtWeb'))
   @Post('/')
   async createClub(
     @Body() createClubData: createClubDto,
@@ -84,7 +84,7 @@ export class ClubController {
     summary: '동아리 신청',
     description: '동아리 정보를 받아 가입신청',
   })
-  @UseGuards(AuthGuard('jwt'))
+  @UseGuards(AuthGuard('jwtWeb'))
   @Post('/apply')
   async applyClub(@Body() clubData: clubDatadto, @User('email') email: string) {
     return this.clubService.applyClub(clubData.type, clubData.q, email);
@@ -96,7 +96,7 @@ export class ClubController {
     description: '동아리 가입신청 한 것을 취소',
   })
   @HttpCode(204)
-  @UseGuards(AuthGuard('jwt'))
+  @UseGuards(AuthGuard('jwtWeb'))
   @Post('/cancel')
   async cancel(@Body() clubData: clubDatadto, @User('email') email: string) {
     return this.clubService.cancelClub(clubData.type, clubData.q, email);
@@ -107,7 +107,7 @@ export class ClubController {
     description: '동아리 가입신청 한 것을 부장이 수락',
   })
   @ApiResponse({ status: 201, description: '동아리 신청자 수락' })
-  @UseGuards(AuthGuard('jwt'))
+  @UseGuards(AuthGuard('jwtWeb'))
   @Post('/accept')
   async accept(@Body() clubData: acceptUserDto, @User('email') email: string) {
     return this.clubService.acceptClub(
@@ -123,7 +123,7 @@ export class ClubController {
     description: '동아리 가입신청 한 것을 부장이 거절',
   })
   @ApiResponse({ status: 201, description: '동아리 신청자 거절' })
-  @UseGuards(AuthGuard('jwt'))
+  @UseGuards(AuthGuard('jwtWeb'))
   @Post('/reject')
   async reject(@Body() ClubData: acceptUserDto, @User('email') email: string) {
     return this.clubService.rejectClub(
@@ -153,7 +153,7 @@ export class ClubController {
     description: '동아리 타입',
     enum: ['MAJOR', 'FREEDOM', 'EDITORIAL'],
   })
-  @UseGuards(AuthGuard('jwt'))
+  @UseGuards(AuthGuard('jwtWeb'))
   @Get('/applicant')
   async applicantList(
     @Query('type') clubType: string,
@@ -181,7 +181,7 @@ export class ClubController {
     description: '동아리 타입',
     enum: ['MAJOR', 'FREEDOM', 'EDITORIAL'],
   })
-  @UseGuards(AuthGuard('jwt'))
+  @UseGuards(AuthGuard('jwtWeb'))
   @Get('/detail')
   async detailPage(
     @Query('q') clubname: string,
@@ -209,7 +209,7 @@ export class ClubController {
     description: '동아리 타입',
     enum: ['MAJOR', 'FREEDOM', 'EDITORIAL'],
   })
-  @UseGuards(AuthGuard('jwt'))
+  @UseGuards(AuthGuard('jwtWeb'))
   @Get('/members')
   async findMembers(
     @Query('type') clubType: string,
@@ -224,7 +224,7 @@ export class ClubController {
     description: '동아리 신청 받는 버튼 활성화',
   })
   @ApiResponse({ status: 201, description: '성공적으로 열렸습니다' })
-  @UseGuards(AuthGuard('jwt'))
+  @UseGuards(AuthGuard('jwtWeb'))
   @Put('/open')
   @HttpCode(201)
   async openClub(
@@ -239,7 +239,7 @@ export class ClubController {
     description: '동아리 신청 받는 버튼 비활성화',
   })
   @ApiResponse({ status: 201, description: '성공적으로 닫혔습니다' })
-  @UseGuards(AuthGuard('jwt'))
+  @UseGuards(AuthGuard('jwtWeb'))
   @Put('/close')
   @HttpCode(201)
   async closeClub(
@@ -254,7 +254,7 @@ export class ClubController {
     description: '클럽 멤버에 있는 부장이 추방합니다',
   })
   @ApiResponse({ status: 201, description: '추방성공했습니다' })
-  @UseGuards(AuthGuard('jwt'))
+  @UseGuards(AuthGuard('jwtWeb'))
   @Delete('/kick')
   @HttpCode(201)
   async kickUser(
@@ -271,7 +271,7 @@ export class ClubController {
   @ApiResponse({ status: 201, description: '권한 위임 성공' })
   @ApiResponse({ status: 403, description: '부장이 아닙니다' })
   @ApiResponse({ status: 404, description: '유저가 없습니다' })
-  @UseGuards(AuthGuard('jwt'))
+  @UseGuards(AuthGuard('jwtWeb'))
   @Put('/delegation')
   async delegation(
     @Body() userData: acceptUserDto,
@@ -285,7 +285,7 @@ export class ClubController {
     description: '동아리 수정합니다',
   })
   @ApiResponse({ status: 201, description: '동아리 수정 성공' })
-  @UseGuards(AuthGuard('jwt'))
+  @UseGuards(AuthGuard('jwtWeb'))
   @Put('')
   async putClub(
     @Body() editClubData: editClubdto,

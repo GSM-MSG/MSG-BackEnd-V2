@@ -5,7 +5,6 @@ import { ClubModule } from './Club/club.module';
 import entities from './Entities';
 import { User } from './Entities/User.entity';
 import { AuthModule } from './auth/auth.module';
-import { CheckModule } from './check/check.module';
 import { AtStrategy } from './strategies/atStrategy';
 import { RtStrategy } from './strategies/rtStrategy';
 import { UserModule } from './user/user.module';
@@ -32,7 +31,6 @@ import { RtStrategyWeb } from './strategies/rtStrategy.web';
     TypeOrmModule.forFeature([User]),
     ClubModule,
     AuthModule,
-    CheckModule,
     UserModule,
     ImageModule,
   ],
