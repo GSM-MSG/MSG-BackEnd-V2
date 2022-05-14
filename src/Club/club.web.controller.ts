@@ -50,6 +50,7 @@ export class ClubController {
     description: '삭제 시킬 동아리 정보를 받아서 동아리를 삭제합니다',
   })
   @ApiResponse({ status: 201, description: '삭제 성공' })
+  @UseGuards(AuthGuard('jwtWeb'))
   @Delete('/')
   @HttpCode(201)
   async deleteClub(
@@ -83,6 +84,7 @@ export class ClubController {
     summary: '동아리 신청',
     description: '동아리 정보를 받아 가입신청',
   })
+  @UseGuards(AuthGuard('jwtWeb'))
   @Post('/apply')
   async applyClub(@Body() clubData: clubDatadto, @User('email') email: string) {
     return this.clubService.applyClub(clubData.type, clubData.q, email);
