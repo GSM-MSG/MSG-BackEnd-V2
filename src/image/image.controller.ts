@@ -3,8 +3,10 @@ import {
   Controller,
   Post,
   UploadedFiles,
+  UseGuards,
   UseInterceptors,
 } from '@nestjs/common';
+import { AuthGuard } from '@nestjs/passport';
 import { FilesInterceptor } from '@nestjs/platform-express';
 import {
   ApiBearerAuth,
@@ -26,6 +28,7 @@ export class ImageController {
   })
   @ApiBody({ isArray: true })
   @ApiResponse({ status: 200, description: 's3주소 반환' })
+  @UseGuards(AuthGuard('jwt'))
   @Post('')
   @UseInterceptors(FilesInterceptor('files', 4))
   @Bind(UploadedFiles())
