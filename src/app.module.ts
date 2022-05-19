@@ -1,4 +1,4 @@
-import { Module } from '@nestjs/common';
+import { MiddlewareConsumer, Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { ClubModule } from './Club/club.module';
@@ -11,6 +11,7 @@ import { UserModule } from './user/user.module';
 import { ImageModule } from './image/image.module';
 import { AtStrategyWeb } from './strategies/atStrategy.web';
 import { RtStrategyWeb } from './strategies/rtStrategy.web';
+import { LoggerMiddleware } from './lib/logger.middleware';
 
 @Module({
   imports: [
@@ -36,4 +37,8 @@ import { RtStrategyWeb } from './strategies/rtStrategy.web';
   ],
   providers: [AtStrategy, RtStrategy, AtStrategyWeb, RtStrategyWeb],
 })
-export class AppModule {}
+export class AppModule {
+  configure(consumer: MiddlewareConsumer) {
+    consumer.apply(LoggerMiddleware).forRoutes('*');
+  }
+}
