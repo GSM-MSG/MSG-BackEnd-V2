@@ -302,6 +302,59 @@ export class ClubService {
     });
   }
 
+  async guestDetailPage(clubType: string, clubName: string) {
+    const clubData = await this.Club.findOne({
+      where: { type: clubType, title: clubName },
+      relations: ['activityUrls', 'relatedLink', 'member', 'member.user'],
+    });
+    if (!clubData) 
+      throw new HttpException(
+        '존재하지 않는 동아리입니다.',
+        HttpStatus.NOT_FOUND
+      );
+    const head = clubData.member
+      .filter((member) => {
+        return member.scope === 'HEAD';
+      })
+      .map((member) => {
+        delete member.id;
+        delete member.scope;
+        delete member.user.refreshToken;
+        return member;
+      });
+    const clubMembers = clubData.member
+      .filter((member) => {
+        return member.scope === 'MEMBER';
+      })
+      .map((member) => {
+        delete member.id;
+        delete member.scope;
+        delete member.user.refreshToken;
+        return member.user;
+      });
+    if (clubData.activityUrls) {
+      const activityurls = clubData.activityUrls.map((url) => {
+        return url.url;
+      });
+      const isApplied = false;
+      const scope = 'USER';
+  
+      delete clubData.relatedLink[0].id;
+      delete clubData.member;
+      delete clubData.activityUrls;
+      delete clubData.id;
+
+      return {
+        clubData,
+        activityurls,
+        head: head[0].user,
+        member: clubMembers,
+        scope,
+        isApplied,
+      };
+    }
+  }
+
   async detailPage(clubtype: string, clubtitle: string, email: string) {
     const clubData = await this.Club.findOne({
       where: { type: clubtype, title: clubtitle },
