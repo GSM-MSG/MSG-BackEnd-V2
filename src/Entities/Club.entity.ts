@@ -23,7 +23,7 @@ export class Club {
 
   @Column()
   contact: string;
-
+  
   @Column({ nullable: true })
   teacher: string;
 
