@@ -1,8 +1,8 @@
 import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
-import { Member } from './Member.entity';
-import { Image } from './image.entity';
-import { RelatedLink } from './RelatedLink.entity';
-import { RequestJoin } from './RequestJoin.entity';
+import { Member } from './member.entity';
+import { Image } from './Image.entity';
+import { RelatedLink } from './relatedLink.entity';
+import { RequestJoin } from './requestJoin.entity';
 
 @Entity()
 export class Club {
@@ -27,7 +27,7 @@ export class Club {
   @Column({ nullable: true })
   teacher: string;
 
-  @Column({ nullable: true })
+  @Column()
   isOpened: boolean;
 
   @OneToMany(() => Member, (member) => member.club)

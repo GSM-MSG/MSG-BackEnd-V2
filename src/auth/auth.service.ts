@@ -7,10 +7,11 @@ import {
   Logger,
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { User } from 'src/Entities/User.entity';
+import { User } from 'src/Entities/user.entity';
 import { Repository } from 'typeorm';
 import * as bcrypt from 'bcrypt';
-import students, { StudentType } from '../lib/students';
+import students from '../lib/students';
+import { StudentType } from '../types/StudentType';
 import { JwtService } from '@nestjs/jwt';
 import { OauthMobileLoginDto } from './dto/oauthLogin.dto';
 import { Auth, google } from 'googleapis';

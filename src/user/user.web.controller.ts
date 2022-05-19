@@ -17,8 +17,8 @@ import {
   ApiTags,
 } from '@nestjs/swagger';
 import { User } from 'src/auth/decorators';
-import { clubDatadto } from 'src/Club/dto/ClubData.dto';
-import { urlDto } from './dto/urlAddress.dto';
+import { ClubDatadto } from 'src/Club/dto/clubData.dto';
+import { UrlDto } from './dto/urlAddress.dto';
 import { UserService } from './user.service';
 
 @ApiTags('USER')
@@ -45,7 +45,7 @@ export class UserController {
   @UseGuards(AuthGuard('jwt-web'))
   @Put('/profile')
   @HttpCode(201)
-  async editImg(@Body() urlAddress: urlDto, @User('email') email: string) {
+  async editImg(@Body() urlAddress: UrlDto, @User('email') email: string) {
     await this.userService.editProfile(urlAddress, email);
   }
   @ApiOperation({
@@ -81,7 +81,7 @@ export class UserController {
   @UseGuards(AuthGuard('jwt-web'))
   @Delete('/exit')
   async exitClub(
-    @Body() exitClubData: clubDatadto,
+    @Body() exitClubData: ClubDatadto,
     @User('email') email: string,
   ) {
     await this.userService.exitClub(exitClubData, email);

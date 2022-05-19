@@ -19,10 +19,10 @@ import {
 } from '@nestjs/swagger';
 import { User } from 'src/auth/decorators';
 import { ClubService } from './club.service';
-import { acceptUserDto } from './dto/accept.dto';
-import { clubDatadto } from './dto/ClubData.dto';
-import { createClubDto } from './dto/createClub.dto';
-import { editClubdto } from './dto/editclub.dto';
+import { AcceptUserDto } from './dto/accept.dto';
+import { ClubDatadto } from './dto/clubData.dto';
+import { CreateClubDto } from './dto/createClub.dto';
+import { EditClubdto } from './dto/editclub.dto';
 
 @ApiTags('CLUB')
 @Controller('club/web')
@@ -54,7 +54,7 @@ export class ClubController {
   @Delete('/')
   @HttpCode(201)
   async deleteClub(
-    @Body() deleteClubData: clubDatadto,
+    @Body() deleteClubData: ClubDatadto,
     @User('email') email: string,
   ) {
     return await this.clubService.deleteClub(
@@ -73,7 +73,7 @@ export class ClubController {
   @UseGuards(AuthGuard('jwtWeb'))
   @Post('/')
   async createClub(
-    @Body() createClubData: createClubDto,
+    @Body() createClubData: CreateClubDto,
     @User('email') email: string,
   ) {
     await this.clubService.createClub(createClubData, email);
@@ -86,7 +86,7 @@ export class ClubController {
   })
   @UseGuards(AuthGuard('jwtWeb'))
   @Post('/apply')
-  async applyClub(@Body() clubData: clubDatadto, @User('email') email: string) {
+  async applyClub(@Body() clubData: ClubDatadto, @User('email') email: string) {
     return this.clubService.applyClub(clubData.type, clubData.q, email);
   }
   @ApiBearerAuth('access-token')
@@ -98,7 +98,7 @@ export class ClubController {
   @HttpCode(204)
   @UseGuards(AuthGuard('jwtWeb'))
   @Post('/cancel')
-  async cancel(@Body() clubData: clubDatadto, @User('email') email: string) {
+  async cancel(@Body() clubData: ClubDatadto, @User('email') email: string) {
     return this.clubService.cancelClub(clubData.type, clubData.q, email);
   }
   @ApiBearerAuth('access-token')
@@ -109,7 +109,7 @@ export class ClubController {
   @ApiResponse({ status: 201, description: '동아리 신청자 수락' })
   @UseGuards(AuthGuard('jwtWeb'))
   @Post('/accept')
-  async accept(@Body() clubData: acceptUserDto, @User('email') email: string) {
+  async accept(@Body() clubData: AcceptUserDto, @User('email') email: string) {
     return this.clubService.acceptClub(
       clubData.type,
       clubData.q,
@@ -125,7 +125,7 @@ export class ClubController {
   @ApiResponse({ status: 201, description: '동아리 신청자 거절' })
   @UseGuards(AuthGuard('jwtWeb'))
   @Post('/reject')
-  async reject(@Body() ClubData: acceptUserDto, @User('email') email: string) {
+  async reject(@Body() ClubData: AcceptUserDto, @User('email') email: string) {
     return this.clubService.rejectClub(
       ClubData.type,
       ClubData.q,
@@ -228,7 +228,7 @@ export class ClubController {
   @Put('/open')
   @HttpCode(201)
   async openClub(
-    @Body() openClubData: clubDatadto,
+    @Body() openClubData: ClubDatadto,
     @User('email') email: string,
   ) {
     await this.clubService.clubOnOff(openClubData, email, true);
@@ -243,7 +243,7 @@ export class ClubController {
   @Put('/close')
   @HttpCode(201)
   async closeClub(
-    @Body() closeClubData: clubDatadto,
+    @Body() closeClubData: ClubDatadto,
     @User('email') email: string,
   ) {
     await this.clubService.clubOnOff(closeClubData, email, false);
@@ -258,7 +258,7 @@ export class ClubController {
   @Delete('/kick')
   @HttpCode(201)
   async kickUser(
-    @Body() kickUserData: acceptUserDto,
+    @Body() kickUserData: AcceptUserDto,
     @User('email') email: string,
   ) {
     await this.clubService.kickUser(kickUserData, email);
@@ -274,7 +274,7 @@ export class ClubController {
   @UseGuards(AuthGuard('jwtWeb'))
   @Put('/delegation')
   async delegation(
-    @Body() userData: acceptUserDto,
+    @Body() userData: AcceptUserDto,
     @User('email') email: string,
   ) {
     await this.clubService.delegation(userData, email);
@@ -288,7 +288,7 @@ export class ClubController {
   @UseGuards(AuthGuard('jwtWeb'))
   @Put('')
   async putClub(
-    @Body() editClubData: editClubdto,
+    @Body() editClubData: EditClubdto,
     @User('email') email: string,
   ) {
     await this.clubService.editClub(editClubData, email);
