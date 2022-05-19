@@ -1,16 +1,16 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Club } from 'src/Entities/Club.entity';
-import { Image } from 'src/Entities/image.entity';
+import { Club } from 'src/Entities/club.entity';
+import { Image } from 'src/Entities/Image.entity';
 import { Member } from 'src/Entities/Member.entity';
 import { RelatedLink } from 'src/Entities/RelatedLink.entity';
 import { RequestJoin } from 'src/Entities/RequestJoin.entity';
 import { User } from 'src/Entities/User.entity';
 import { Repository } from 'typeorm';
-import { clubDatadto } from './dto/ClubData.dto';
-import { createClubDto } from './dto/createClub.dto';
-import { editClubdto } from './dto/editclub.dto';
-import { kickUserDto } from './dto/kickuser.dto';
+import { ClubDatadto } from './dto/clubData.dto';
+import { CreateClubDto } from './dto/createClub.dto';
+import { EditClubdto } from './dto/editclub.dto';
+import { KickUserDto } from './dto/kickuser.dto';
 
 @Injectable()
 export class ClubService {
@@ -39,7 +39,7 @@ export class ClubService {
       );
     }
   }
-  async createClub(createClubData: createClubDto, email: string) {
+  async createClub(createClubData: CreateClubDto, email: string) {
     const {
       title,
       description,
@@ -408,7 +408,7 @@ export class ClubService {
       return member;
     });
   }
-  async clubOnOff(openClubData: clubDatadto, email: string, isOpened: boolean) {
+  async clubOnOff(openClubData: ClubDatadto, email: string, isOpened: boolean) {
     const clubData = await this.Club.findOne({
       where: { title: openClubData.q, type: openClubData.type },
       relations: ['member', 'member.user'],
@@ -430,7 +430,7 @@ export class ClubService {
       { isOpened: isOpened },
     );
   }
-  async kickUser(kickUserData: kickUserDto, email: string) {
+  async kickUser(kickUserData: KickUserDto, email: string) {
     const clubData = await this.Club.findOne({
       where: { title: kickUserData.q, type: kickUserData.type },
       relations: ['member', 'member.user'],
@@ -463,7 +463,7 @@ export class ClubService {
       throw new HttpException('동아리 부장이 아닙니다', HttpStatus.FORBIDDEN);
     await this.Member.delete({ club: clubData, user: userData });
   }
-  async delegation(userData: kickUserDto, email: string) {
+  async delegation(userData: KickUserDto, email: string) {
     const clubData = await this.Club.findOne({
       where: {
         title: userData.q,
@@ -500,7 +500,7 @@ export class ClubService {
       { scope: 'MEMBER' },
     );
   }
-  async editClub(editClubData: editClubdto, email: string) {
+  async editClub(editClubData: EditClubdto, email: string) {
     const {
       newActivityUrls,
       newMember,

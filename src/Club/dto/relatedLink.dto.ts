@@ -1,6 +1,6 @@
 import { IsString } from 'class-validator';
 
-export class relatedLinkDto {
+export class RelatedLinkDto {
   @IsString()
   name: string;
 

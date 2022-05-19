@@ -1,8 +1,8 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { IsArray, IsObject, IsOptional, IsString } from 'class-validator';
-import { relatedLinkDto } from './relatedLink.dto';
+import { RelatedLinkDto } from './relatedLink.dto';
 
-export class editClubdto {
+export class EditClubdto {
   @ApiProperty({
     example: '클라우드 컴퓨팅',
     description: '수정할 동아리 이름',
@@ -85,7 +85,7 @@ export class editClubdto {
   })
   @IsOptional()
   @IsObject()
-  relatedLink: relatedLinkDto;
+  relatedLink: RelatedLinkDto;
 
   @ApiProperty({
     example: [

@@ -1,6 +1,6 @@
 import { IsString } from 'class-validator';
 
-export class exitDataDto {
+export class ExitDataDto {
   @IsString()
   name: string;
 

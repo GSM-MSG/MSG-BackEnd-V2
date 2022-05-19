@@ -6,9 +6,9 @@ import {
   IsObject,
   IsBoolean,
 } from 'class-validator';
-import { relatedLinkDto } from './relatedLink.dto';
+import { RelatedLinkDto } from './relatedLink.dto';
 
-export class createClubDto {
+export class CreateClubDto {
   @ApiProperty({
     example: '클라우드 컴퓨팅',
     description: '동아리 이름',
@@ -56,7 +56,7 @@ export class createClubDto {
   })
   @IsOptional()
   @IsObject()
-  relatedLink: relatedLinkDto;
+  relatedLink: RelatedLinkDto;
 
   @ApiProperty({
     example: '김민영 선생님',

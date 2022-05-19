@@ -3,7 +3,7 @@ import {
   ManyToOne,
   PrimaryGeneratedColumn,
 } from 'typeorm';
-import { Club } from './Club.entity';
+import { Club } from './club.entity';
 import { User } from './User.entity';
 
 @Entity()
