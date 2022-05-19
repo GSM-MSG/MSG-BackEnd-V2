@@ -26,6 +26,6 @@ export class RtStrategy extends PassportStrategy(Strategy, 'jwt-refresh') {
       where: { email: payload.email },
     });
     if (!user || !bcrypt.compare(refreshToken, user.refreshToken)) return false;
-    return { ...payload, refreshToken };
+    return payload;
   }
 }
