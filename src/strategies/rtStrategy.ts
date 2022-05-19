@@ -16,7 +16,7 @@ export class RtStrategy extends PassportStrategy(Strategy, 'jwt-refresh') {
     const configService = new ConfigService();
     super({
       jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
-      secretOrKey: configService.get('ACCESS_TOKEN_SECRET'),
+      secretOrKey: configService.get('REFRESH_TOKEN_SECRET'),
     });
   }
 

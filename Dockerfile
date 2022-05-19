@@ -2,13 +2,15 @@ FROM node:16.13.1-alpine
 
 WORKDIR /app
 
-COPY ./package.json ./package-lock.json tsconfig.build.json tsconfig.json nest-cli.json .env ./
+COPY ./package.json ./package-lock.json ./
 
 RUN npm i
 
 COPY ./src ./src
 
 COPY ./test ./test
+
+COPY .env tsconfig.build.json tsconfig.json nest-cli.json ./
 
 RUN npm run build
 

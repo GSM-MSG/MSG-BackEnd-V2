@@ -4,6 +4,7 @@ import {
   Injectable,
   NotFoundException,
   UnauthorizedException,
+  Logger,
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { User } from 'src/Entities/User.entity';
@@ -36,10 +37,14 @@ export class AuthService {
     try {
       const ticket = await this.oauthClient.verifyIdToken({
         idToken: data.idToken,
-        audience: this.configService.get('GOOGLE_AUTH_CLIENT_ID'),
+        audience: [
+          this.configService.get('GOOGLE_AUTH_IOS_ID'),
+          this.configService.get('GOOGLE_AUTH_AOS_ID'),
+        ],
       });
       payload = ticket.getPayload();
-    } catch {
+    } catch (e) {
+      Logger.error(e);
       throw new BadRequestException('Invalid Token');
     }
 
