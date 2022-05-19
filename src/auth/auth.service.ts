@@ -37,7 +37,10 @@ export class AuthService {
     try {
       const ticket = await this.oauthClient.verifyIdToken({
         idToken: data.idToken,
-        audience: this.configService.get('GOOGLE_AUTH_IOS_ID'),
+        audience: [
+          this.configService.get('GOOGLE_AUTH_IOS_ID'),
+          this.configService.get('GOOGLE_AUTH_AOS_ID'),
+        ],
       });
       payload = ticket.getPayload();
     } catch (e) {
