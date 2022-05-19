@@ -4,7 +4,7 @@ import {
   PrimaryGeneratedColumn,
 } from 'typeorm';
 import { Club } from './club.entity';
-import { User } from './User.entity';
+import { User } from './user.entity';
 
 @Entity()
 export class RequestJoin {

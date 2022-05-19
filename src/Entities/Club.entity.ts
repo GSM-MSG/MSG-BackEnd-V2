@@ -1,8 +1,8 @@
 import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
-import { Member } from './Member.entity';
+import { Member } from './member.entity';
 import { Image } from './Image.entity';
-import { RelatedLink } from './RelatedLink.entity';
-import { RequestJoin } from './RequestJoin.entity';
+import { RelatedLink } from './relatedLink.entity';
+import { RequestJoin } from './requestJoin.entity';
 
 @Entity()
 export class Club {
@@ -23,7 +23,7 @@ export class Club {
 
   @Column()
   contact: string;
-  
+
   @Column({ nullable: true })
   teacher: string;
 
