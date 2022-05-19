@@ -3,7 +3,7 @@ import { ConfigModule } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { ClubModule } from './Club/club.module';
 import entities from './Entities';
-import { User } from './Entities/user.entity';
+import { User } from './Entities/User.entity';
 import { AuthModule } from './auth/auth.module';
 import { AtStrategy } from './strategies/atStrategy';
 import { RtStrategy } from './strategies/rtStrategy';
