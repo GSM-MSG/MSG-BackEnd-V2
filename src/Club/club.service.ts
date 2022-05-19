@@ -7,7 +7,7 @@ import { RelatedLink } from 'src/Entities/RelatedLink.entity';
 import { RequestJoin } from 'src/Entities/RequestJoin.entity';
 import { User } from 'src/Entities/User.entity';
 import { Repository } from 'typeorm';
-import { clubDatadto } from './dto/clubData.dto';
+import { clubDatadto } from './dto/ClubData.dto';
 import { createClubDto } from './dto/createClub.dto';
 import { editClubdto } from './dto/editclub.dto';
 import { kickUserDto } from './dto/kickuser.dto';
