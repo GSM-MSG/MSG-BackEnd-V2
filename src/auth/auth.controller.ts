@@ -27,8 +27,11 @@ export class AuthController {
   @ApiResponse({ status: 200, description: '발급 성공' })
   @UseGuards(AuthGuard('jwt-refresh'))
   @Post('refresh')
-  async refresh(@User('email') email: string) {
-    return this.authService.refresh(email);
+  async refresh(
+    @User('email') email: string,
+    @User('refreshToken') refreshToken: string,
+  ) {
+    return this.authService.refresh(email, refreshToken);
   }
 
   @ApiOperation({

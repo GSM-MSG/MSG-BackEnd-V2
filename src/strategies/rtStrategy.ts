@@ -16,16 +16,16 @@ export class RtStrategy extends PassportStrategy(Strategy, 'jwt-refresh') {
     const configService = new ConfigService();
     super({
       jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
-      secretOrKey: configService.get('ACCESS_TOKEN_SECRET'),
+      secretOrKey: configService.get('REFRESH_TOKEN_SECRET'),
     });
   }
 
   async validate(req: Request, payload: { email: string }) {
-    const refreshToken = req.cookies['refreshToken'];
+    const refreshToken = req.get('authorization').replace('Bearer', '').trim();
     const user = await this.userRepository.findOne({
       where: { email: payload.email },
     });
     if (!user || !bcrypt.compare(refreshToken, user.refreshToken)) return false;
-    return { ...payload };
+    return { ...payload, refreshToken };
   }
 }
