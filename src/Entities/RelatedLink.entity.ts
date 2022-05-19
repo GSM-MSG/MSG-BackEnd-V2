@@ -1,5 +1,5 @@
 import { Column, Entity, ManyToOne, PrimaryGeneratedColumn } from 'typeorm';
-import { Club } from './club.entity';
+import { Club } from './Club.entity';
 
 @Entity()
 export class RelatedLink {
