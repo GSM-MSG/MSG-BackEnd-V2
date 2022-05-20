@@ -1,13 +1,13 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Club } from 'src/Entities/club.entity';
-import { Image } from 'src/Entities/Image.entity';
-import { Member } from 'src/Entities/member.entity';
-import { RelatedLink } from 'src/Entities/relatedLink.entity';
-import { RequestJoin } from 'src/Entities/requestJoin.entity';
-import { User } from 'src/Entities/user.entity';
+import { Club } from 'src/Entities/Club.entity';
+import { Image } from 'src/Entities/image.entity';
+import { Member } from 'src/Entities/Member.entity';
+import { RelatedLink } from 'src/Entities/RelatedLink.entity';
+import { RequestJoin } from 'src/Entities/RequestJoin.entity';
+import { User } from 'src/Entities/User.entity';
 import { Repository } from 'typeorm';
-import { ClubDatadto } from './dto/clubData.dto';
+import { ClubDatadto } from './dto/ClubData.dto';
 import { CreateClubDto } from './dto/createClub.dto';
 import { EditClubdto } from './dto/editclub.dto';
 import { KickUserDto } from './dto/kickuser.dto';
@@ -308,7 +308,7 @@ export class ClubService {
     const clubData = await this.Club.findOne({
       where: { type: clubType, title: clubName },
       relations: ['activityUrls', 'relatedLink', 'member', 'member.user'],
-      select: { 
+      select: {
         id: true,
         title: true,
         type: true,
@@ -317,38 +317,36 @@ export class ClubService {
         contact: true,
         teacher: true,
         isOpened: true,
-        member: { 
+        member: {
           id: true,
-          user: { 
-            email: true, 
-            name: true, 
-            grade: true, 
-            class: true, 
-            num: true, 
-            userImg: true
+          user: {
+            email: true,
+            name: true,
+            grade: true,
+            class: true,
+            num: true,
+            userImg: true,
           },
-          scope: true 
+          scope: true,
         },
         relatedLink: { name: true, url: true, id: true },
-        activityUrls: { id: true, url: true }
-      }
+        activityUrls: { id: true, url: true },
+      },
     });
-    
-    if (!clubData) 
+
+    if (!clubData)
       throw new HttpException(
         '존재하지 않는 동아리입니다.',
-        HttpStatus.NOT_FOUND
+        HttpStatus.NOT_FOUND,
       );
     const head = clubData.member.find((member) => {
       return member.scope === 'HEAD';
     });
-    
-    
-    const clubMembers = clubData.member
-      .filter((member) => {
-        return member.scope === 'MEMBER';
-      })
-    
+
+    const clubMembers = clubData.member.filter((member) => {
+      return member.scope === 'MEMBER';
+    });
+
     if (clubData.activityUrls) {
       const activityurls = clubData.activityUrls.map((url) => {
         return url.url;
@@ -374,7 +372,7 @@ export class ClubService {
     const clubData = await this.Club.findOne({
       where: { type: clubtype, title: clubtitle },
       relations: ['activityUrls', 'relatedLink', 'member', 'member.user'],
-      select: { 
+      select: {
         id: true,
         title: true,
         type: true,
@@ -383,21 +381,21 @@ export class ClubService {
         contact: true,
         teacher: true,
         isOpened: true,
-        member: { 
+        member: {
           id: true,
-          user: { 
-            email: true, 
-            name: true, 
-            grade: true, 
-            class: true, 
-            num: true, 
-            userImg: true
+          user: {
+            email: true,
+            name: true,
+            grade: true,
+            class: true,
+            num: true,
+            userImg: true,
           },
-          scope: true 
+          scope: true,
         },
         relatedLink: { name: true, url: true, id: true },
-        activityUrls: { id: true, url: true }
-      }
+        activityUrls: { id: true, url: true },
+      },
     });
     if (!email) {
       throw new HttpException(
@@ -416,13 +414,10 @@ export class ClubService {
     const head = clubData.member.find((member) => {
       return member.scope === 'HEAD';
     });
-    
-    
-    const clubMembers = clubData.member
-      .filter((member) => {
-        return member.scope === 'MEMBER';
-      })
 
+    const clubMembers = clubData.member.filter((member) => {
+      return member.scope === 'MEMBER';
+    });
 
     if (clubData.activityUrls) {
       const activityurls = clubData.activityUrls.map((url) => {
@@ -434,7 +429,7 @@ export class ClubService {
       const isApplied = !!applicant;
       const memberForScope = clubMembers.find((member) => {
         return member.user === userData;
-      })
+      });
       const scope = memberForScope ? memberForScope.scope : 'USER';
 
       delete clubData.member;
