@@ -53,7 +53,7 @@ export class AuthWebController {
   @UseGuards(AuthGuard('jwtWeb-refresh'))
   @Post('refresh/web')
   async refreshWeb(@User('email') email: string, @Res() res: Response) {
-    const token = await this.authService.refresh(email);
+    const token = await this.authService.refreshWeb(email);
     res.cookie('accessToken', token.accessToken, {
       expires: token.AtExpired,
       httpOnly: true,

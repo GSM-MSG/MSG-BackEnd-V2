@@ -112,6 +112,14 @@ export class AuthService {
     return tokens;
   }
 
+  async refreshWeb(email: string) {
+    const tokens = await this.getToken(email);
+    const hash: string = await bcrypt.hash(tokens.refreshToken, 10);
+    await this.userRepository.update(email, { refreshToken: hash });
+
+    return tokens;
+  }
+
   async logout(email: string) {
     if (!(await this.userRepository.findOne({ where: { email } })))
       throw new ForbiddenException('Not Found User');

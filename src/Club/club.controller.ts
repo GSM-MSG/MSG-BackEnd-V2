@@ -181,6 +181,13 @@ export class ClubController {
     description: '동아리 타입',
     enum: ['MAJOR', 'FREEDOM', 'EDITORIAL'],
   })
+  @Get('/guest/detail')
+  async guestDetailPage(
+    @Query('q') clubName: string,
+    @Query('type') clubType: string
+  ) {
+    return this.clubService.guestDetailPage(clubType, clubName);
+  }
   @UseGuards(AuthGuard('jwt'))
   @Get('/detail')
   async detailPage(
