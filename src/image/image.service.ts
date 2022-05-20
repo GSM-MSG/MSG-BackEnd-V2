@@ -5,7 +5,7 @@ import { ConfigService } from '@nestjs/config';
 @Injectable()
 export class ImageService {
   constructor(private configService: ConfigService) {}
-  AWS_S3_BUCKET = this.configService.get<string>('AWS_BUCKET'); //추후 버킷으로 변경
+  AWS_S3_BUCKET = this.configService.get<string>('AWS_BUCKET');
   s3 = new AWS.S3({
     accessKeyId: this.configService.get('AWSAccessKeyId'),
     secretAccessKey: this.configService.get('AWSSecretKey'),
