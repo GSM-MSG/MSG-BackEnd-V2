@@ -6,5 +6,5 @@ export class ClubUserDto {
   @IsString()
   type: string;
   @IsString()
-  email: string;
+  userId: string;
 }
