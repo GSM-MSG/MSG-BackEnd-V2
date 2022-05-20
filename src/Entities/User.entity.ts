@@ -1,6 +1,6 @@
 import { Entity, Column, PrimaryColumn, OneToMany } from 'typeorm';
-import { Member } from './member.entity';
-import { RequestJoin } from './requestJoin.entity';
+import { Member } from './Member.entity';
+import { RequestJoin } from './RequestJoin.entity';
 
 @Entity()
 export class User {
