@@ -1,11 +1,11 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Club } from 'src/Entities/club.entity';
+import { Club } from 'src/Entities/Club.entity';
 import { Image } from 'src/Entities/Image.entity';
-import { Member } from 'src/Entities/member.entity';
-import { RelatedLink } from 'src/Entities/relatedLink.entity';
-import { RequestJoin } from 'src/Entities/requestJoin.entity';
-import { User } from 'src/Entities/user.entity';
+import { Member } from 'src/Entities/Member.entity';
+import { RelatedLink } from 'src/Entities/RelatedLink.entity';
+import { RequestJoin } from 'src/Entities/RequestJoin.entity';
+import { User } from 'src/Entities/User.entity';
 import { Repository } from 'typeorm';
 import { ClubDataDto } from './dto/ClubData.dto';
 import { CreateClubDto } from './dto/CreateClub.dto';
