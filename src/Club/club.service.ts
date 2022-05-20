@@ -7,9 +7,9 @@ import { RelatedLink } from 'src/Entities/relatedLink.entity';
 import { RequestJoin } from 'src/Entities/requestJoin.entity';
 import { User } from 'src/Entities/user.entity';
 import { Repository } from 'typeorm';
-import { ClubDatadto } from './dto/ClubData.dto';
+import { ClubDataDto } from './dto/ClubData.dto';
 import { CreateClubDto } from './dto/CreateClub.dto';
-import { EditClubdto } from './dto/Editclub.dto';
+import { EditClubDto } from './dto/Editclub.dto';
 import { KickUserDto } from './dto/KickUser.dto';
 
 @Injectable()
@@ -471,7 +471,7 @@ export class ClubService {
       return member;
     });
   }
-  async clubOnOff(openClubData: ClubDatadto, email: string, isOpened: boolean) {
+  async clubOnOff(openClubData: ClubDataDto, email: string, isOpened: boolean) {
     const clubData = await this.Club.findOne({
       where: { title: openClubData.q, type: openClubData.type },
       relations: ['member', 'member.user'],
@@ -563,7 +563,7 @@ export class ClubService {
       { scope: 'MEMBER' },
     );
   }
-  async editClub(editClubData: EditClubdto, email: string) {
+  async editClub(editClubData: EditClubDto, email: string) {
     const {
       newActivityUrls,
       newMember,

@@ -20,9 +20,9 @@ import {
 import { User } from 'src/auth/decorators';
 import { ClubService } from './club.service';
 import { AcceptUserDto } from './dto/accept.dto';
-import { ClubDatadto } from './dto/ClubData.dto';
+import { ClubDataDto } from './dto/ClubData.dto';
 import { CreateClubDto } from './dto/createClub.dto';
-import { EditClubdto } from './dto/editclub.dto';
+import { EditClubDto } from './dto/editclub.dto';
 
 @ApiTags('CLUB')
 @Controller('club/web')
@@ -54,7 +54,7 @@ export class ClubController {
   @Delete('/')
   @HttpCode(201)
   async deleteClub(
-    @Body() deleteClubData: ClubDatadto,
+    @Body() deleteClubData: ClubDataDto,
     @User('email') email: string,
   ) {
     return await this.clubService.deleteClub(
@@ -86,7 +86,7 @@ export class ClubController {
   })
   @UseGuards(AuthGuard('jwtWeb'))
   @Post('/apply')
-  async applyClub(@Body() clubData: ClubDatadto, @User('email') email: string) {
+  async applyClub(@Body() clubData: ClubDataDto, @User('email') email: string) {
     return this.clubService.applyClub(clubData.type, clubData.q, email);
   }
   @ApiBearerAuth('access-token')
@@ -98,7 +98,7 @@ export class ClubController {
   @HttpCode(204)
   @UseGuards(AuthGuard('jwtWeb'))
   @Post('/cancel')
-  async cancel(@Body() clubData: ClubDatadto, @User('email') email: string) {
+  async cancel(@Body() clubData: ClubDataDto, @User('email') email: string) {
     return this.clubService.cancelClub(clubData.type, clubData.q, email);
   }
   @ApiBearerAuth('access-token')
@@ -228,7 +228,7 @@ export class ClubController {
   @Put('/open')
   @HttpCode(201)
   async openClub(
-    @Body() openClubData: ClubDatadto,
+    @Body() openClubData: ClubDataDto,
     @User('email') email: string,
   ) {
     await this.clubService.clubOnOff(openClubData, email, true);
@@ -243,7 +243,7 @@ export class ClubController {
   @Put('/close')
   @HttpCode(201)
   async closeClub(
-    @Body() closeClubData: ClubDatadto,
+    @Body() closeClubData: ClubDataDto,
     @User('email') email: string,
   ) {
     await this.clubService.clubOnOff(closeClubData, email, false);
@@ -288,7 +288,7 @@ export class ClubController {
   @UseGuards(AuthGuard('jwtWeb'))
   @Put('')
   async putClub(
-    @Body() editClubData: EditClubdto,
+    @Body() editClubData: EditClubDto,
     @User('email') email: string,
   ) {
     await this.clubService.editClub(editClubData, email);

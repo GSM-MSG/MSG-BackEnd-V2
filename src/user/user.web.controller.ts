@@ -17,7 +17,7 @@ import {
   ApiTags,
 } from '@nestjs/swagger';
 import { User } from 'src/auth/decorators';
-import { ClubDatadto } from 'src/club/dto/ClubData.dto';
+import { ClubDataDto } from 'src/club/dto/ClubData.dto';
 import { UrlDto } from './dto/UrlAddress.dto';
 import { UserService } from './user.service';
 
@@ -81,7 +81,7 @@ export class UserController {
   @UseGuards(AuthGuard('jwt-web'))
   @Delete('/exit')
   async exitClub(
-    @Body() exitClubData: ClubDatadto,
+    @Body() exitClubData: ClubDataDto,
     @User('email') email: string,
   ) {
     await this.userService.exitClub(exitClubData, email);
