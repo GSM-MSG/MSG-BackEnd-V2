@@ -63,6 +63,7 @@ export class ClubService {
         HttpStatus.UNAUTHORIZED,
       );
     }
+    let isOpened = false;
     await this.Club.save(
       this.Club.create({
         title,
@@ -71,6 +72,7 @@ export class ClubService {
         contact,
         teacher,
         type,
+        isOpened: isOpened,
       }),
     );
     const clubData = await this.Club.findOne({
