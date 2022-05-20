@@ -22,7 +22,7 @@ import { ClubService } from './club.service';
 import { AcceptUserDto } from './dto/Accept.dto';
 import { ClubDataDto } from './dto/ClubData.dto';
 import { CreateClubDto } from './dto/CreateClub.dto';
-import { EditClubdto } from './dto/EditClub.dto';
+import { EditClubDto } from './dto/EditClub.dto';
 
 @ApiTags('CLUB')
 @Controller('club')
@@ -295,7 +295,7 @@ export class ClubController {
   @UseGuards(AuthGuard('jwt'))
   @Put('')
   async putClub(
-    @Body() editClubData: EditClubdto,
+    @Body() editClubData: EditClubDto,
     @User('email') email: string,
   ) {
     await this.clubService.editClub(editClubData, email);

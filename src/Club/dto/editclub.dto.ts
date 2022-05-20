@@ -2,7 +2,7 @@ import { ApiProperty } from '@nestjs/swagger';
 import { IsArray, IsObject, IsOptional, IsString } from 'class-validator';
 import { RelatedLinkDto } from './RelatedLink.dto';
 
-export class EditClubdto {
+export class EditClubDto {
   @ApiProperty({
     example: '클라우드 컴퓨팅',
     description: '수정할 동아리 이름',
