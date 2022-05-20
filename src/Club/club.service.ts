@@ -9,7 +9,7 @@ import { User } from 'src/Entities/User.entity';
 import { Repository } from 'typeorm';
 import { ClubDataDto } from './dto/ClubData.dto';
 import { CreateClubDto } from './dto/CreateClub.dto';
-import { EditClubDto } from './dto/Editclub.dto';
+import { EditClubDto } from './dto/EditClub.dto';
 import { KickUserDto } from './dto/KickUser.dto';
 
 @Injectable()
