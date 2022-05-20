@@ -356,6 +356,9 @@ export class ClubService {
       const isApplied = false;
       const scope = 'USER';
 
+      delete clubData.member;
+      delete clubData.activityUrls;
+
       return {
         clubData,
         activityurls,
