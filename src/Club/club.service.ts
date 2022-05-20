@@ -1,13 +1,13 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Club } from 'src/Entities/Club.entity';
-import { Image } from 'src/Entities/image.entity';
-import { Member } from 'src/Entities/Member.entity';
-import { RelatedLink } from 'src/Entities/RelatedLink.entity';
-import { RequestJoin } from 'src/Entities/RequestJoin.entity';
-import { User } from 'src/Entities/User.entity';
+import { Club } from 'src/Entities/club.entity';
+import { Image } from 'src/Entities/Image.entity';
+import { Member } from 'src/Entities/member.entity';
+import { RelatedLink } from 'src/Entities/relatedLink.entity';
+import { RequestJoin } from 'src/Entities/requestJoin.entity';
+import { User } from 'src/Entities/user.entity';
 import { Repository } from 'typeorm';
-import { ClubDatadto } from './dto/ClubData.dto';
+import { ClubDatadto } from './dto/clubData.dto';
 import { CreateClubDto } from './dto/createClub.dto';
 import { EditClubdto } from './dto/editclub.dto';
 import { KickUserDto } from './dto/kickuser.dto';
@@ -306,48 +306,60 @@ export class ClubService {
     const clubData = await this.Club.findOne({
       where: { type: clubType, title: clubName },
       relations: ['activityUrls', 'relatedLink', 'member', 'member.user'],
+      select: { 
+        id: true,
+        title: true,
+        type: true,
+        bannerUrl: true,
+        description: true,
+        contact: true,
+        teacher: true,
+        isOpened: true,
+        member: { 
+          id: true,
+          user: { 
+            email: true, 
+            name: true, 
+            grade: true, 
+            class: true, 
+            num: true, 
+            userImg: true
+          },
+          scope: true 
+        },
+        relatedLink: { name: true, url: true, id: true },
+        activityUrls: { id: true, url: true }
+      }
     });
+
+    
+    
     if (!clubData) 
       throw new HttpException(
         '존재하지 않는 동아리입니다.',
         HttpStatus.NOT_FOUND
       );
-    const head = clubData.member
-      .filter((member) => {
-        return member.scope === 'HEAD';
-      })
-      .map((member) => {
-        delete member.id;
-        delete member.scope;
-        delete member.user.refreshToken;
-        return member;
-      });
+    const head = clubData.member.find((member) => {
+      return member.scope === 'HEAD';
+    });
+    
+    
     const clubMembers = clubData.member
       .filter((member) => {
         return member.scope === 'MEMBER';
       })
-      .map((member) => {
-        delete member.id;
-        delete member.scope;
-        delete member.user.refreshToken;
-        return member.user;
-      });
+    
     if (clubData.activityUrls) {
       const activityurls = clubData.activityUrls.map((url) => {
         return url.url;
       });
       const isApplied = false;
       const scope = 'USER';
-  
-      delete clubData.relatedLink[0].id;
-      delete clubData.member;
-      delete clubData.activityUrls;
-      delete clubData.id;
 
       return {
         clubData,
         activityurls,
-        head: head[0].user,
+        head: head.user,
         member: clubMembers,
         scope,
         isApplied,
