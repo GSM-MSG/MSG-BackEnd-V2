@@ -1,6 +1,6 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { IsArray, IsObject, IsOptional, IsString } from 'class-validator';
-import { RelatedLinkDto } from './RelatedLink.dto';
+import { RelatedLinkDto } from './relatedLink.dto';
 
 export class EditClubDto {
   @ApiProperty({
