@@ -7,7 +7,7 @@ import {
   Logger,
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { User } from 'src/Entities/user.entity';
+import { User } from 'src/Entities/User.entity';
 import { Repository } from 'typeorm';
 import * as bcrypt from 'bcrypt';
 import students from '../lib/students';
@@ -97,7 +97,22 @@ export class AuthService {
     return this.saveUser(email, user._json.picture, student);
   }
 
-  async refresh(email: string) {
+  async refresh(email: string, refreshToken: string) {
+    const user = await this.userRepository.findOne({ where: { email } });
+    if (!user || !user.refreshToken)
+      throw new ForbiddenException('Not found user or Not signed in');
+
+    const matched = await bcrypt.compare(refreshToken, user.refreshToken);
+    if (!matched) throw new ForbiddenException('Not matched Token');
+
+    const tokens = await this.getToken(email);
+    const hash: string = await bcrypt.hash(tokens.refreshToken, 10);
+    await this.userRepository.update(email, { refreshToken: hash });
+
+    return tokens;
+  }
+
+  async refreshWeb(email: string) {
     const tokens = await this.getToken(email);
     const hash: string = await bcrypt.hash(tokens.refreshToken, 10);
     await this.userRepository.update(email, { refreshToken: hash });

@@ -63,6 +63,7 @@ export class ClubService {
         HttpStatus.UNAUTHORIZED,
       );
     }
+    let isOpened = false;
     await this.Club.save(
       this.Club.create({
         title,
@@ -71,6 +72,7 @@ export class ClubService {
         contact,
         teacher,
         type,
+        isOpened: isOpened,
       }),
     );
     const clubData = await this.Club.findOne({
@@ -302,10 +304,100 @@ export class ClubService {
     });
   }
 
+  async guestDetailPage(clubType: string, clubName: string) {
+    const clubData = await this.Club.findOne({
+      where: { type: clubType, title: clubName },
+      relations: ['activityUrls', 'relatedLink', 'member', 'member.user'],
+      select: { 
+        id: true,
+        title: true,
+        type: true,
+        bannerUrl: true,
+        description: true,
+        contact: true,
+        teacher: true,
+        isOpened: true,
+        member: { 
+          id: true,
+          user: { 
+            email: true, 
+            name: true, 
+            grade: true, 
+            class: true, 
+            num: true, 
+            userImg: true
+          },
+          scope: true 
+        },
+        relatedLink: { name: true, url: true, id: true },
+        activityUrls: { id: true, url: true }
+      }
+    });
+    
+    if (!clubData) 
+      throw new HttpException(
+        '존재하지 않는 동아리입니다.',
+        HttpStatus.NOT_FOUND
+      );
+    const head = clubData.member.find((member) => {
+      return member.scope === 'HEAD';
+    });
+    
+    
+    const clubMembers = clubData.member
+      .filter((member) => {
+        return member.scope === 'MEMBER';
+      })
+    
+    if (clubData.activityUrls) {
+      const activityurls = clubData.activityUrls.map((url) => {
+        return url.url;
+      });
+      const isApplied = false;
+      const scope = 'USER';
+
+      delete clubData.member;
+      delete clubData.activityUrls;
+
+      return {
+        clubData,
+        activityurls,
+        head: head.user,
+        member: clubMembers,
+        scope,
+        isApplied,
+      };
+    }
+  }
+
   async detailPage(clubtype: string, clubtitle: string, email: string) {
     const clubData = await this.Club.findOne({
       where: { type: clubtype, title: clubtitle },
       relations: ['activityUrls', 'relatedLink', 'member', 'member.user'],
+      select: { 
+        id: true,
+        title: true,
+        type: true,
+        bannerUrl: true,
+        description: true,
+        contact: true,
+        teacher: true,
+        isOpened: true,
+        member: { 
+          id: true,
+          user: { 
+            email: true, 
+            name: true, 
+            grade: true, 
+            class: true, 
+            num: true, 
+            userImg: true
+          },
+          scope: true 
+        },
+        relatedLink: { name: true, url: true, id: true },
+        activityUrls: { id: true, url: true }
+      }
     });
     if (!email) {
       throw new HttpException(
@@ -321,27 +413,17 @@ export class ClubService {
       );
     }
 
-    const head = clubData.member
-      .filter((member) => {
-        return member.scope === 'HEAD';
-      })
-      .map((member) => {
-        delete member.id;
-        delete member.scope;
-        delete member.user.refreshToken;
-        return member;
-      });
-
-    const clubmember = clubData.member
+    const head = clubData.member.find((member) => {
+      return member.scope === 'HEAD';
+    });
+    
+    
+    const clubMembers = clubData.member
       .filter((member) => {
         return member.scope === 'MEMBER';
       })
-      .map((member) => {
-        delete member.id;
-        delete member.scope;
-        delete member.user.refreshToken;
-        return member.user;
-      });
+
+
     if (clubData.activityUrls) {
       const activityurls = clubData.activityUrls.map((url) => {
         return url.url;
@@ -349,34 +431,20 @@ export class ClubService {
       const applicant = await this.RequestJoin.findOne({
         where: { userId: userData, clubId: clubData },
       });
-      let isApplied: boolean;
+      const isApplied = !!applicant;
+      const memberForScope = clubMembers.find((member) => {
+        return member.user === userData;
+      })
+      const scope = memberForScope ? memberForScope.scope : 'USER';
 
-      if (applicant) {
-        isApplied = true;
-      } else if (!applicant) {
-        isApplied = false;
-      }
-
-      const member = await this.Member.findOne({
-        where: { club: clubData, user: userData },
-      });
-      let scope: string;
-      if (!member) {
-        scope = 'USER';
-      } else if (member) {
-        scope = member.scope;
-      }
-
-      delete clubData.relatedLink[0].id;
       delete clubData.member;
       delete clubData.activityUrls;
-      delete clubData.id;
 
       return {
         clubData,
         activityurls,
-        head: head[0].user,
-        member: clubmember,
+        head: head.user,
+        member: clubMembers,
         scope,
         isApplied,
       };
