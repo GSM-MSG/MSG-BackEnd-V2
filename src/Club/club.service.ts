@@ -10,7 +10,7 @@ import { Repository } from 'typeorm';
 import { ClubDatadto } from './dto/ClubData.dto';
 import { CreateClubDto } from './dto/CreateClub.dto';
 import { EditClubdto } from './dto/Editclub.dto';
-import { KickUserDto } from './dto/Kickuser.dto';
+import { KickUserDto } from './dto/KickUser.dto';
 
 @Injectable()
 export class ClubService {
