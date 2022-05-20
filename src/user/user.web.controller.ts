@@ -18,7 +18,7 @@ import {
 } from '@nestjs/swagger';
 import { User } from 'src/auth/decorators';
 import { ClubDatadto } from 'src/Club/dto/ClubData.dto';
-import { UrlDto } from './dto/urlAddress.dto';
+import { UrlDto } from './dto/UrlAddress.dto';
 import { UserService } from './user.service';
 
 @ApiTags('USER')

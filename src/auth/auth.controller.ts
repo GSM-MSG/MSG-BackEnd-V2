@@ -2,7 +2,7 @@ import { Body, Controller, HttpCode, Post, UseGuards } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { User } from './decorators';
 import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
-import { OauthMobileLoginDto } from './dto/oauthLogin.dto';
+import { OauthMobileLoginDto } from './dto/OauthLogin.dto';
 import { AuthGuard } from '@nestjs/passport';
 
 @ApiTags('AUTH')

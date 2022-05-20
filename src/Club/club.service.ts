@@ -8,9 +8,9 @@ import { RequestJoin } from 'src/Entities/RequestJoin.entity';
 import { User } from 'src/Entities/User.entity';
 import { Repository } from 'typeorm';
 import { ClubDatadto } from './dto/ClubData.dto';
-import { CreateClubDto } from './dto/createClub.dto';
-import { EditClubdto } from './dto/editclub.dto';
-import { KickUserDto } from './dto/kickuser.dto';
+import { CreateClubDto } from './dto/CreateClub.dto';
+import { EditClubdto } from './dto/Editclub.dto';
+import { KickUserDto } from './dto/Kickuser.dto';
 
 @Injectable()
 export class ClubService {

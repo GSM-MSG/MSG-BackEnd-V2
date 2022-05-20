@@ -6,7 +6,7 @@ import {
   IsObject,
   IsBoolean,
 } from 'class-validator';
-import { RelatedLinkDto } from './relatedLink.dto';
+import { RelatedLinkDto } from './RelatedLink.dto';
 
 export class CreateClubDto {
   @ApiProperty({

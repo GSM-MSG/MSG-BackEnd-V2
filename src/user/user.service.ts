@@ -5,7 +5,7 @@ import { Club } from 'src/Entities/Club.entity';
 import { Member } from 'src/Entities/Member.entity';
 import { User } from 'src/Entities/User.entity';
 import { Repository } from 'typeorm';
-import { UrlDto } from './dto/urlAddress.dto';
+import { UrlDto } from './dto/UrlAddress.dto';
 
 @Injectable()
 export class UserService {
