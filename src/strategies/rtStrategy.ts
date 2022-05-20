@@ -17,11 +17,12 @@ export class RtStrategy extends PassportStrategy(Strategy, 'jwt-refresh') {
     super({
       jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
       secretOrKey: configService.get('REFRESH_TOKEN_SECRET'),
+      passReqToCallback: true,
     });
   }
 
   async validate(req: Request, payload: { email: string }) {
-    const refreshToken = req.cookies['refreshToken'];
+    const refreshToken = req.get('authorization').replace('Bearer', '');
 
     if (!refreshToken) return null;
     if (!payload || !payload.email) return null;
