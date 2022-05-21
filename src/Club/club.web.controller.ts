@@ -19,10 +19,10 @@ import {
 } from '@nestjs/swagger';
 import { User } from 'src/auth/decorators';
 import { ClubService } from './club.service';
-import { AcceptUserDto } from './dto/Accept.dto';
+import { AcceptUserDto } from './dto/accept.dto';
 import { ClubDataDto } from './dto/ClubData.dto';
-import { CreateClubDto } from './dto/CreateClub.dto';
-import { EditClubDto } from './dto/EditClub.dto';
+import { CreateClubDto } from './dto/createClub.dto';
+import { EditClubDto } from './dto/editclub.dto';
 
 @ApiTags('CLUB')
 @Controller('club/web')

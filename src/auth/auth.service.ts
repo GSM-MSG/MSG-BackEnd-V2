@@ -13,7 +13,7 @@ import * as bcrypt from 'bcrypt';
 import students from '../lib/students';
 import { StudentType } from '../types/StudentType';
 import { JwtService } from '@nestjs/jwt';
-import { OauthMobileLoginDto } from './dto/OauthLogin.dto';
+import { OauthMobileLoginDto } from './dto/oauthLogin.dto';
 import { Auth, google } from 'googleapis';
 import { ConfigService } from '@nestjs/config';
 import { GoogleType } from './types/googleType';

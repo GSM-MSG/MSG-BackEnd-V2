@@ -23,10 +23,12 @@ export class AtStrategy extends PassportStrategy(Strategy, 'jwt') {
   }
 
   async validate(payload: JwtPayload) {
+    if (!payload || !payload.email) return null;
+
     const user = await this.userRepository.findOne({
       where: { email: payload.email },
     });
-    if (!user) return false;
+    if (!user) return null;
     return payload;
   }
 }

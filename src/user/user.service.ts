@@ -1,11 +1,11 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { ClubDataDto } from 'src/club/dto/ClubData.dto';
+import { ClubDataDto } from '../Club/dto/ClubData.dto';
 import { Club } from 'src/Entities/Club.entity';
 import { Member } from 'src/Entities/Member.entity';
 import { User } from 'src/Entities/User.entity';
 import { Repository } from 'typeorm';
-import { UrlDto } from './dto/UrlAddress.dto';
+import { UrlDto } from './dto/urlAddress.dto';
 
 @Injectable()
 export class UserService {

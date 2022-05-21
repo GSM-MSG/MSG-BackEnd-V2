@@ -17,15 +17,21 @@ export class RtStrategy extends PassportStrategy(Strategy, 'jwt-refresh') {
     super({
       jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
       secretOrKey: configService.get('REFRESH_TOKEN_SECRET'),
+      passReqToCallback: true,
     });
   }
 
   async validate(req: Request, payload: { email: string }) {
-    const refreshToken = req.get('authorization').replace('Bearer', '').trim();
+    const refreshToken = req.get('authorization').replace('Bearer', '');
+
+    if (!refreshToken) return null;
+    if (!payload || !payload.email) return null;
+
     const user = await this.userRepository.findOne({
       where: { email: payload.email },
     });
-    if (!user || !bcrypt.compare(refreshToken, user.refreshToken)) return false;
-    return payload;
+    if (!user || !bcrypt.compare(refreshToken, user.refreshToken)) return null;
+
+    return { ...payload };
   }
 }
