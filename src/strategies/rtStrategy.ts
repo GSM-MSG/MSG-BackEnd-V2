@@ -22,7 +22,7 @@ export class RtStrategy extends PassportStrategy(Strategy, 'jwt-refresh') {
   }
 
   async validate(req: Request, payload: { email: string }) {
-    const refreshToken = req.get('authorization').replace('Bearer', '');
+    const refreshToken = req.get('authorization').replace('Bearer ', '');
 
     if (!refreshToken) return null;
     if (!payload || !payload.email) return null;
@@ -30,7 +30,9 @@ export class RtStrategy extends PassportStrategy(Strategy, 'jwt-refresh') {
     const user = await this.userRepository.findOne({
       where: { email: payload.email },
     });
-    if (!user || !bcrypt.compare(refreshToken, user.refreshToken)) return null;
+
+    if (!user || !(await bcrypt.compare(refreshToken, user.refreshToken)))
+      return null;
 
     return { ...payload };
   }
