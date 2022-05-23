@@ -277,10 +277,10 @@ export class ClubService {
     await this.RequestJoin.delete({ ...rejectUser });
   }
 
-  async applicantList(clubtype: string, clubtitle: string, email: string) {
+  async applicantList(clubType: string, clubtitle: string, email: string) {
     const reqUserData = await this.Club.findOne({
-      relations: ['requestJoin', 'requestJoin.userId', 'member'],
-      where: { title: clubtitle, type: clubtype },
+      relations: ['requestJoin', 'requestJoin.userId', 'member', 'member.user'],
+      where: { title: clubtitle, type: clubType },
     });
     if (!email) {
       throw new HttpException(
@@ -288,6 +288,13 @@ export class ClubService {
         HttpStatus.UNAUTHORIZED,
       );
     }
+    if (!reqUserData) {
+      throw new HttpException(
+        '동아리가 존재하지 않습니다.',
+        HttpStatus.NOT_FOUND,
+      );
+    }
+    console.log(reqUserData);
     if (
       !reqUserData.member.find((member) => {
         return member.user.email === email;
