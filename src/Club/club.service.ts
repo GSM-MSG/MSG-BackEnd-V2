@@ -294,7 +294,6 @@ export class ClubService {
         HttpStatus.NOT_FOUND,
       );
     }
-    console.log(reqUserData);
     if (
       !reqUserData.member.find((member) => {
         return member.user.email === email;
