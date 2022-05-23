@@ -311,7 +311,7 @@ export class ClubService {
   }
 
   async guestDetailPage(clubType: string, clubName: string) {
-    const clubData = await this.Club.findOne({
+    const club = await this.Club.findOne({
       where: { type: clubType, title: clubName },
       relations: ['activityUrls', 'relatedLink', 'member', 'member.user'],
       select: {
@@ -340,34 +340,36 @@ export class ClubService {
       },
     });
 
-    if (!clubData)
+    if (!club)
       throw new HttpException(
         '존재하지 않는 동아리입니다.',
         HttpStatus.NOT_FOUND,
       );
-    const head = clubData.member.find((member) => {
+    const head = club.member.find((member) => {
       return member.scope === 'HEAD';
     });
 
-    const clubMembers = clubData.member.filter((member) => {
+    const clubMembers = club.member.filter((member) => {
       return member.scope === 'MEMBER';
     });
 
-    if (clubData.activityUrls) {
-      const activityurls = clubData.activityUrls.map((url) => {
+    if (club.activityUrls) {
+      const activityurls = club.activityUrls.map((url) => {
         return url.url;
       });
       const isApplied = false;
       const scope = 'USER';
 
-      delete clubData.member;
-      delete clubData.activityUrls;
+      delete club.member;
+      delete club.activityUrls;
 
       return {
-        clubData,
+        club,
         activityurls,
         head: head.user,
-        member: clubMembers,
+        member: clubMembers.map((user) => {
+          return user.user;
+        }),
         scope,
         isApplied,
       };
@@ -375,7 +377,7 @@ export class ClubService {
   }
 
   async detailPage(clubtype: string, clubtitle: string, email: string) {
-    const clubData = await this.Club.findOne({
+    const club = await this.Club.findOne({
       where: { type: clubtype, title: clubtitle },
       relations: ['activityUrls', 'relatedLink', 'member', 'member.user'],
       select: {
@@ -410,27 +412,27 @@ export class ClubService {
       );
     }
     const userData = await this.User.findOne({ where: { email } });
-    if (!clubData) {
+    if (!club) {
       throw new HttpException(
         '존재하지않는 동아리입니다.',
         HttpStatus.NOT_FOUND,
       );
     }
 
-    const head = clubData.member.find((member) => {
+    const head = club.member.find((member) => {
       return member.scope === 'HEAD';
     });
 
-    const clubMembers = clubData.member.filter((member) => {
+    const clubMembers = club.member.filter((member) => {
       return member.scope === 'MEMBER';
     });
 
-    if (clubData.activityUrls) {
-      const activityurls = clubData.activityUrls.map((url) => {
+    if (club.activityUrls) {
+      const activityurls = club.activityUrls.map((url) => {
         return url.url;
       });
       const applicant = await this.RequestJoin.findOne({
-        where: { userId: userData, clubId: clubData },
+        where: { userId: userData, clubId: club },
       });
       const isApplied = !!applicant;
       const memberForScope = clubMembers.find((member) => {
@@ -438,14 +440,16 @@ export class ClubService {
       });
       const scope = memberForScope ? memberForScope.scope : 'USER';
 
-      delete clubData.member;
-      delete clubData.activityUrls;
+      delete club.member;
+      delete club.activityUrls;
 
       return {
-        clubData,
+        club,
         activityurls,
         head: head.user,
-        member: clubMembers,
+        member: clubMembers.map((user) => {
+          return user.user;
+        }),
         scope,
         isApplied,
       };
