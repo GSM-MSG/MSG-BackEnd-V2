@@ -97,7 +97,7 @@ export class ClubController {
   })
   @HttpCode(204)
   @UseGuards(AuthGuard('jwt'))
-  @Post('/cancel')
+  @Delete('/cancel')
   async cancel(@Body() clubData: ClubDataDto, @User('email') email: string) {
     return this.clubService.cancelClub(clubData.type, clubData.q, email);
   }
