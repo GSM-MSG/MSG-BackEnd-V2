@@ -52,7 +52,15 @@ export class AuthWebController {
   @ApiResponse({ status: 200, description: '발급 성공' })
   @UseGuards(AuthGuard('jwtWeb-refresh'))
   @Post('refresh/web')
-  async refreshWeb(@User('email') email: string, @Res() res: Response) {
+  async refreshWeb(
+    @User('email') email: string,
+    @User('accessToken') access: string,
+    @Res() res: Response,
+  ) {
+    if (access) {
+      res.send();
+    }
+
     const token = await this.authService.refreshWeb(email);
     res.cookie('accessToken', token.accessToken, {
       expires: token.AtExpired,
@@ -64,13 +72,14 @@ export class AuthWebController {
       httpOnly: true,
       domain: this.configService.get('DOMAIN'),
     });
-    res.send();
+    res.send({ accessToken: token.accessToken });
   }
 
-  @UseGuards(AuthGuard('jwtWeb'))
+  @UseGuards(AuthGuard('jwt-web'))
+  @HttpCode(200)
   @Get('check')
   check() {
-    return '성공';
+    return { message: '성공' };
   }
 
   @ApiOperation({
@@ -78,7 +87,7 @@ export class AuthWebController {
     description: '로그아웃을 합니다',
   })
   @ApiResponse({ status: 200, description: '로그아웃 성공' })
-  @UseGuards(AuthGuard('jwtWeb'))
+  @UseGuards(AuthGuard('jwt-web'))
   @Post('logout')
   @HttpCode(200)
   logoutWeb(@User('email') email: string, @Res() res: Response) {

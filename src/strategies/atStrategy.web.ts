@@ -12,7 +12,7 @@ type JwtPayload = {
 };
 
 @Injectable()
-export class AtStrategyWeb extends PassportStrategy(Strategy, 'jwtWeb') {
+export class AtStrategyWeb extends PassportStrategy(Strategy, 'jwt-web') {
   constructor(
     @InjectRepository(User) private userRepository: Repository<User>,
   ) {
