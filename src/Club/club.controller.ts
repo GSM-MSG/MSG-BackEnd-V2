@@ -124,7 +124,7 @@ export class ClubController {
   })
   @ApiResponse({ status: 201, description: '동아리 신청자 거절' })
   @UseGuards(AuthGuard('jwt'))
-  @Post('/reject')
+  @Delete('/reject')
   async reject(@Body() ClubData: AcceptUserDto, @User('email') email: string) {
     return this.clubService.rejectClub(
       ClubData.type,
