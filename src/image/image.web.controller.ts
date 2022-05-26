@@ -18,7 +18,7 @@ import {
 import { ImageService } from './image.service';
 @ApiTags('IMAGE')
 @Controller('image')
-export class ImageController {
+export class ImageWebController {
   constructor(private imageService: ImageService) {}
 
   @ApiBearerAuth('access-token')

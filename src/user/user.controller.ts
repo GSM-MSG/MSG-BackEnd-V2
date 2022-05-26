@@ -22,7 +22,7 @@ import { UrlDto } from './dto/urlAddress.dto';
 import { UserService } from './user.service';
 
 @ApiTags('USER')
-@Controller('user')
+@Controller('/user')
 export class UserController {
   constructor(private userService: UserService) {}
   @ApiOperation({

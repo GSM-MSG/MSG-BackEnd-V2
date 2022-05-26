@@ -22,8 +22,8 @@ import { UrlDto } from './dto/urlAddress.dto';
 import { UserService } from './user.service';
 
 @ApiTags('USER')
-@Controller('user/web')
-export class UserController {
+@Controller('/user/web')
+export class UserWebController {
   constructor(private userService: UserService) {}
   @ApiOperation({
     summary: '유저정보 가져오기',
