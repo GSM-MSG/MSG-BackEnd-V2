@@ -1,4 +1,5 @@
 import { Entity, Column, PrimaryColumn, OneToMany } from 'typeorm';
+import { ClassRegistration } from './ClassRegistration.entity';
 import { Member } from './Member.entity';
 import { RequestJoin } from './RequestJoin.entity';
 
@@ -27,6 +28,12 @@ export class User {
 
   @OneToMany(() => RequestJoin, (RequestJoin) => RequestJoin.userId)
   requestJoin: RequestJoin[];
+
+  @OneToMany(
+    () => ClassRegistration,
+    (ClassRegistration) => ClassRegistration.user,
+  )
+  classRegistration: ClassRegistration[];
 
   @Column({ nullable: true })
   refreshToken: string | null;
