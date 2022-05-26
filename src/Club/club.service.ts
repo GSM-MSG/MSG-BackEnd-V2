@@ -411,7 +411,7 @@ export class ClubService {
         HttpStatus.UNAUTHORIZED,
       );
     }
-    const userData = await this.User.findOne({ where: { email } });
+    const userData = await this.User.findOne({ where: { email: email } });
     if (!club) {
       throw new HttpException(
         '존재하지않는 동아리입니다.',
@@ -436,7 +436,7 @@ export class ClubService {
       });
       const isApplied = !!applicant;
       const memberForScope = club.member.find((member) => {
-        return member.user === userData;
+        return member.user.email === userData.email;
       });
       const scope = memberForScope ? memberForScope.scope : 'USER';
 
