@@ -1,7 +1,8 @@
-import { ManyToOne, PrimaryGeneratedColumn } from 'typeorm';
+import { Entity, ManyToOne, PrimaryGeneratedColumn } from 'typeorm';
 import { AfterSchool } from './AfterSchool.entity';
 import { User } from './User.entity';
 
+@Entity()
 export class ClassRegistration {
   @PrimaryGeneratedColumn()
   id: number;
