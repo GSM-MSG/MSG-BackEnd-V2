@@ -53,8 +53,7 @@ export class AuthService {
     const student = this.findStudent(`${email}`);
 
     if (!payload || !email) throw new NotFoundException('Not found oauth user');
-    else if (payload.hd !== 'gsm.hs.kr')
-      throw new ForbiddenException('Not GSM mail');
+    else if (payload.hd !== 'gsm.hs.kr') return null;
     else if (!student) throw new NotFoundException('Not exists student in GSM');
 
     const replacedEmail = email.replace('@gsm.hs.kr', '');
@@ -86,8 +85,7 @@ export class AuthService {
     const User = new Object(user);
     if (!User.hasOwnProperty('id'))
       throw new UnauthorizedException('user를 찾을 수 없습니다.');
-    if (user._json.hd !== 'gsm.hs.kr')
-      throw new ForbiddenException('Not GSM mail');
+    if (user._json.hd !== 'gsm.hs.kr') return null;
 
     const student = this.findStudent(user._json.email);
     if (!student) throw new NotFoundException('Not exists student in GSM');

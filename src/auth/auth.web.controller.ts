@@ -27,6 +27,12 @@ export class AuthWebController {
   @UseGuards(AuthGuard('google'))
   async callback(@Req() req: Request, @Res() res: Response) {
     const token = await this.authService.webGoogleOauth(req.user as GoogleType);
+
+    if (!token) {
+      res.redirect(`${this.configService.get('FRONT_URL')}/login`);
+      res.send({ message: 'not GSM user' });
+    }
+
     res.cookie('accessToken', token.accessToken, {
       expires: token.AtExpired,
       httpOnly: true,
