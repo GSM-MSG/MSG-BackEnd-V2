@@ -38,6 +38,9 @@ export class AfterSchool {
   @Column()
   year: number;
 
+  @Column()
+  isOpened: boolean;
+
   @OneToMany(
     () => ClassRegistration,
     (ClassRegistration) => ClassRegistration.afterSchool,
