@@ -1,4 +1,5 @@
-import { Column, PrimaryGeneratedColumn } from 'typeorm';
+import { Column, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
+import { ClassRegistration } from './ClassRegistration.entity';
 
 export class AfterSchool {
   @PrimaryGeneratedColumn()
@@ -36,4 +37,10 @@ export class AfterSchool {
 
   @Column()
   year: number;
+
+  @OneToMany(
+    () => ClassRegistration,
+    (ClassRegistration) => ClassRegistration.afterSchoolId,
+  )
+  classRegistration: ClassRegistration[];
 }
