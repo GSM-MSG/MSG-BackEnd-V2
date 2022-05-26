@@ -435,7 +435,7 @@ export class ClubService {
         where: { userId: userData, clubId: club },
       });
       const isApplied = !!applicant;
-      const memberForScope = clubMembers.find((member) => {
+      const memberForScope = club.member.find((member) => {
         return member.user === userData;
       });
       const scope = memberForScope ? memberForScope.scope : 'USER';
