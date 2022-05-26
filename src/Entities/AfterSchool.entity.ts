@@ -15,7 +15,7 @@ export class AfterSchool {
   week: string;
 
   @Column()
-  class: number;
+  grade: number;
 
   @Column()
   teacher: string;
@@ -40,7 +40,7 @@ export class AfterSchool {
 
   @OneToMany(
     () => ClassRegistration,
-    (ClassRegistration) => ClassRegistration.afterSchoolId,
+    (ClassRegistration) => ClassRegistration.afterSchool,
   )
   classRegistration: ClassRegistration[];
 }

@@ -7,8 +7,8 @@ export class ClassRegistration {
   id: number;
 
   @ManyToOne(() => AfterSchool, (AfterSchool) => AfterSchool.id)
-  afterSchoolId: AfterSchool;
+  afterSchool: AfterSchool;
 
   @ManyToOne(() => User, (User) => User.email)
-  userId: User;
+  user: User;
 }
