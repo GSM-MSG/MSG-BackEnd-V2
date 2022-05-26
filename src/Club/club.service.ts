@@ -411,7 +411,7 @@ export class ClubService {
         HttpStatus.UNAUTHORIZED,
       );
     }
-    const userData = await this.User.findOne({ where: { email: email } });
+    const userData = await this.User.findOne({ where: { email } });
     if (!club) {
       throw new HttpException(
         '존재하지않는 동아리입니다.',
