@@ -40,7 +40,7 @@ export class ClubWebController {
   })
   @ApiResponse({ status: 200, description: '동아리들 가져옵니다' })
   @UseGuards(AuthGuard('jwt-web'))
-  @Get('/web/list')
+  @Get('/list')
   async list(@Query('type') clubType: string) {
     return this.clubService.list(clubType);
   }
