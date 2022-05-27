@@ -13,7 +13,7 @@ export class AfterSchool {
   personnel: number;
 
   @Column()
-  week: string;
+  dayOfWeek: string;
 
   @Column()
   grade: number;
@@ -37,7 +37,7 @@ export class AfterSchool {
   season: string;
 
   @Column()
-  year: number;
+  yearOf: number;
 
   @Column()
   isOpened: boolean;
