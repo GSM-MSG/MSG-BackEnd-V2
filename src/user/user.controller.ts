@@ -86,4 +86,7 @@ export class UserController {
   ) {
     await this.userService.exitClub(exitClubData, email);
   }
+  @Delete('/withdrawal')
+  async withdrawal(){
+  }
 }
