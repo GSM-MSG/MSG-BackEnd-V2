@@ -12,7 +12,7 @@ import { ImageModule } from './image/image.module';
 import { AtStrategyWeb } from './strategies/atStrategy.web';
 import { RtStrategyWeb } from './strategies/rtStrategy.web';
 import { LoggerMiddleware } from './lib/logger.middleware';
-import { AfterSchoolModule } from './after_school/after_school.module';
+import { AfterSchoolModule } from './afterSchool/afterSchool.module';
 
 @Module({
   imports: [
