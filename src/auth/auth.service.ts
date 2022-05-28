@@ -84,13 +84,10 @@ export class AuthService {
 
   async webGoogleOauth(user: GoogleType) {
     const User = new Object(user);
-    if (!User.hasOwnProperty('id'))
-      throw new UnauthorizedException('user를 찾을 수 없습니다.');
-    if (user._json.hd !== 'gsm.hs.kr')
-      throw new ForbiddenException('Not GSM mail');
-
     const student = this.findStudent(user._json.email);
-    if (!student) throw new NotFoundException('Not exists student in GSM');
+
+    if (!User.hasOwnProperty('id') || user._json.hd !== 'gsm.hs.kr' || !student)
+      return null;
 
     const email = user._json.email;
 
