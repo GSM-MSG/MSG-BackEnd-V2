@@ -94,7 +94,7 @@ export class AuthWebController {
   })
   @ApiResponse({ status: 200, description: '로그아웃 성공' })
   @UseGuards(AuthGuard('jwt-web'))
-  @Post('logout')
+  @Post('/web/logout')
   @HttpCode(200)
   logoutWeb(@User('email') email: string, @Res() res: Response) {
     res.clearCookie('refreshToken');
