@@ -96,9 +96,10 @@ export class AuthWebController {
   @UseGuards(AuthGuard('jwt-web'))
   @Post('/web/logout')
   @HttpCode(200)
-  logoutWeb(@User('email') email: string, @Res() res: Response) {
+  async logoutWeb(@User('email') email: string, @Res() res: Response) {
     res.clearCookie('refreshToken');
     res.clearCookie('accessToken');
-    return this.authService.logout(email);
+    await this.authService.logout(email);
+    res.send('로그아웃 성공');
   }
 }
