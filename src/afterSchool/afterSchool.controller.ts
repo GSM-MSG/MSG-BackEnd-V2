@@ -1,17 +1,20 @@
-import { Controller, Get, Query } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  Query,
+  UsePipes,
+  ValidationPipe,
+} from '@nestjs/common';
 import { User } from 'src/auth/decorators';
 import { AfterSchoolService } from './afterSchool.service';
+import { ListDataDto } from './dto/listData.dto';
 
-@Controller('after-school')
+@Controller('afterSchool')
 export class AfterSchoolController {
   constructor(private afterSchoolService: AfterSchoolService) {}
   @Get()
-  async list(
-    @Query('season') season: string,
-    @Query('week') week: string,
-    @Query('grade') grade: number,
-    @User('email') email: string,
-  ) {
-    return await this.afterSchoolService.list(season, week, grade, email);
+  @UsePipes(new ValidationPipe({ transform: true }))
+  async list(@Query() listDataDto: ListDataDto, @User('email') email: string) {
+    return await this.afterSchoolService.list(listDataDto, email);
   }
 }
