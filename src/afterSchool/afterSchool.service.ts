@@ -1,7 +1,40 @@
 import { Injectable } from '@nestjs/common';
+import { InjectRepository } from '@nestjs/typeorm';
+import { AfterSchool } from 'src/Entities/AfterSchool.entity';
+import { Repository } from 'typeorm';
 import { ListDataDto } from './dto/listData.dto';
 
 @Injectable()
 export class AfterSchoolService {
-  async list(listDataDto: ListDataDto, email: string) {}
+  constructor(
+    @InjectRepository(AfterSchool)
+    private afterSchoolRepository: Repository<AfterSchool>,
+  ) {}
+  async list(listDataDto: ListDataDto) {
+    if (listDataDto.week === 'ALL') {
+      return await this.afterSchoolRepository.find({
+        select: {
+          id: true,
+          title: true,
+          dayOfWeek: true,
+          grade: true,
+          personnel: true,
+          maxPersonnel: true,
+          isOpened: true,
+        },
+        where: {
+          season: listDataDto.season,
+          grade: listDataDto.grade,
+        },
+      });
+    } else {
+      return await this.afterSchoolRepository.find({
+        where: {
+          season: listDataDto.season,
+          dayOfWeek: listDataDto.week,
+          grade: listDataDto.grade,
+        },
+      });
+    }
+  }
 }
