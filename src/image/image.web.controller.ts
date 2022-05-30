@@ -28,7 +28,7 @@ export class ImageWebController {
   })
   @ApiBody({ isArray: true })
   @ApiResponse({ status: 200, description: 's3주소 반환' })
-  @UseGuards(AuthGuard('jwtWeb'))
+  @UseGuards(AuthGuard('jwt-web'))
   @Post('')
   @UseInterceptors(FilesInterceptor('files', 4))
   @Bind(UploadedFiles())
