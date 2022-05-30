@@ -12,7 +12,7 @@ export class AfterSchoolService {
   ) {}
   async list(listDataDto: ListDataDto) {
     if (listDataDto.week === 'ALL') {
-      return await this.afterSchoolRepository.find({
+      let data = await this.afterSchoolRepository.find({
         select: {
           id: true,
           title: true,
