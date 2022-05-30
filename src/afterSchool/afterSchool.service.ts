@@ -27,14 +27,25 @@ export class AfterSchoolService {
           grade: listDataDto.grade,
         },
       });
+      return data;
     } else {
-      return await this.afterSchoolRepository.find({
+      let data = await this.afterSchoolRepository.find({
+        select: {
+          id: true,
+          title: true,
+          dayOfWeek: true,
+          grade: true,
+          personnel: true,
+          maxPersonnel: true,
+          isOpened: true,
+        },
         where: {
           season: listDataDto.season,
           dayOfWeek: listDataDto.week,
           grade: listDataDto.grade,
         },
       });
+      return data;
     }
   }
 }
