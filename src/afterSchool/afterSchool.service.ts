@@ -15,9 +15,9 @@ export class AfterSchoolService {
     private classRegistration: Repository<ClassRegistration>,
   ) {}
 
-  async applyAfterSchool(ApplyAfterSchool: ApplyAfterSchoolDto, email: string) {
+  async applyAfterSchool(applyAfterSchool: ApplyAfterSchoolDto, email: string) {
     const afterSchoolData = await this.afterSchool.findOne({
-      where: { id: ApplyAfterSchool.afterSchoolId },
+      where: { id: applyAfterSchool.afterSchoolId },
     });
     const userData = await this.user.findOne({ where: { email } });
     if (!afterSchoolData) {
