@@ -16,7 +16,6 @@ export class AfterSchoolService {
   ) {}
 
   async applyAfterSchool(ApplyAfterSchool: ApplyAfterSchoolDto, email: string) {
-    console.log(ApplyAfterSchool.afterSchoolId);
     const afterSchoolData = await this.afterSchool.findOne({
       where: { id: ApplyAfterSchool.afterSchoolId },
     });
@@ -26,6 +25,9 @@ export class AfterSchoolService {
         '존재하지 않는 방과후입니다.',
         HttpStatus.NOT_FOUND,
       );
+    }
+    if (!userData) {
+      throw new HttpException('유저가 존재하지 않아yo', HttpStatus.NOT_FOUND);
     }
 
     await this.classRegistration.save(
