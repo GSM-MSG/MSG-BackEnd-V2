@@ -5,11 +5,13 @@ import {
   ApiOperation,
   ApiQuery,
   ApiResponse,
+  ApiTags,
 } from '@nestjs/swagger';
 import { User } from 'src/auth/decorators';
 import { AfterSchoolService } from './afterSchool.service';
 import { ApplyAfterSchoolDto } from './dto/ApplyAfterSchool.dto';
 
+@ApiTags('AFTERSCHOOL')
 @UseGuards(AuthGuard('jwt'))
 @Controller('afterSchool')
 export class AfterSchoolController {
