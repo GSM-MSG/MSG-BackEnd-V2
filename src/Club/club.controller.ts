@@ -44,6 +44,7 @@ export class ClubController {
   async list(@Query('type') clubType: string) {
     return this.clubService.list(clubType);
   }
+
   @ApiBearerAuth('access-token')
   @ApiOperation({
     summary: '클럽 삭제 파트입니다',
@@ -78,6 +79,7 @@ export class ClubController {
   ) {
     await this.clubService.createClub(createClubData, email);
   }
+
   @ApiBearerAuth('access-token')
   @ApiResponse({ status: 201, description: '동아리 신청되었습니다' })
   @ApiOperation({
@@ -89,6 +91,7 @@ export class ClubController {
   async applyClub(@Body() clubData: ClubDataDto, @User('email') email: string) {
     return this.clubService.applyClub(clubData.type, clubData.q, email);
   }
+
   @ApiBearerAuth('access-token')
   @ApiResponse({ status: 204, description: '동아리 신청 취소' })
   @ApiOperation({
@@ -101,6 +104,7 @@ export class ClubController {
   async cancel(@Body() clubData: ClubDataDto, @User('email') email: string) {
     return this.clubService.cancelClub(clubData.type, clubData.q, email);
   }
+
   @ApiBearerAuth('access-token')
   @ApiOperation({
     summary: '동아리 신청자 수락',
@@ -117,6 +121,7 @@ export class ClubController {
       email,
     );
   }
+
   @ApiBearerAuth('access-token')
   @ApiOperation({
     summary: '동아리 가입신청 거절',
@@ -133,6 +138,7 @@ export class ClubController {
       email,
     );
   }
+
   @ApiBearerAuth('access-token')
   @ApiOperation({
     summary: '동아리 신청자 리스트',
@@ -162,32 +168,7 @@ export class ClubController {
   ) {
     return this.clubService.applicantList(clubType, clubTitle, email);
   }
-  @ApiBearerAuth('access-token')
-  @ApiOperation({
-    summary: '동아리 상세 정보',
-    description: '동아리 상세 정보를 가져옵니다',
-  })
-  @ApiResponse({
-    status: 200,
-    description: '동아리 상세 정보 불러오기',
-  })
-  @ApiQuery({
-    name: 'q',
-    description: '동아리 이름',
-    example: '클라우드 컴퓨팅',
-  })
-  @ApiQuery({
-    name: 'type',
-    description: '동아리 타입',
-    enum: ['MAJOR', 'FREEDOM', 'EDITORIAL'],
-  })
-  @Get('/guest/detail')
-  async guestDetailPage(
-    @Query('q') clubName: string,
-    @Query('type') clubType: string,
-  ) {
-    return this.clubService.guestDetailPage(clubType, clubName);
-  }
+
   @UseGuards(AuthGuard('jwt'))
   @Get('/detail')
   async detailPage(
@@ -197,6 +178,7 @@ export class ClubController {
   ) {
     return this.clubService.detailPage(clubtype, clubname, email);
   }
+
   @ApiBearerAuth('access-token')
   @ApiOperation({
     summary: '동아리 멤버 불러오기',
@@ -225,6 +207,7 @@ export class ClubController {
   ) {
     return this.clubService.findMember(clubType, clubTitle, email);
   }
+
   @ApiBearerAuth('access-token')
   @ApiOperation({
     summary: '클럽 동아리 신청 받는거 오픈하기',
@@ -240,6 +223,7 @@ export class ClubController {
   ) {
     await this.clubService.clubOnOff(openClubData, email, true);
   }
+
   @ApiBearerAuth('access-token')
   @ApiOperation({
     summary: '클럽 동아리 신청 받는거 비활성화',
@@ -255,6 +239,7 @@ export class ClubController {
   ) {
     await this.clubService.clubOnOff(closeClubData, email, false);
   }
+
   @ApiBearerAuth('access-token')
   @ApiOperation({
     summary: '동아리 멤버 추방',
@@ -270,6 +255,7 @@ export class ClubController {
   ) {
     await this.clubService.kickUser(kickUserData, email);
   }
+
   @ApiBearerAuth('access-token')
   @ApiOperation({
     summary: '부장권한 위임',
@@ -286,6 +272,7 @@ export class ClubController {
   ) {
     await this.clubService.delegation(userData, email);
   }
+
   @ApiBearerAuth('access-token')
   @ApiOperation({
     summary: '동아리 수정',
@@ -299,21 +286,5 @@ export class ClubController {
     @User('email') email: string,
   ) {
     await this.clubService.editClub(editClubData, email);
-  }
-
-  @ApiBearerAuth('access-token')
-  @ApiOperation({
-    summary: '동아리 리스트 가져오기',
-    description: '동아리들을 가져옵니다',
-  })
-  @ApiQuery({
-    name: 'type',
-    description: '동아리 타입',
-    enum: ['MAJOR', 'FREEDOM', 'EDITORIAL'],
-  })
-  @ApiResponse({ status: 200, description: '동아리들 가져옵니다' })
-  @Get('/guest/list')
-  async guestList(@Query('type') clubType: string) {
-    return this.clubService.list(clubType);
   }
 }
