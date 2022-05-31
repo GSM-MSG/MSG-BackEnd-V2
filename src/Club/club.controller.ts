@@ -312,8 +312,7 @@ export class ClubController {
     enum: ['MAJOR', 'FREEDOM', 'EDITORIAL'],
   })
   @ApiResponse({ status: 200, description: '동아리들 가져옵니다' })
-  @UseGuards(AuthGuard('jwt'))
-  @Get('/list')
+  @Get('/guest/list')
   async guestList(@Query('type') clubType: string) {
     return this.clubService.list(clubType);
   }
