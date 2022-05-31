@@ -17,6 +17,7 @@ import {
 } from '@nestjs/swagger';
 import { ImageService } from './image.service';
 @ApiTags('IMAGE')
+@UseGuards(AuthGuard('jwt'))
 @Controller('image')
 export class ImageController {
   constructor(private imageService: ImageService) {}
@@ -28,7 +29,6 @@ export class ImageController {
   })
   @ApiBody({ isArray: true })
   @ApiResponse({ status: 200, description: 's3주소 반환' })
-  @UseGuards(AuthGuard('jwt'))
   @Post('')
   @UseInterceptors(FilesInterceptor('files', 4))
   @Bind(UploadedFiles())
