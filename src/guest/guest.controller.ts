@@ -29,7 +29,7 @@ export class GuestController {
     description: '동아리 타입',
     enum: ['MAJOR', 'FREEDOM', 'EDITORIAL'],
   })
-  @Get('/guest/detail')
+  @Get('/detail')
   async guestDetailPage(
     @Query('q') clubName: string,
     @Query('type') clubType: string,
@@ -47,7 +47,7 @@ export class GuestController {
     enum: ['MAJOR', 'FREEDOM', 'EDITORIAL'],
   })
   @ApiResponse({ status: 200, description: '동아리들 가져옵니다' })
-  @Get('/guest/list')
+  @Get('/list')
   async guestList(@Query('type') clubType: string) {
     return this.guestService.list(clubType);
   }
