@@ -44,6 +44,7 @@ export class ClubWebController {
   async list(@Query('type') clubType: string) {
     return this.clubService.list(clubType);
   }
+
   @ApiBearerAuth('access-token')
   @ApiOperation({
     summary: '클럽 삭제 파트입니다',
@@ -76,6 +77,7 @@ export class ClubWebController {
   ) {
     await this.clubService.createClub(createClubData, email);
   }
+
   @ApiBearerAuth('access-token')
   @ApiResponse({ status: 201, description: '동아리 신청되었습니다' })
   @ApiOperation({
@@ -86,6 +88,7 @@ export class ClubWebController {
   async applyClub(@Body() clubData: ClubDataDto, @User('email') email: string) {
     return this.clubService.applyClub(clubData.type, clubData.q, email);
   }
+
   @ApiBearerAuth('access-token')
   @ApiResponse({ status: 204, description: '동아리 신청 취소' })
   @ApiOperation({
@@ -97,6 +100,7 @@ export class ClubWebController {
   async cancel(@Body() clubData: ClubDataDto, @User('email') email: string) {
     return this.clubService.cancelClub(clubData.type, clubData.q, email);
   }
+
   @ApiBearerAuth('access-token')
   @ApiOperation({
     summary: '동아리 신청자 수락',
@@ -112,6 +116,7 @@ export class ClubWebController {
       email,
     );
   }
+
   @ApiBearerAuth('access-token')
   @ApiOperation({
     summary: '동아리 가입신청 거절',
@@ -127,6 +132,7 @@ export class ClubWebController {
       email,
     );
   }
+
   @ApiBearerAuth('access-token')
   @ApiOperation({
     summary: '동아리 신청자 리스트',
@@ -155,6 +161,7 @@ export class ClubWebController {
   ) {
     return this.clubService.applicantList(clubType, clubTitle, email);
   }
+
   @ApiBearerAuth('access-token')
   @ApiOperation({
     summary: '동아리 상세 정보',
@@ -182,6 +189,7 @@ export class ClubWebController {
   ) {
     return this.clubService.detailPage(clubtype, clubname, email);
   }
+
   @ApiBearerAuth('access-token')
   @ApiOperation({
     summary: '동아리 멤버 불러오기',
@@ -209,6 +217,7 @@ export class ClubWebController {
   ) {
     return this.clubService.findMember(clubType, clubTitle, email);
   }
+
   @ApiBearerAuth('access-token')
   @ApiOperation({
     summary: '클럽 동아리 신청 받는거 오픈하기',
@@ -223,6 +232,7 @@ export class ClubWebController {
   ) {
     await this.clubService.clubOnOff(openClubData, email, true);
   }
+
   @ApiBearerAuth('access-token')
   @ApiOperation({
     summary: '클럽 동아리 신청 받는거 비활성화',
@@ -237,6 +247,7 @@ export class ClubWebController {
   ) {
     await this.clubService.clubOnOff(closeClubData, email, false);
   }
+
   @ApiBearerAuth('access-token')
   @ApiOperation({
     summary: '동아리 멤버 추방',
@@ -251,6 +262,7 @@ export class ClubWebController {
   ) {
     await this.clubService.kickUser(kickUserData, email);
   }
+
   @ApiBearerAuth('access-token')
   @ApiOperation({
     summary: '부장권한 위임',
@@ -266,6 +278,7 @@ export class ClubWebController {
   ) {
     await this.clubService.delegation(userData, email);
   }
+
   @ApiBearerAuth('access-token')
   @ApiOperation({
     summary: '동아리 수정',
