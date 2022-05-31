@@ -300,4 +300,21 @@ export class ClubController {
   ) {
     await this.clubService.editClub(editClubData, email);
   }
+
+  @ApiBearerAuth('access-token')
+  @ApiOperation({
+    summary: '동아리 리스트 가져오기',
+    description: '동아리들을 가져옵니다',
+  })
+  @ApiQuery({
+    name: 'type',
+    description: '동아리 타입',
+    enum: ['MAJOR', 'FREEDOM', 'EDITORIAL'],
+  })
+  @ApiResponse({ status: 200, description: '동아리들 가져옵니다' })
+  @UseGuards(AuthGuard('jwt'))
+  @Get('/list')
+  async guestList(@Query('type') clubType: string) {
+    return this.clubService.list(clubType);
+  }
 }
