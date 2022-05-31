@@ -1,4 +1,4 @@
-import { Body, Controller, Post, UseGuards } from '@nestjs/common';
+import { Body, Controller, Get, Post, UseGuards } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
 import {
   ApiBearerAuth,
@@ -35,5 +35,9 @@ export class AfterSchoolController {
     @User('email') email: string,
   ) {
     this.afterSchoolService.applyAfterSchool(applyAfterSchoolDto, email);
+  }
+  @Get('find')
+  async findAfterSchool() {
+    return this.afterSchoolService.findAfterScool();
   }
 }

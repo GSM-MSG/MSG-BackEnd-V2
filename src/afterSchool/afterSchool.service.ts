@@ -37,4 +37,5 @@ export class AfterSchoolService {
       }),
     );
   }
+  async findAfterScool() {}
 }
