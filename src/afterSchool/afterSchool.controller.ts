@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Post, UseGuards } from '@nestjs/common';
+import { Body, Controller, Get, Post, Query, UseGuards } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
 import {
   ApiBearerAuth,
@@ -10,6 +10,7 @@ import {
 import { User } from 'src/auth/decorators';
 import { AfterSchoolService } from './afterSchool.service';
 import { ApplyAfterSchoolDto } from './dto/ApplyAfterSchool.dto';
+import { FindDataDto } from './dto/FindData.dto';
 
 @ApiTags('AFTERSCHOOL')
 @UseGuards(AuthGuard('jwt'))
@@ -37,7 +38,7 @@ export class AfterSchoolController {
     this.afterSchoolService.applyAfterSchool(applyAfterSchoolDto, email);
   }
   @Get('find')
-  async findAfterSchool() {
-    return this.afterSchoolService.findAfterScool();
+  async findAfterSchool(@Query() findDataDto: FindDataDto) {
+    return this.afterSchoolService.findAfterScool(findDataDto);
   }
 }

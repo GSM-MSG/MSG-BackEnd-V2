@@ -5,6 +5,7 @@ import { ClassRegistration } from 'src/Entities/ClassRegistration.entity';
 import { User } from 'src/Entities/User.entity';
 import { Repository } from 'typeorm';
 import { ApplyAfterSchoolDto } from './dto/ApplyAfterSchool.dto';
+import { FindDataDto } from './dto/FindData.dto';
 
 @Injectable()
 export class AfterSchoolService {
@@ -37,5 +38,23 @@ export class AfterSchoolService {
       }),
     );
   }
-  async findAfterScool() {}
+  async findAfterScool(findDataDto: FindDataDto) {
+    if (findDataDto.week === 'ALL') {
+      let afterSchool = await this.afterSchool.findOne({
+        select: {
+          id: true,
+          title: true,
+          dayOfWeek: true,
+          grade: true,
+          personnel: true,
+          maxPersonnel: true,
+          isOpened: true,
+        },
+        where: {
+          season: findDataDto.season,
+          grade: findDataDto.grade,
+        },
+      });
+    }
+  }
 }

@@ -11,5 +11,5 @@ export class FindDataDto {
   week: string;
 
   @IsNumber()
-  grage: number;
+  grade: number;
 }
