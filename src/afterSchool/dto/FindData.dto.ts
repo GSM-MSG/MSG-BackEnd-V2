@@ -12,4 +12,7 @@ export class FindDataDto {
 
   @IsNumber()
   grade: number;
+
+  @IsString()
+  title: string;
 }
