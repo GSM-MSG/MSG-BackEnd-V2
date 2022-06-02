@@ -20,15 +20,15 @@ import { User } from 'src/auth/decorators';
 import { AfterSchoolService } from './afterSchool.service';
 import { ApplyAfterSchoolDto } from './dto/ApplyAfterSchool.dto';
 import { ListDataDto } from './dto/listData.dto';
+
 @ApiTags('AFTERSCHOOL')
-@UseGuards(AuthGuard('jwt'))
 @Controller('afterSchool')
 export class AfterSchoolController {
   constructor(private afterSchoolService: AfterSchoolService) {}
   @Get()
   @UsePipes(new ValidationPipe({ transform: true }))
   async list(@Query() listDataDto: ListDataDto) {
-    return await this.afterSchoolService.list(listDataDto);
+    return await this.afterSchoolService.list(listDataDto, 's21014');
   }
   @ApiBearerAuth('access-token')
   @ApiOperation({

@@ -15,44 +15,7 @@ export class AfterSchoolService {
     @InjectRepository(ClassRegistration)
     private classRegistration: Repository<ClassRegistration>,
   ) {}
-  async list(listDataDto: ListDataDto) {
-    if (listDataDto.week === 'ALL') {
-      let data = await this.afterSchool.find({
-        select: {
-          id: true,
-          title: true,
-          dayOfWeek: true,
-          grade: true,
-          personnel: true,
-          maxPersonnel: true,
-          isOpened: true,
-        },
-        where: {
-          season: listDataDto.season,
-          grade: listDataDto.grade,
-        },
-      });
-      return data;
-    } else {
-      let data = await this.afterSchool.find({
-        select: {
-          id: true,
-          title: true,
-          dayOfWeek: true,
-          grade: true,
-          personnel: true,
-          maxPersonnel: true,
-          isOpened: true,
-        },
-        where: {
-          season: listDataDto.season,
-          dayOfWeek: listDataDto.week,
-          grade: listDataDto.grade,
-        },
-      });
-      return data;
-    }
-  }
+  async list(listDataDto: ListDataDto, email: string) {}
   async applyAfterSchool(applyAfterSchool: ApplyAfterSchoolDto, email: string) {
     const afterSchoolData = await this.afterSchool.findOne({
       where: { id: applyAfterSchool.afterSchoolId },
