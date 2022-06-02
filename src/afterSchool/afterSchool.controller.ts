@@ -13,7 +13,7 @@ import { ApplyAfterSchoolDto } from './dto/ApplyAfterSchool.dto';
 import { FindDataDto } from './dto/FindData.dto';
 
 @ApiTags('AFTERSCHOOL')
-@UseGuards(AuthGuard('jwt'))
+//@UseGuards(AuthGuard('jwt'))
 @Controller('afterSchool')
 export class AfterSchoolController {
   constructor(private afterSchoolService: AfterSchoolService) {}
