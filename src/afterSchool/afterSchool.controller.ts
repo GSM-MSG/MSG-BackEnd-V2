@@ -38,7 +38,10 @@ export class AfterSchoolController {
     this.afterSchoolService.applyAfterSchool(applyAfterSchoolDto, email);
   }
   @Get('find')
-  async findAfterSchool(@Query() findDataDto: FindDataDto) {
-    return this.afterSchoolService.findAfterScool(findDataDto);
+  async findAfterSchool(
+    @Query() findDataDto: FindDataDto,
+    @Body() email: string,
+  ) {
+    return this.afterSchoolService.findAfterScool(findDataDto, email);
   }
 }

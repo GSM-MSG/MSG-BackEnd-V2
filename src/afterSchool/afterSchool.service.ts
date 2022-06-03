@@ -3,7 +3,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { AfterSchool } from 'src/Entities/AfterSchool.entity';
 import { ClassRegistration } from 'src/Entities/ClassRegistration.entity';
 import { User } from 'src/Entities/User.entity';
-import { Repository } from 'typeorm';
+import { Like, Repository } from 'typeorm';
 import { ApplyAfterSchoolDto } from './dto/ApplyAfterSchool.dto';
 import { FindDataDto } from './dto/FindData.dto';
 
@@ -38,13 +38,52 @@ export class AfterSchoolService {
       }),
     );
   }
-  async findAfterScool(findDataDto: FindDataDto) {
+  async findAfterScool(findDataDto: FindDataDto, email: string) {
     const { grade, season, title, week } = findDataDto;
+    let afterSchoolData: AfterSchool[];
+    let isApplied: boolean = false;
+    let isEnabled: boolean;
+    const userData = await this.user.findOne({ where: { email: email } });
     if (week === 'ALL') {
-      const findData = await this.afterSchool.query(
-        "CALL msg.findAfterSchool('" + title + "');",
-      );
-      return findData;
+      afterSchoolData = await this.afterSchool.find({
+        where: { title: Like(`%${title}%`), grade: grade, season: season },
+      });
+      const afterSchool = afterSchoolData.map(async (afterSchool) => {
+        const classRegistration = await this.classRegistration.findOne({
+          where: { afterSchool: afterSchool, user: userData },
+        });
+        if (classRegistration) {
+          isApplied = true;
+          isEnabled = true;
+        }
+
+        return afterSchool;
+      });
+      return { afterSchool, isApplied, isEnabled };
+    } else if (week === 'ALL' && grade === 0) {
+      afterSchoolData = await this.afterSchool.find({
+        where: { title: Like(`%${title}%`), season: season },
+      });
+      return afterSchoolData;
+    } else if (grade === 0) {
+      afterSchoolData = await this.afterSchool.find({
+        where: {
+          title: Like(`%${title}%`),
+          season: season,
+          dayOfWeek: week,
+        },
+      });
+      return;
+    } else {
+      afterSchoolData = await this.afterSchool.find({
+        where: {
+          title: Like(`%${title}%`),
+          season: season,
+          grade: grade,
+          dayOfWeek: week,
+        },
+      });
+      return afterSchoolData;
     }
   }
 }

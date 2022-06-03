@@ -1,3 +1,4 @@
+import { Type } from 'class-transformer';
 import { IsNumber, IsString } from 'class-validator';
 
 export class FindDataDto {
@@ -7,6 +8,7 @@ export class FindDataDto {
   @IsString()
   week: string;
 
+  @Type(() => Number)
   @IsNumber()
   grade: number;
 
