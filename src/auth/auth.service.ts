@@ -50,7 +50,7 @@ export class AuthService {
     }
 
     const email = payload.email;
-    const student = this.findStudent(`${email}`);
+    const student = this.findStudent(email);
 
     if (!payload || !email) throw new NotFoundException('Not found oauth user');
     else if (payload.hd !== 'gsm.hs.kr')
@@ -62,7 +62,7 @@ export class AuthService {
 
     if (
       await this.userRepository.findOne({
-        where: { email: email },
+        where: { email },
       })
     ) {
       this.userRepository.update(email, {
