@@ -5,6 +5,7 @@ export class RelatedLinkDto {
   name: string;
 
   @IsNotEmpty()
+  @IsString()
   @IsUrl()
   url: string;
 }

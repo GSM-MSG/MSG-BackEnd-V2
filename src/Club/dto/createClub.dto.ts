@@ -8,6 +8,7 @@ import {
   IsNotEmpty,
   IsEnum,
   Max,
+  IsUrl,
 } from 'class-validator';
 import { RelatedLinkDto } from './relatedLink.dto';
 
@@ -37,6 +38,7 @@ export class CreateClubDto {
     required: true,
   })
   @IsNotEmpty()
+  @IsUrl()
   @IsString()
   bannerUrl: string;
 
