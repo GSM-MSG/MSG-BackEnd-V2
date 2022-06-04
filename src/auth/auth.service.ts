@@ -58,7 +58,7 @@ export class AuthService {
     else if (!student) throw new NotFoundException('Not exists student in GSM');
 
     const token = await this.getToken(email);
-    const hash = await bcrypt.hash(token.refreshToken, 10);
+    const refreshToken = await bcrypt.hash(token.refreshToken, 10);
 
     if (
       await this.userRepository.findOne({
@@ -66,14 +66,14 @@ export class AuthService {
       })
     ) {
       this.userRepository.update(email, {
-        refreshToken: hash,
+        refreshToken,
       });
     } else {
       const user = this.userRepository.create({
         ...student,
-        email: email,
+        email,
         userImg: payload.picture,
-        refreshToken: hash,
+        refreshToken,
       });
 
       this.userRepository.save(user);
