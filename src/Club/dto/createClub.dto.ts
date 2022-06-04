@@ -5,6 +5,7 @@ import {
   IsArray,
   IsObject,
   IsBoolean,
+  IsNotEmpty,
 } from 'class-validator';
 import { RelatedLinkDto } from './relatedLink.dto';
 
@@ -14,6 +15,7 @@ export class CreateClubDto {
     description: '동아리 이름',
     required: true,
   })
+  @IsNotEmpty()
   @IsString()
   title: string;
 
@@ -22,6 +24,7 @@ export class CreateClubDto {
     description: '동아리 설명 한 문장',
     required: true,
   })
+  @IsNotEmpty()
   @IsString()
   description: string;
 
@@ -30,6 +33,7 @@ export class CreateClubDto {
     description: '동아리 홍보 뒷 사진',
     required: true,
   })
+  @IsNotEmpty()
   @IsString()
   bannerUrl: string;
 
@@ -38,6 +42,7 @@ export class CreateClubDto {
     description: '연락처입니다',
     required: true,
   })
+  @IsNotEmpty()
   @IsString()
   contact: string;
 
@@ -46,6 +51,7 @@ export class CreateClubDto {
     description: '동아리 홍보 뒷 사진',
     required: true,
   })
+  @IsNotEmpty()
   @IsString()
   type: string;
 
