@@ -95,7 +95,6 @@ export class EditClubDto {
     description: '동아리 홍보 링크입니다',
     required: true,
   })
-  @IsOptional()
   @IsObject()
   relatedLink: RelatedLinkDto;
 
