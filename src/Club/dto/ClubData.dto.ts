@@ -16,6 +16,5 @@ export class ClubDataDto {
     required: true,
   })
   @IsEnum(['MAJOR', 'EDITORIAL', 'FREEDOM'])
-  @IsString()
   type: 'MAJOR' | 'EDITORIAL' | 'FREEDOM';
 }

@@ -6,6 +6,7 @@ import {
   IsObject,
   IsBoolean,
   IsNotEmpty,
+  IsEnum,
 } from 'class-validator';
 import { RelatedLinkDto } from './relatedLink.dto';
 
@@ -51,9 +52,8 @@ export class CreateClubDto {
     description: '동아리 홍보 뒷 사진',
     required: true,
   })
-  @IsNotEmpty()
-  @IsString()
-  type: string;
+  @IsEnum(['MAJOR', 'EDITORIAL', 'FREEDOM'])
+  type: 'MAJOR' | 'EDITORIAL' | 'FREEDOM';
 
   @ApiProperty({
     example: '노션링크',

@@ -1,6 +1,7 @@
 import { ApiProperty } from '@nestjs/swagger';
 import {
   IsArray,
+  IsEnum,
   IsNotEmpty,
   IsObject,
   IsOptional,
@@ -23,9 +24,8 @@ export class EditClubDto {
     description: '동아리 타입',
     required: true,
   })
-  @IsNotEmpty()
-  @IsString()
-  type: string;
+  @IsEnum(['MAJOR', 'EDITORIAL', 'FREEDOM'])
+  type: 'MAJOR' | 'EDITORIAL' | 'FREEDOM';
 
   @ApiProperty({
     example: '클라우드 컴퓨팅은 ~~~~',
