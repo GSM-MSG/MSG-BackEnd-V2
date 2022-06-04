@@ -7,6 +7,7 @@ import {
   IsBoolean,
   IsNotEmpty,
   IsEnum,
+  Max,
 } from 'class-validator';
 import { RelatedLinkDto } from './relatedLink.dto';
 
@@ -17,6 +18,7 @@ export class CreateClubDto {
     required: true,
   })
   @IsNotEmpty()
+  @Max(20)
   @IsString()
   title: string;
 

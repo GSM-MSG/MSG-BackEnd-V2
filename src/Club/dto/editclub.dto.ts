@@ -6,6 +6,7 @@ import {
   IsObject,
   IsOptional,
   IsString,
+  Max,
 } from 'class-validator';
 import { RelatedLinkDto } from './relatedLink.dto';
 
@@ -49,6 +50,7 @@ export class EditClubDto {
     required: true,
   })
   @IsNotEmpty()
+  @Max(20)
   @IsString()
   title: string;
 
