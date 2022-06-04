@@ -1,5 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsNotEmpty, IsString } from 'class-validator';
+import { IsEnum, IsNotEmpty, IsString } from 'class-validator';
 
 export class ClubDataDto {
   @ApiProperty({
@@ -15,7 +15,7 @@ export class ClubDataDto {
     description: '동아리 타입',
     required: true,
   })
-  @IsNotEmpty()
+  @IsEnum(['MAJOR', 'EDITORIAL', 'FREEDOM'])
   @IsString()
-  type: string;
+  type: 'MAJOR' | 'EDITORIAL' | 'FREEDOM';
 }
