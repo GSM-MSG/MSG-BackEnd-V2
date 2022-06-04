@@ -1,5 +1,11 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsArray, IsObject, IsOptional, IsString } from 'class-validator';
+import {
+  IsArray,
+  IsNotEmpty,
+  IsObject,
+  IsOptional,
+  IsString,
+} from 'class-validator';
 import { RelatedLinkDto } from './relatedLink.dto';
 
 export class EditClubDto {
@@ -8,6 +14,7 @@ export class EditClubDto {
     description: '수정할 동아리 이름',
     required: true,
   })
+  @IsNotEmpty()
   @IsString()
   q: string;
 
@@ -16,6 +23,7 @@ export class EditClubDto {
     description: '동아리 타입',
     required: true,
   })
+  @IsNotEmpty()
   @IsString()
   type: string;
 
@@ -40,6 +48,7 @@ export class EditClubDto {
     description: '바뀔 이름',
     required: true,
   })
+  @IsNotEmpty()
   @IsString()
   title: string;
 
@@ -48,6 +57,7 @@ export class EditClubDto {
     description: '연락처입니다',
     required: true,
   })
+  @IsNotEmpty()
   @IsString()
   contact: string;
 

@@ -1,5 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsString } from 'class-validator';
+import { IsNotEmpty, IsString } from 'class-validator';
 
 export class AcceptUserDto {
   @ApiProperty({
@@ -7,6 +7,7 @@ export class AcceptUserDto {
     description: '동아리 이름입니다',
     required: true,
   })
+  @IsNotEmpty()
   @IsString()
   q: string;
 
@@ -15,6 +16,7 @@ export class AcceptUserDto {
     description: '동아리 타입입니다',
     required: true,
   })
+  @IsNotEmpty()
   @IsString()
   type: string;
 
@@ -23,6 +25,7 @@ export class AcceptUserDto {
     description: '신청 한 유저 아이디',
     required: true,
   })
+  @IsNotEmpty()
   @IsString()
   userId: string;
 }
