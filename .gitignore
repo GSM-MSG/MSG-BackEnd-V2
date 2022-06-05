@@ -38,4 +38,3 @@ lerna-debug.log*
 students.ts
 Constants.ts
 EmailLib.ts
-S3.env
