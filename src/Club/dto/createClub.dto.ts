@@ -38,7 +38,7 @@ export class CreateClubDto {
     required: true,
   })
   @IsNotEmpty()
-  @IsUrl()
+  @IsUrl({ require_protocol: true, require_valid_protocol: true })
   @IsString()
   bannerUrl: string;
 

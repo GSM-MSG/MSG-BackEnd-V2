@@ -6,6 +6,7 @@ import {
   IsObject,
   IsOptional,
   IsString,
+  IsUrl,
   MaxLength,
 } from 'class-validator';
 import { RelatedLinkDto } from './relatedLink.dto';
@@ -42,6 +43,7 @@ export class EditClubDto {
     description: '동아리 홍보 뒷 사진',
     required: true,
   })
+  @IsUrl({ require_protocol: true, require_valid_protocol: true })
   @IsString()
   bannerUrl: string;
 

@@ -6,6 +6,6 @@ export class RelatedLinkDto {
 
   @IsNotEmpty()
   @IsString()
-  @IsUrl()
+  @IsUrl({ require_protocol: true, require_valid_protocol: true })
   url: string;
 }
