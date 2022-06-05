@@ -6,6 +6,8 @@ import { User } from './User.entity';
 import { Image } from './image.entity';
 import { AfterSchool } from './AfterSchool.entity';
 import { ClassRegistration } from './ClassRegistration.entity';
+import { DayOfWeek } from './DayOfWeek.entity';
+import { Grade } from './Grade.entity';
 
 export default [
   Club,
@@ -16,4 +18,6 @@ export default [
   Image,
   AfterSchool,
   ClassRegistration,
+  DayOfWeek,
+  Grade,
 ];
