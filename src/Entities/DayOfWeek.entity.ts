@@ -1,7 +1,7 @@
-import { IsString } from 'class-validator';
-import { ManyToOne, PrimaryGeneratedColumn } from 'typeorm';
+import { Column, Entity, ManyToOne, PrimaryGeneratedColumn } from 'typeorm';
 import { AfterSchool } from './AfterSchool.entity';
 
+@Entity()
 export class DayOfWeek {
   @PrimaryGeneratedColumn()
   id: number;
@@ -9,6 +9,6 @@ export class DayOfWeek {
   @ManyToOne(() => AfterSchool, (AfterSchool) => AfterSchool.id)
   afterSchool: AfterSchool;
 
-  @IsString()
+  @Column()
   dayOfWeek: string;
 }

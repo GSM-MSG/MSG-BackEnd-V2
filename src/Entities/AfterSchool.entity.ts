@@ -14,11 +14,11 @@ export class AfterSchool {
   @Column()
   personnel: number;
 
-  @OneToMany(() => DayOfWeek, (DayOfWeek) => DayOfWeek.afterSchool)
+  @OneToMany(() => DayOfWeek, (DayOfWeek) => DayOfWeek.id)
   dayOfWeek: DayOfWeek[];
 
-  @OneToMany(() => Grade, (Grade) => Grade.afterSchool)
-  grade: number[];
+  @OneToMany(() => Grade, (Grade) => Grade.id)
+  grade: Grade[];
 
   @Column()
   teacher: string;
@@ -46,7 +46,7 @@ export class AfterSchool {
 
   @OneToMany(
     () => ClassRegistration,
-    (ClassRegistration) => ClassRegistration.afterSchool,
+    (ClassRegistration) => ClassRegistration.id,
   )
   classRegistration: ClassRegistration[];
 }
