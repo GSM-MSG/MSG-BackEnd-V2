@@ -40,7 +40,11 @@ export class AuthService {
         idToken: data.idToken,
         audience: [
           this.configService.get('GOOGLE_AUTH_IOS_ID'),
-          this.configService.get('GOOGLE_AUTH_AOS_ID'),
+          this.configService.get('GOOGLE_AUTH_AOS_ID1'),
+          this.configService.get('GOOGLE_AUTH_AOS_ID2'),
+          this.configService.get('GOOGLE_AUTH_AOS_ID3'),
+          this.configService.get('GOOGLE_AUTH_AOS_ID4'),
+          this.configService.get('GOOGLE_AUTH_CLIENT_ID'),
         ],
       });
       payload = ticket.getPayload();
