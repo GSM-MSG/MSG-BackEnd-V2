@@ -26,5 +26,10 @@ jobs:
       with:
         node-version: ${{ matrix.node-version }}
         cache: 'npm'
+
     - run: npm ci
+    
+    - name: Configure Code Signing
+      run: gpg -d -o "src/lib/students.ts.gpg" --pinentry-mode=loopback --passphrase ${{ secrets.PASSPHRASE }} "src/lib"
+    
     - run: npm run build
