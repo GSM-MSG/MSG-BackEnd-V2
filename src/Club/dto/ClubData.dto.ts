@@ -15,6 +15,7 @@ export class ClubDataDto {
     description: '동아리 타입',
     required: true,
   })
+  @IsNotEmpty()
   @IsEnum(['MAJOR', 'EDITORIAL', 'FREEDOM'])
   type: 'MAJOR' | 'EDITORIAL' | 'FREEDOM';
 }

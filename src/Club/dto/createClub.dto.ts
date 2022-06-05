@@ -9,6 +9,7 @@ import {
   IsEnum,
   Max,
   IsUrl,
+  MaxLength,
 } from 'class-validator';
 import { RelatedLinkDto } from './relatedLink.dto';
 
@@ -19,7 +20,7 @@ export class CreateClubDto {
     required: true,
   })
   @IsNotEmpty()
-  @Max(20)
+  @MaxLength(20)
   @IsString()
   title: string;
 
