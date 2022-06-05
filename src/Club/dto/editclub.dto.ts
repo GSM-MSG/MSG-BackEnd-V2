@@ -6,7 +6,6 @@ import {
   IsObject,
   IsOptional,
   IsString,
-  Max,
   MaxLength,
 } from 'class-validator';
 import { RelatedLinkDto } from './relatedLink.dto';

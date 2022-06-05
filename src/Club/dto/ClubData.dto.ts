@@ -1,5 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsEnum, IsNotEmpty, IsString } from 'class-validator';
+import { IsEnum, IsNotEmpty, IsString, MaxLength } from 'class-validator';
 
 export class ClubDataDto {
   @ApiProperty({
@@ -8,6 +8,7 @@ export class ClubDataDto {
     required: true,
   })
   @IsNotEmpty()
+  @MaxLength(20)
   @IsString()
   q: string;
   @ApiProperty({

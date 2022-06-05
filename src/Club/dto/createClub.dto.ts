@@ -7,7 +7,6 @@ import {
   IsBoolean,
   IsNotEmpty,
   IsEnum,
-  Max,
   IsUrl,
   MaxLength,
 } from 'class-validator';
