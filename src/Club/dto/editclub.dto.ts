@@ -17,6 +17,7 @@ export class EditClubDto {
     required: true,
   })
   @IsNotEmpty()
+  @MaxLength(20)
   @IsString()
   q: string;
 
@@ -69,6 +70,7 @@ export class EditClubDto {
     required: true,
   })
   @IsOptional()
+  @MaxLength(5)
   @IsString()
   teacher: string;
 

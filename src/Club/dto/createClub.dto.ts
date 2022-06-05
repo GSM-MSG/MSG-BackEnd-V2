@@ -73,6 +73,7 @@ export class CreateClubDto {
     required: true,
   })
   @IsOptional()
+  @MaxLength(5)
   @IsString()
   teacher: string;
 
