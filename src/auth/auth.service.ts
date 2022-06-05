@@ -50,31 +50,30 @@ export class AuthService {
     }
 
     const email = payload.email;
-    const student = this.findStudent(`${email}`);
+    const student = this.findStudent(email);
 
     if (!payload || !email) throw new NotFoundException('Not found oauth user');
     else if (payload.hd !== 'gsm.hs.kr')
       throw new ForbiddenException('Not GSM mail');
     else if (!student) throw new NotFoundException('Not exists student in GSM');
 
-    const replacedEmail = email.replace('@gsm.hs.kr', '');
-    const token = await this.getToken(replacedEmail);
-    const hash = await bcrypt.hash(token.refreshToken, 10);
+    const token = await this.getToken(email);
+    const refreshToken = await bcrypt.hash(token.refreshToken, 10);
 
     if (
       await this.userRepository.findOne({
-        where: { email: replacedEmail },
+        where: { email },
       })
     ) {
-      this.userRepository.update(replacedEmail, {
-        refreshToken: hash,
+      this.userRepository.update(email, {
+        refreshToken,
       });
     } else {
       const user = this.userRepository.create({
         ...student,
-        email: replacedEmail,
+        email,
         userImg: payload.picture,
-        refreshToken: hash,
+        refreshToken,
       });
 
       this.userRepository.save(user);

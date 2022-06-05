@@ -31,7 +31,11 @@ export class RtStrategy extends PassportStrategy(Strategy, 'jwt-refresh') {
       where: { email: payload.email },
     });
 
-    if (!user || !(await bcrypt.compare(refreshToken, user.refreshToken)))
+    if (
+      !user ||
+      !user.refreshToken ||
+      !(await bcrypt.compare(refreshToken, user.refreshToken))
+    )
       return null;
 
     return { ...payload };

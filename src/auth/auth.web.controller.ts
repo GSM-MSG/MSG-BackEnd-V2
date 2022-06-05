@@ -30,7 +30,7 @@ export class AuthWebController {
 
     if (!token) {
       res.redirect(`${this.configService.get('FRONT_URL')}/login`);
-      res.send({ message: 'not GSM user' });
+      return;
     }
 
     res.cookie('accessToken', token.accessToken, {

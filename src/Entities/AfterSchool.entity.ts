@@ -1,5 +1,7 @@
 import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
 import { ClassRegistration } from './ClassRegistration.entity';
+import { DayOfWeek } from './DayOfWeek.entity';
+import { Grade } from './Grade.entity';
 
 @Entity()
 export class AfterSchool {
@@ -12,11 +14,11 @@ export class AfterSchool {
   @Column()
   personnel: number;
 
-  @Column()
-  dayOfWeek: string;
+  @OneToMany(() => DayOfWeek, (DayOfWeek) => DayOfWeek.id)
+  dayOfWeek: DayOfWeek[];
 
-  @Column()
-  grade: number;
+  @OneToMany(() => Grade, (Grade) => Grade.id)
+  grade: Grade[];
 
   @Column()
   teacher: string;
@@ -44,7 +46,7 @@ export class AfterSchool {
 
   @OneToMany(
     () => ClassRegistration,
-    (ClassRegistration) => ClassRegistration.afterSchool,
+    (ClassRegistration) => ClassRegistration.id,
   )
   classRegistration: ClassRegistration[];
 }
