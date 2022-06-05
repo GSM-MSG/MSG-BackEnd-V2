@@ -30,6 +30,6 @@ jobs:
     - run: npm ci
     
     - name: Configure Code Signing
-      run: gpg -d -o "src/lib/students.ts.gpg" --pinentry-mode=loopback --passphrase ${{ secrets.PASSPHRASE }}
+      run: gpg -d -o "src/lib/students.ts.gpg" --pinentry-mode=loopback --passphrase ${{ secrets.PASSPHRASE }} "src/lib"
     
     - run: npm run build
