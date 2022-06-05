@@ -19,7 +19,7 @@ import { ImageService } from './image.service';
 
 @ApiTags('IMAGE')
 @UseGuards(AuthGuard('jwt-web'))
-@Controller('image')
+@Controller('image/web')
 export class ImageWebController {
   constructor(private imageService: ImageService) {}
 
