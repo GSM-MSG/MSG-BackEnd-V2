@@ -30,7 +30,7 @@ export class Club {
   isOpened: boolean;
 
   @Column()
-  relatedLink: string;
+  notionLink: string;
 
   @OneToMany(() => Member, (member) => member.club)
   member: Member[];

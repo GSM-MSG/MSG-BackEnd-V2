@@ -64,7 +64,7 @@ export class CreateClubDto {
   })
   @IsUrl({ require_protocol: true, require_valid_protocol: true })
   @IsString()
-  relatedLink: string;
+  notionLink: string;
 
   @ApiProperty({
     example: '김민영 선생님',

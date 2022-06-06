@@ -45,7 +45,7 @@ export class ClubService {
       contact,
       teacher,
       type,
-      relatedLink,
+      notionLink,
       member,
       activityUrls,
     } = createClubData;
@@ -71,7 +71,7 @@ export class ClubService {
         teacher,
         type,
         isOpened: isOpened,
-        relatedLink,
+        notionLink,
       }),
     );
     const clubData = await this.Club.findOne({
@@ -312,7 +312,7 @@ export class ClubService {
         description: true,
         contact: true,
         teacher: true,
-        relatedLink: true,
+        notionLink: true,
         isOpened: true,
         member: {
           id: true,
@@ -503,7 +503,7 @@ export class ClubService {
       newMember,
       deleteActivityUrls,
       deleteMember,
-      relatedLink,
+      notionLink,
     } = editClubData;
     const clubData = await this.Club.findOne({
       where: {
@@ -613,7 +613,7 @@ export class ClubService {
           bannerUrl: editClubData.bannerUrl,
           contact: editClubData.contact,
           teacher: editClubData.teacher,
-          relatedLink: editClubData.relatedLink,
+          notionLink: editClubData.notionLink,
         },
       );
     }

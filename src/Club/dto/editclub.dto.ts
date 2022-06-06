@@ -99,7 +99,7 @@ export class EditClubDto {
   })
   @IsUrl()
   @IsString()
-  relatedLink: string;
+  notionLink: string;
 
   @ApiProperty({
     example: [

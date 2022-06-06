@@ -29,7 +29,7 @@ export class GuestService {
         description: true,
         contact: true,
         teacher: true,
-        relatedLink: true,
+        notionLink: true,
         isOpened: true,
         member: {
           id: true,
