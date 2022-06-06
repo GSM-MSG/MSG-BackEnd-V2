@@ -5,6 +5,10 @@ import {
   IsArray,
   IsObject,
   IsBoolean,
+  IsNotEmpty,
+  IsEnum,
+  IsUrl,
+  MaxLength,
 } from 'class-validator';
 import { RelatedLinkDto } from './relatedLink.dto';
 
@@ -14,6 +18,8 @@ export class CreateClubDto {
     description: '동아리 이름',
     required: true,
   })
+  @IsNotEmpty()
+  @MaxLength(20)
   @IsString()
   title: string;
 
@@ -22,6 +28,7 @@ export class CreateClubDto {
     description: '동아리 설명 한 문장',
     required: true,
   })
+  @IsNotEmpty()
   @IsString()
   description: string;
 
@@ -30,6 +37,8 @@ export class CreateClubDto {
     description: '동아리 홍보 뒷 사진',
     required: true,
   })
+  @IsNotEmpty()
+  @IsUrl({ require_protocol: true, require_valid_protocol: true })
   @IsString()
   bannerUrl: string;
 
@@ -38,6 +47,7 @@ export class CreateClubDto {
     description: '연락처입니다',
     required: true,
   })
+  @IsOptional()
   @IsString()
   contact: string;
 
@@ -46,15 +56,14 @@ export class CreateClubDto {
     description: '동아리 홍보 뒷 사진',
     required: true,
   })
-  @IsString()
-  type: string;
+  @IsEnum(['MAJOR', 'EDITORIAL', 'FREEDOM'])
+  type: 'MAJOR' | 'EDITORIAL' | 'FREEDOM';
 
   @ApiProperty({
     example: '노션링크',
     description: '동아리 홍보 링크입니다',
     required: true,
   })
-  @IsOptional()
   @IsObject()
   relatedLink: RelatedLinkDto;
 
@@ -64,6 +73,7 @@ export class CreateClubDto {
     required: true,
   })
   @IsOptional()
+  @MaxLength(5)
   @IsString()
   teacher: string;
 
