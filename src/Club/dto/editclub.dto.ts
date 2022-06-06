@@ -1,6 +1,13 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsArray, IsObject, IsOptional, IsString } from 'class-validator';
-import { RelatedLinkDto } from './relatedLink.dto';
+import {
+  IsArray,
+  IsEnum,
+  IsNotEmpty,
+  IsOptional,
+  IsString,
+  IsUrl,
+  MaxLength,
+} from 'class-validator';
 
 export class EditClubDto {
   @ApiProperty({
@@ -8,6 +15,8 @@ export class EditClubDto {
     description: '수정할 동아리 이름',
     required: true,
   })
+  @IsNotEmpty()
+  @MaxLength(20)
   @IsString()
   q: string;
 
@@ -16,8 +25,8 @@ export class EditClubDto {
     description: '동아리 타입',
     required: true,
   })
-  @IsString()
-  type: string;
+  @IsEnum(['MAJOR', 'EDITORIAL', 'FREEDOM'])
+  type: 'MAJOR' | 'EDITORIAL' | 'FREEDOM';
 
   @ApiProperty({
     example: '클라우드 컴퓨팅은 ~~~~',
@@ -32,6 +41,7 @@ export class EditClubDto {
     description: '동아리 홍보 뒷 사진',
     required: true,
   })
+  @IsUrl({ require_protocol: true, require_valid_protocol: true })
   @IsString()
   bannerUrl: string;
 
@@ -40,6 +50,8 @@ export class EditClubDto {
     description: '바뀔 이름',
     required: true,
   })
+  @IsNotEmpty()
+  @MaxLength(20)
   @IsString()
   title: string;
 
@@ -48,6 +60,7 @@ export class EditClubDto {
     description: '연락처입니다',
     required: true,
   })
+  @IsOptional()
   @IsString()
   contact: string;
 
@@ -57,6 +70,7 @@ export class EditClubDto {
     required: true,
   })
   @IsOptional()
+  @MaxLength(5)
   @IsString()
   teacher: string;
 
@@ -83,9 +97,9 @@ export class EditClubDto {
     description: '동아리 홍보 링크입니다',
     required: true,
   })
-  @IsOptional()
-  @IsObject()
-  relatedLink: RelatedLinkDto;
+  @IsUrl()
+  @IsString()
+  notionLink: string;
 
   @ApiProperty({
     example: [

@@ -31,7 +31,7 @@ export class User {
 
   @OneToMany(
     () => ClassRegistration,
-    (ClassRegistration) => ClassRegistration.user,
+    (ClassRegistration) => ClassRegistration.id,
   )
   classRegistration: ClassRegistration[];
 
