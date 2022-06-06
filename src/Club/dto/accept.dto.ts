@@ -1,5 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsString } from 'class-validator';
+import { IsEnum, IsNotEmpty, IsString, MaxLength } from 'class-validator';
 
 export class AcceptUserDto {
   @ApiProperty({
@@ -7,6 +7,8 @@ export class AcceptUserDto {
     description: '동아리 이름입니다',
     required: true,
   })
+  @IsNotEmpty()
+  @MaxLength(20)
   @IsString()
   q: string;
 
@@ -15,14 +17,16 @@ export class AcceptUserDto {
     description: '동아리 타입입니다',
     required: true,
   })
-  @IsString()
-  type: string;
+  @IsNotEmpty()
+  @IsEnum(['MAJOR', 'EDITORIAL', 'FREEDOM'])
+  type: 'MAJOR' | 'EDITORIAL' | 'FREEDOM';
 
   @ApiProperty({
-    example: 's21024',
+    example: 's21024@gsm.hs.kr',
     description: '신청 한 유저 아이디',
     required: true,
   })
+  @IsNotEmpty()
   @IsString()
   userId: string;
 }
