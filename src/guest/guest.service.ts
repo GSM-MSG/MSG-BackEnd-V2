@@ -20,7 +20,7 @@ export class GuestService {
   async guestDetailPage(clubType: string, clubName: string) {
     const club = await this.Club.findOne({
       where: { type: clubType, title: clubName },
-      relations: ['activityUrls', 'relatedLink', 'member', 'member.user'],
+      relations: ['activityUrls', 'member', 'member.user'],
       select: {
         id: true,
         title: true,

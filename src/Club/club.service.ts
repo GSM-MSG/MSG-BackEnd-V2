@@ -303,7 +303,7 @@ export class ClubService {
   async detailPage(clubtype: string, clubtitle: string, email: string) {
     const club = await this.Club.findOne({
       where: { type: clubtype, title: clubtitle },
-      relations: ['activityUrls', 'relatedLink', 'member', 'member.user'],
+      relations: ['activityUrls', 'member', 'member.user'],
       select: {
         id: true,
         title: true,
@@ -510,7 +510,7 @@ export class ClubService {
         title: editClubData.q,
         type: editClubData.type,
       },
-      relations: ['relatedLink', 'member', 'member.user'],
+      relations: ['member', 'member.user'],
     });
     if (!email) {
       throw new HttpException(
