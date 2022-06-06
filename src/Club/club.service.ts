@@ -73,6 +73,7 @@ export class ClubService {
         teacher,
         type,
         isOpened: isOpened,
+        relatedLink,
       }),
     );
     const clubData = await this.Club.findOne({
@@ -82,15 +83,6 @@ export class ClubService {
       throw new HttpException(
         '동아리가 존재하지 않습니다.',
         HttpStatus.NOT_FOUND,
-      );
-    }
-    if (relatedLink) {
-      await this.RelatedLink.save(
-        this.RelatedLink.create({
-          name: relatedLink.name,
-          url: relatedLink.url,
-          club: clubData,
-        }),
       );
     }
     const userData = await this.User.findOne({ where: { email } });

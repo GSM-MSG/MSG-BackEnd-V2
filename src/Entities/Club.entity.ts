@@ -1,7 +1,6 @@
 import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
 import { Member } from './Member.entity';
 import { Image } from './image.entity';
-import { RelatedLink } from './RelatedLink.entity';
 import { RequestJoin } from './RequestJoin.entity';
 
 @Entity()
@@ -30,11 +29,11 @@ export class Club {
   @Column()
   isOpened: boolean;
 
+  @Column()
+  relatedLink: string;
+
   @OneToMany(() => Member, (member) => member.club)
   member: Member[];
-
-  @OneToMany(() => RelatedLink, (link) => link.club)
-  relatedLink: RelatedLink;
 
   @OneToMany(() => Image, (Image) => Image.clubId)
   activityUrls: Image[];
