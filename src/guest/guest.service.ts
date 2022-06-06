@@ -4,7 +4,6 @@ import { Club } from 'src/Entities/Club.entity';
 import { User } from 'src/Entities/User.entity';
 import { Image } from 'src/Entities/image.entity';
 import { Member } from 'src/Entities/Member.entity';
-import { RelatedLink } from 'src/Entities/RelatedLink.entity';
 import { RequestJoin } from 'src/Entities/RequestJoin.entity';
 import { Repository } from 'typeorm';
 
@@ -12,7 +11,6 @@ import { Repository } from 'typeorm';
 export class GuestService {
   constructor(
     @InjectRepository(Club) private Club: Repository<Club>,
-    @InjectRepository(RelatedLink) private RelatedLink: Repository<RelatedLink>,
     @InjectRepository(Member) private Member: Repository<Member>,
     @InjectRepository(User) private User: Repository<User>,
     @InjectRepository(Image) private Image: Repository<Image>,
@@ -31,6 +29,7 @@ export class GuestService {
         description: true,
         contact: true,
         teacher: true,
+        relatedLink: true,
         isOpened: true,
         member: {
           id: true,
@@ -44,7 +43,6 @@ export class GuestService {
           },
           scope: true,
         },
-        relatedLink: { name: true, url: true, id: true },
         activityUrls: { id: true, url: true },
       },
     });
