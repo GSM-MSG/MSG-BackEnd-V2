@@ -10,7 +10,6 @@ import {
   IsUrl,
   MaxLength,
 } from 'class-validator';
-import { RelatedLinkDto } from './relatedLink.dto';
 
 export class CreateClubDto {
   @ApiProperty({
@@ -64,8 +63,9 @@ export class CreateClubDto {
     description: '동아리 홍보 링크입니다',
     required: true,
   })
-  @IsObject()
-  relatedLink: RelatedLinkDto;
+  @IsUrl({ require_protocol: true, require_valid_protocol: true })
+  @IsString()
+  relatedLink: string;
 
   @ApiProperty({
     example: '김민영 선생님',
