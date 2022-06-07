@@ -30,12 +30,6 @@ export class AfterSchool {
   isCommon: boolean;
 
   @Column()
-  maxPersonnel: number;
-
-  @Column()
-  isFull: boolean;
-
-  @Column()
   season: string;
 
   @Column()
