@@ -6,30 +6,30 @@ name: deploy
       - main
 jobs:
   build:
-  runs-on: ubuntu-latest
-  steps:
-    - uses: actions/checkout@v3
-    - name: create env
-      run: |
-        touch .env
-        echo "${{ secrets.DATA }}" >> .env
-    - uses: appleboy/ssh-action@master
-      with:
-        host: ${{ secrets.HOST }}
-        username: ubuntu
-        key: ${{ secrets.SSH_KEY }}
-        script: mkdir -p /home/ubuntu/MSG-BackEnd-V2
-    - uses: burnett01/rsync-deployments@4.1
-      with:
-        switches: '-avzr --delete'
-        remote_path: /home/ubuntu/MSG-BackEnd-V2
-        remote_host: ${{ secrets.HOST }}
-        remote_user: ubuntu
-        remote_key: ${{ secrets.SSH_KEY }}
-    - uses: appleboy/ssh-action@master
-      with:
-        host: ${{ secrets.HOST }}
-        username: ubuntu
-        key: ${{ secrets.SSH_KEY }}
-        script: |
-          ****sh /home/ubuntu/sh/deploy.sh
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - name: create env
+        run: |
+          touch .env
+          echo "${{ secrets.DATA }}" >> .env
+      - uses: appleboy/ssh-action@master
+        with:
+          host: ${{ secrets.HOST }}
+          username: ubuntu
+          key: ${{ secrets.SSH_KEY }}
+          script: mkdir -p /home/ubuntu/MSG-BackEnd-V2
+      - uses: burnett01/rsync-deployments@4.1
+        with:
+          switches: '-avzr --delete'
+          remote_path: /home/ubuntu/MSG-BackEnd-V2
+          remote_host: ${{ secrets.HOST }}
+          remote_user: ubuntu
+          remote_key: ${{ secrets.SSH_KEY }}
+      - uses: appleboy/ssh-action@master
+        with:
+          host: ${{ secrets.HOST }}
+          username: ubuntu
+          key: ${{ secrets.SSH_KEY }}
+          script: |
+            ****sh /home/ubuntu/sh/deploy.sh
