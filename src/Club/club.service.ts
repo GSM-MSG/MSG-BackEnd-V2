@@ -294,10 +294,15 @@ export class ClubService {
         HttpStatus.NOT_ACCEPTABLE,
       );
     }
-    return reqUserData.requestJoin.map((member) => {
+    const userScope = reqUserData.member.find((member) => {
+      return member.user.email === email;
+    }).scope;
+
+    const requestUser = reqUserData.requestJoin.map((member) => {
       delete member.user.refreshToken;
       return member.user;
     });
+    return { requestUser, userScope };
   }
 
   async detailPage(clubtype: string, clubtitle: string, email: string) {
