@@ -47,3 +47,4 @@ jobs:
           script: |
             cd sh
             sh deploy.sh
+            npm run start:prod
