@@ -14,10 +14,10 @@ export class AfterSchool {
   @Column()
   personnel: number;
 
-  @OneToMany(() => DayOfWeek, (DayOfWeek) => DayOfWeek.id)
+  @OneToMany(() => DayOfWeek, (DayOfWeek) => DayOfWeek.afterSchool)
   dayOfWeek: DayOfWeek[];
 
-  @OneToMany(() => Grade, (Grade) => Grade.id)
+  @OneToMany(() => Grade, (Grade) => Grade.afterSchool)
   grade: Grade[];
 
   @Column()

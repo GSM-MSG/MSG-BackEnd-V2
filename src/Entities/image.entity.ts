@@ -16,7 +16,7 @@ export class Image {
     onDelete: 'CASCADE',
   })
   @JoinColumn({ name: 'clubId' })
-  clubId: number;
+  club: number;
 
   @Column()
   url: string;

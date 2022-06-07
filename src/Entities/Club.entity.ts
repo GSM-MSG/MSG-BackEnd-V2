@@ -35,9 +35,9 @@ export class Club {
   @OneToMany(() => Member, (member) => member.club)
   member: Member[];
 
-  @OneToMany(() => Image, (Image) => Image.clubId)
+  @OneToMany(() => Image, (Image) => Image.club)
   activityUrls: Image[];
 
-  @OneToMany(() => RequestJoin, (RequestJoin) => RequestJoin.clubId)
+  @OneToMany(() => RequestJoin, (RequestJoin) => RequestJoin.club)
   requestJoin: RequestJoin[];
 }
