@@ -10,7 +10,7 @@ COPY ./src ./src
 
 COPY ./test ./test
 
-COPY ./src/lib/student.ts ./src/lib/student.ts
+COPY ./src/lib/students.ts ./src/lib/students.ts
 
 COPY .env tsconfig.build.json tsconfig.json nest-cli.json ./
 
