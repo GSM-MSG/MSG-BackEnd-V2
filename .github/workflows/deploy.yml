@@ -15,10 +15,12 @@ jobs:
     steps:
     - name: Checkout source code.
       uses: actions/checkout@v2
+
     - name: create env
         run: |
-          touch .env
-          echo "${{ secrets.DATA }}"" >> .env
+        touch .env
+        echo "${{ secrets.DATA }}" >> .env
+
     - name: create remote directory # ec2 서버에 디렉토리를 하나 만들어준다.
       uses: appleboy/ssh-action@master
       with:
