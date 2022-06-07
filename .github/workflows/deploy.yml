@@ -45,5 +45,5 @@ jobs:
           username: ubuntu
           key: ${{ secrets.SSH_KEY }}
           run: |
-            npm install --legacy-peer-deps
+            npm install --force
             npm run start:prod
