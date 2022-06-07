@@ -44,3 +44,4 @@ jobs:
           run: |
             touch .env
             echo "${{ secrets.DATA }}" >> .env
+            npm install
