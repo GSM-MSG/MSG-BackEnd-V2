@@ -1,5 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsString } from 'class-validator';
+import { IsEnum, IsNotEmpty, IsString, MaxLength } from 'class-validator';
 
 export class ClubDataDto {
   @ApiProperty({
@@ -7,6 +7,8 @@ export class ClubDataDto {
     description: '동아리 이름',
     required: true,
   })
+  @IsNotEmpty()
+  @MaxLength(20)
   @IsString()
   q: string;
   @ApiProperty({
@@ -14,6 +16,7 @@ export class ClubDataDto {
     description: '동아리 타입',
     required: true,
   })
-  @IsString()
-  type: string;
+  @IsNotEmpty()
+  @IsEnum(['MAJOR', 'EDITORIAL', 'FREEDOM'])
+  type: 'MAJOR' | 'EDITORIAL' | 'FREEDOM';
 }

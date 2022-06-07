@@ -13,6 +13,7 @@ import { AtStrategyWeb } from './strategies/atStrategy.web';
 import { RtStrategyWeb } from './strategies/rtStrategy.web';
 import { LoggerMiddleware } from './lib/logger.middleware';
 import { AfterSchoolModule } from './afterSchool/afterSchool.module';
+import { GuestModule } from './guest/guest.module';
 
 @Module({
   imports: [
@@ -36,6 +37,7 @@ import { AfterSchoolModule } from './afterSchool/afterSchool.module';
     UserModule,
     ImageModule,
     AfterSchoolModule,
+    GuestModule,
   ],
   providers: [AtStrategy, RtStrategy, AtStrategyWeb, RtStrategyWeb],
 })

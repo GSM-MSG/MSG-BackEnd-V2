@@ -3,20 +3,18 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Club } from 'src/Entities/Club.entity';
 import { Image } from 'src/Entities/image.entity';
 import { Member } from 'src/Entities/Member.entity';
-import { RelatedLink } from 'src/Entities/RelatedLink.entity';
 import { RequestJoin } from 'src/Entities/RequestJoin.entity';
 import { User } from 'src/Entities/User.entity';
 import { Repository } from 'typeorm';
 import { CreateClubDto } from './dto/createClub.dto';
 import { EditClubDto } from './dto/editclub.dto';
-import { KickUserDto } from './dto/kickUser.dto';
+import { KickUserDto } from './dto/kickuser.dto';
 import { ClubDataDto } from './dto/ClubData.dto';
 
 @Injectable()
 export class ClubService {
   constructor(
     @InjectRepository(Club) private Club: Repository<Club>,
-    @InjectRepository(RelatedLink) private RelatedLink: Repository<RelatedLink>,
     @InjectRepository(Member) private Member: Repository<Member>,
     @InjectRepository(User) private User: Repository<User>,
     @InjectRepository(Image) private Image: Repository<Image>,
@@ -47,7 +45,7 @@ export class ClubService {
       contact,
       teacher,
       type,
-      relatedLink,
+      notionLink,
       member,
       activityUrls,
     } = createClubData;
@@ -73,6 +71,7 @@ export class ClubService {
         teacher,
         type,
         isOpened: isOpened,
+        notionLink,
       }),
     );
     const clubData = await this.Club.findOne({
@@ -82,15 +81,6 @@ export class ClubService {
       throw new HttpException(
         '동아리가 존재하지 않습니다.',
         HttpStatus.NOT_FOUND,
-      );
-    }
-    if (relatedLink) {
-      await this.RelatedLink.save(
-        this.RelatedLink.create({
-          name: relatedLink.name,
-          url: relatedLink.url,
-          club: clubData,
-        }),
       );
     }
     const userData = await this.User.findOne({ where: { email } });
@@ -310,76 +300,10 @@ export class ClubService {
     });
   }
 
-  async guestDetailPage(clubType: string, clubName: string) {
-    const club = await this.Club.findOne({
-      where: { type: clubType, title: clubName },
-      relations: ['activityUrls', 'relatedLink', 'member', 'member.user'],
-      select: {
-        id: true,
-        title: true,
-        type: true,
-        bannerUrl: true,
-        description: true,
-        contact: true,
-        teacher: true,
-        isOpened: true,
-        member: {
-          id: true,
-          user: {
-            email: true,
-            name: true,
-            grade: true,
-            class: true,
-            num: true,
-            userImg: true,
-          },
-          scope: true,
-        },
-        relatedLink: { name: true, url: true, id: true },
-        activityUrls: { id: true, url: true },
-      },
-    });
-
-    if (!club)
-      throw new HttpException(
-        '존재하지 않는 동아리입니다.',
-        HttpStatus.NOT_FOUND,
-      );
-    const head = club.member.find((member) => {
-      return member.scope === 'HEAD';
-    });
-
-    const clubMembers = club.member.filter((member) => {
-      return member.scope === 'MEMBER';
-    });
-
-    if (club.activityUrls) {
-      const activityurls = club.activityUrls.map((url) => {
-        return url.url;
-      });
-      const isApplied = false;
-      const scope = 'USER';
-
-      delete club.member;
-      delete club.activityUrls;
-
-      return {
-        club,
-        activityurls,
-        head: head.user,
-        member: clubMembers.map((user) => {
-          return user.user;
-        }),
-        scope,
-        isApplied,
-      };
-    }
-  }
-
   async detailPage(clubtype: string, clubtitle: string, email: string) {
     const club = await this.Club.findOne({
       where: { type: clubtype, title: clubtitle },
-      relations: ['activityUrls', 'relatedLink', 'member', 'member.user'],
+      relations: ['activityUrls', 'member', 'member.user'],
       select: {
         id: true,
         title: true,
@@ -388,6 +312,7 @@ export class ClubService {
         description: true,
         contact: true,
         teacher: true,
+        notionLink: true,
         isOpened: true,
         member: {
           id: true,
@@ -401,7 +326,6 @@ export class ClubService {
           },
           scope: true,
         },
-        relatedLink: { name: true, url: true, id: true },
         activityUrls: { id: true, url: true },
       },
     });
@@ -579,14 +503,14 @@ export class ClubService {
       newMember,
       deleteActivityUrls,
       deleteMember,
-      relatedLink,
+      notionLink,
     } = editClubData;
     const clubData = await this.Club.findOne({
       where: {
         title: editClubData.q,
         type: editClubData.type,
       },
-      relations: ['relatedLink', 'member', 'member.user'],
+      relations: ['member', 'member.user'],
     });
     if (!email) {
       throw new HttpException(
@@ -607,22 +531,6 @@ export class ClubService {
       })
     ) {
       throw new HttpException('동아리 부장이 아닙니다.', HttpStatus.FORBIDDEN);
-    }
-    if (relatedLink) {
-      if (!clubData.relatedLink) {
-        await this.RelatedLink.save(
-          this.RelatedLink.create({
-            name: relatedLink.name,
-            url: relatedLink.url,
-            club: clubData,
-          }),
-        );
-      } else {
-        await this.RelatedLink.update(
-          { club: clubData },
-          { url: relatedLink.url, name: relatedLink.name },
-        );
-      }
     }
     if (newMember) {
       for (const email of newMember) {
@@ -705,6 +613,7 @@ export class ClubService {
           bannerUrl: editClubData.bannerUrl,
           contact: editClubData.contact,
           teacher: editClubData.teacher,
+          notionLink: editClubData.notionLink,
         },
       );
     }

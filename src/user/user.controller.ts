@@ -22,6 +22,7 @@ import { UrlDto } from './dto/urlAddress.dto';
 import { UserService } from './user.service';
 
 @ApiTags('USER')
+@UseGuards(AuthGuard('jwt'))
 @Controller('/user')
 export class UserController {
   constructor(private userService: UserService) {}
@@ -31,7 +32,6 @@ export class UserController {
   })
   @ApiResponse({ status: 200, description: '성공' })
   @ApiBearerAuth('access-token')
-  @UseGuards(AuthGuard('jwt'))
   @Get('/my')
   async userData(@User('email') email: string) {
     return this.userService.getUserData(email);
@@ -42,7 +42,6 @@ export class UserController {
   })
   @ApiBearerAuth('access-token')
   @ApiResponse({ status: 201, description: '성공' })
-  @UseGuards(AuthGuard('jwt'))
   @Put('/profile')
   @HttpCode(201)
   async editImg(@Body() urlAddress: UrlDto, @User('email') email: string) {
@@ -65,7 +64,6 @@ export class UserController {
     description: '동아리 타입',
     enum: ['MAJOR', 'FREEDOM', 'EDITORIAL'],
   })
-  @UseGuards(AuthGuard('jwt'))
   @Get('/search')
   async searchUser(
     @Query('name') name: string,
@@ -78,7 +76,6 @@ export class UserController {
     description: '유저가 동아리 탈퇴하는 파트입니다',
   })
   @ApiBearerAuth('access-token')
-  @UseGuards(AuthGuard('jwt'))
   @Delete('/exit')
   async exitClub(
     @Body() exitClubData: ClubDataDto,
@@ -87,6 +84,5 @@ export class UserController {
     await this.userService.exitClub(exitClubData, email);
   }
   @Delete('/withdrawal')
-  async withdrawal(){
-  }
+  async withdrawal() {}
 }
