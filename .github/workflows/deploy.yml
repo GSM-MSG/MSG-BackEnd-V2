@@ -45,5 +45,6 @@ jobs:
           username: ubuntu
           key: ${{ secrets.SSH_KEY }}
           run: |
-            npm install --force
+            cd MSG-BackEnd-V2
+            npm install --legacy-peer-deps
             npm run start:prod
