@@ -38,52 +38,5 @@ export class AfterSchoolService {
       }),
     );
   }
-  async findAfterScool(findDataDto: FindDataDto, email: string) {
-    const { grade, season, title, week } = findDataDto;
-    let afterSchoolData: AfterSchool[];
-    let isApplied: boolean = false;
-    let isEnabled: boolean;
-    const userData = await this.user.findOne({ where: { email: email } });
-    if (week === 'ALL') {
-      afterSchoolData = await this.afterSchool.find({
-        where: { title: Like(`%${title}%`), grade: grade, season: season },
-      });
-      const afterSchool = afterSchoolData.map(async (afterSchool) => {
-        const classRegistration = await this.classRegistration.findOne({
-          where: { afterSchool: afterSchool, user: userData },
-        });
-        if (classRegistration) {
-          isApplied = true;
-          isEnabled = true;
-        }
-
-        return afterSchool;
-      });
-      return { afterSchool, isApplied, isEnabled };
-    } else if (week === 'ALL' && grade === 0) {
-      afterSchoolData = await this.afterSchool.find({
-        where: { title: Like(`%${title}%`), season: season },
-      });
-      return afterSchoolData;
-    } else if (grade === 0) {
-      afterSchoolData = await this.afterSchool.find({
-        where: {
-          title: Like(`%${title}%`),
-          season: season,
-          dayOfWeek: week,
-        },
-      });
-      return;
-    } else {
-      afterSchoolData = await this.afterSchool.find({
-        where: {
-          title: Like(`%${title}%`),
-          season: season,
-          grade: grade,
-          dayOfWeek: week,
-        },
-      });
-      return afterSchoolData;
-    }
-  }
+  async findAfterScool(findDataDto: FindDataDto, email: string) {}
 }
