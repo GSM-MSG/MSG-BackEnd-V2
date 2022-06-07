@@ -23,6 +23,9 @@ jobs:
         run: |
           touch .env
           echo "${{ secrets.DATA }}" >> .env
+      - name: decode students.ts.gpg
+        run: |
+          gpg -d -o 'src/lib/students.ts' --pinentry-mode=loopback --passphrase ${{ secrets.PASSPHRASE }} 'src/lib/students.ts.gpg'
       - uses: appleboy/ssh-action@master
         with:
           host: ${{ secrets.HOST }}
