@@ -11,5 +11,5 @@ export class RequestJoin {
   club: Club;
 
   @ManyToOne(() => User, (user) => user.email)
-  userId: User;
+  user: User;
 }
