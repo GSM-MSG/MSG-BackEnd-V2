@@ -2,6 +2,8 @@ import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { AfterSchool } from 'src/Entities/AfterSchool.entity';
 import { ClassRegistration } from 'src/Entities/ClassRegistration.entity';
+import { DayOfWeek } from 'src/Entities/DayOfWeek.entity';
+import { Grade } from 'src/Entities/Grade.entity';
 import { User } from 'src/Entities/User.entity';
 import { Like, Repository } from 'typeorm';
 import { ApplyAfterSchoolDto } from './dto/ApplyAfterSchool.dto';
@@ -12,6 +14,8 @@ export class AfterSchoolService {
   constructor(
     @InjectRepository(AfterSchool) private afterSchool: Repository<AfterSchool>,
     @InjectRepository(User) private user: Repository<User>,
+    @InjectRepository(DayOfWeek) private dayOfWeek: Repository<DayOfWeek>,
+    @InjectRepository(Grade) private grade: Repository<Grade>,
     @InjectRepository(ClassRegistration)
     private classRegistration: Repository<ClassRegistration>,
   ) {}
@@ -38,5 +42,24 @@ export class AfterSchoolService {
       }),
     );
   }
-  async findAfterScool(findDataDto: FindDataDto, email: string) {}
+  async findAfterScool(findDataDto: FindDataDto, email: string) {
+    const { grade, season, title, week } = findDataDto;
+    let afterSchoolData: AfterSchool[];
+    let isApplicant: boolean = false;
+    let isEnabled: boolean;
+
+    if (week === 'ALL') {
+      afterSchoolData = await this.afterSchool.find({
+        where: { title: Like(`%${title}%`) },
+        relations: ['dayOfWeek'],
+        select: {
+          id: true,
+          dayOfWeek: {
+            dayOfWeek: true,
+          },
+        },
+      });
+      return afterSchoolData;
+    }
+  }
 }
