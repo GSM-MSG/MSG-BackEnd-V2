@@ -31,5 +31,4 @@ jobs:
           host: ${{ secrets.HOST }}
           username: ubuntu
           key: ${{ secrets.SSH_KEY }}
-          script: |
-            ****sh /home/ubuntu/sh/deploy.sh
+          run: docker build -f Dockerfile -t msg .
