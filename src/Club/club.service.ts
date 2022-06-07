@@ -101,7 +101,7 @@ export class ClubService {
     }
     if (activityUrls) {
       activityUrls.forEach((image) => {
-        this.Image.save({ clubId: clubData.id, url: image });
+        this.Image.save({ club: clubData.id, url: image });
       });
     }
   }
@@ -164,7 +164,7 @@ export class ClubService {
       );
     }
     this.RequestJoin.save(
-      this.RequestJoin.create({ clubId: clubData, userId: userData }),
+      this.RequestJoin.create({ club: clubData, user: userData }),
     );
   }
 
@@ -190,7 +190,7 @@ export class ClubService {
     }
 
     const applyUser = await this.RequestJoin.findOne({
-      where: { clubId: clubData, userId: userData },
+      where: { club: clubData, user: userData },
     });
 
     await this.RequestJoin.delete({ ...applyUser });
@@ -223,7 +223,7 @@ export class ClubService {
       throw new HttpException('동아리부장이 아닙니다.', HttpStatus.FORBIDDEN);
     }
     const acceptUser = await this.RequestJoin.findOne({
-      where: { clubId: clubData, userId: userData },
+      where: { club: clubData, user: userData },
     });
     await this.RequestJoin.delete(acceptUser);
     this.Member.save({ club: clubData, email: userData, scope: 'MEMBER' });
@@ -262,14 +262,14 @@ export class ClubService {
       throw new HttpException('동아리부장이 아닙니다.', HttpStatus.FORBIDDEN);
     }
     const rejectUser = await this.RequestJoin.findOne({
-      where: { clubId: clubData, userId: userData },
+      where: { club: clubData, user: userData },
     });
     await this.RequestJoin.delete({ ...rejectUser });
   }
 
   async applicantList(clubType: string, clubtitle: string, email: string) {
     const reqUserData = await this.Club.findOne({
-      relations: ['requestJoin', 'requestJoin.userId', 'member', 'member.user'],
+      relations: ['requestJoin', 'requestJoin.user', 'member', 'member.user'],
       where: { title: clubtitle, type: clubType },
     });
     if (!email) {
@@ -295,8 +295,8 @@ export class ClubService {
       );
     }
     return reqUserData.requestJoin.map((member) => {
-      delete member.userId.refreshToken;
-      return member.userId;
+      delete member.user.refreshToken;
+      return member.user;
     });
   }
 
@@ -356,7 +356,7 @@ export class ClubService {
         return url.url;
       });
       const applicant = await this.RequestJoin.findOne({
-        where: { userId: userData, clubId: club },
+        where: { user: userData, club: club },
       });
       const isApplied = !!applicant;
       const memberForScope = club.member.find((member) => {
@@ -579,7 +579,7 @@ export class ClubService {
     if (newActivityUrls) {
       for (const image of newActivityUrls) {
         const clubImage = await this.Image.findOne({
-          where: { clubId: clubData.id, url: image },
+          where: { club: clubData.id, url: image },
         });
         if (clubImage) {
           throw new HttpException(
@@ -588,13 +588,13 @@ export class ClubService {
           );
         }
         await this.Image.save(
-          this.Image.create({ url: image, clubId: clubData.id }),
+          this.Image.create({ url: image, club: clubData.id }),
         );
       }
       if (deleteActivityUrls) {
         for (const image of deleteActivityUrls) {
           const clubImageData = await this.Image.findOne({
-            where: { clubId: clubData.id, url: image },
+            where: { club: clubData.id, url: image },
           });
           if (!clubImageData) {
             throw new HttpException(
@@ -602,7 +602,7 @@ export class ClubService {
               HttpStatus.CONFLICT,
             );
           }
-          await this.Image.delete({ url: image, clubId: clubData.id });
+          await this.Image.delete({ url: image, club: clubData.id });
         }
       }
       await this.Club.update(

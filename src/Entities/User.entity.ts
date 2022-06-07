@@ -26,7 +26,7 @@ export class User {
   @OneToMany(() => Member, (member) => member.user)
   member: Member[];
 
-  @OneToMany(() => RequestJoin, (RequestJoin) => RequestJoin.userId)
+  @OneToMany(() => RequestJoin, (RequestJoin) => RequestJoin.user)
   requestJoin: RequestJoin[];
 
   @OneToMany(
