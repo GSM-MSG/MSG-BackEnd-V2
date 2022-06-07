@@ -12,29 +12,25 @@ jobs:
         node-version:
           - 16.x
   steps:
-    - name: Checkout source code.
-      uses: actions/checkout@v2
+    - uses: actions/checkout@v2
     - name: create env
       run: |
         touch .env
         echo "${{ secrets.DATA }}" >> .env
-    - name: create remote directory
-      uses: appleboy/ssh-action@master
+    - uses: appleboy/ssh-action@master
       with:
         host: ${{ secrets.HOST }}
         username: ubuntu
         key: ${{ secrets.SSH_KEY }}
         script: mkdir -p /home/ubuntu/MSG-BackEnd-V2
-    - name: copy source via ssh key
-      uses: burnett01/rsync-deployments@4.1
+    - uses: burnett01/rsync-deployments@4.1
       with:
         switches: '-avzr --delete'
         remote_path: /home/ubuntu/MSG-BackEnd-V2
         remote_host: ${{ secrets.HOST }}
         remote_user: ubuntu
         remote_key: ${{ secrets.SSH_KEY }}
-    - name: executing remote ssh commands using password
-      uses: appleboy/ssh-action@master
+    - uses: appleboy/ssh-action@master
       with:
         host: ${{ secrets.HOST }}
         username: ubuntu
