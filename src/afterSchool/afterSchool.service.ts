@@ -1,6 +1,7 @@
-import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { AfterSchool } from 'src/Entities/AfterSchool.entity';
+import { ListDataDto } from './dto/listData.dto';
+import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { ClassRegistration } from 'src/Entities/ClassRegistration.entity';
 import { User } from 'src/Entities/User.entity';
 import { Repository } from 'typeorm';
@@ -14,7 +15,7 @@ export class AfterSchoolService {
     @InjectRepository(ClassRegistration)
     private classRegistration: Repository<ClassRegistration>,
   ) {}
-
+  async list(listDataDto: ListDataDto, email: string) {}
   async applyAfterSchool(applyAfterSchool: ApplyAfterSchoolDto, email: string) {
     const afterSchoolData = await this.afterSchool.findOne({
       where: { id: applyAfterSchool.afterSchoolId },
