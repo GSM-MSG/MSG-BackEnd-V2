@@ -27,15 +27,6 @@ export class AfterSchool {
   canDuplicate: boolean;
 
   @Column()
-  isCommon: boolean;
-
-  @Column()
-  maxPersonnel: number;
-
-  @Column()
-  isFull: boolean;
-
-  @Column()
   season: string;
 
   @Column()
