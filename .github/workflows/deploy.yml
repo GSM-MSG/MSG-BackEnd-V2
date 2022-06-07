@@ -3,7 +3,6 @@ on:
   push:
     branches:
       - main
-
 jobs:
   build:
     runs-on: ubuntu-latest
@@ -13,7 +12,7 @@ jobs:
         run: |
           touch .env
           echo "${{ secrets.DATA }}" >> .env
-      - uses: appleboy/ssh-action@main
+      - uses: appleboy/ssh-action@master
         with:
           host: ${{ secrets.HOST }}
           username: ubuntu
@@ -26,7 +25,7 @@ jobs:
           remote_host: ${{ secrets.HOST }}
           remote_user: ubuntu
           remote_key: ${{ secrets.SSH_KEY }}
-      - uses: appleboy/ssh-action@main
+      - uses: appleboy/ssh-action@master
         with:
           host: ${{ secrets.HOST }}
           username: ubuntu
