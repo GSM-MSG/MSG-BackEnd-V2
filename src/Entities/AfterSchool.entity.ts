@@ -27,9 +27,6 @@ export class AfterSchool {
   canDuplicate: boolean;
 
   @Column()
-  isCommon: boolean;
-
-  @Column()
   season: string;
 
   @Column()
