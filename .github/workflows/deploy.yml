@@ -45,6 +45,5 @@ jobs:
           username: ubuntu
           key: ${{ secrets.SSH_KEY }}
           run: |
-            touch .env
-            echo "${{ secrets.DATA }}" >> .env
             npm install
+            npm run start:prod
