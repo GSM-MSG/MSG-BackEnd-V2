@@ -44,7 +44,6 @@ jobs:
           host: ${{ secrets.HOST }}
           username: ubuntu
           key: ${{ secrets.SSH_KEY }}
-          run: |
-            cd MSG-BackEnd-V2
-            npm install --legacy-peer-deps
-            npm run start:prod
+          script: |
+            cd sh
+            sh deploy.sh
