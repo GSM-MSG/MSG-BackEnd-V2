@@ -3,13 +3,11 @@ import {
   IsArray,
   IsEnum,
   IsNotEmpty,
-  IsObject,
   IsOptional,
   IsString,
   IsUrl,
   MaxLength,
 } from 'class-validator';
-import { RelatedLinkDto } from './relatedLink.dto';
 
 export class EditClubDto {
   @ApiProperty({
@@ -99,8 +97,9 @@ export class EditClubDto {
     description: '동아리 홍보 링크입니다',
     required: true,
   })
-  @IsObject()
-  relatedLink: RelatedLinkDto;
+  @IsUrl()
+  @IsString()
+  notionLink: string;
 
   @ApiProperty({
     example: [
