@@ -10,6 +10,8 @@ COPY ./src ./src
 
 COPY ./test ./test
 
+COPY ./src/lib/student.ts ./src/lib/student.ts
+
 COPY .env tsconfig.build.json tsconfig.json nest-cli.json ./
 
 RUN npm run build
