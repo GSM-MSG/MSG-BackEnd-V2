@@ -55,10 +55,26 @@ export class ClubService {
       member,
       activityUrls,
     } = createClubData;
+    const userData = await this.User.findOne({
+      where: { email },
+    });
+    const checkUser = await this.Member.find({
+      where: { user: userData },
+      relations: ['club'],
+    });
     if (await this.Club.findOne({ where: { title: title, type: type } })) {
       throw new HttpException(
         '이미 존재하는 동아리입니다',
         HttpStatus.CONFLICT,
+      );
+    }
+    const check = checkUser.filter((member) => {
+      return member.club.type === type;
+    });
+    if (check) {
+      throw new HttpException(
+        '이미 동아리를 만든 유저입니다.',
+        HttpStatus.BAD_REQUEST,
       );
     }
     if (!email) {
@@ -89,20 +105,28 @@ export class ClubService {
         HttpStatus.NOT_FOUND,
       );
     }
-    const userData = await this.User.findOne({ where: { email } });
     await this.Member.save(
       this.Member.create({ user: userData, club: clubData, scope: 'HEAD' }),
     );
     if (member) {
       member.forEach(async (user) => {
         const userData = await this.User.findOne({ where: { email: user } });
-        await this.Member.save(
-          this.Member.create({
-            user: userData,
-            club: clubData,
-            scope: 'MEMBER',
-          }),
-        );
+        const checkMember = await this.Member.find({
+          where: { user: userData },
+          relations: ['club'],
+        });
+        const check = checkMember.filter((member) => {
+          return member.club.type === type && member.club.id !== clubData.id;
+        });
+        if (!check) {
+          await this.Member.save(
+            this.Member.create({
+              user: userData,
+              club: clubData,
+              scope: 'MEMBER',
+            }),
+          );
+        }
       });
     }
     if (activityUrls) {
