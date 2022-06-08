@@ -60,7 +60,6 @@ export class EditClubDto {
     description: '연락처입니다',
     required: true,
   })
-  @IsOptional()
   @IsString()
   contact: string;
 

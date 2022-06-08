@@ -504,13 +504,8 @@ export class ClubService {
     );
   }
   async editClub(editClubData: EditClubDto, email: string) {
-    const {
-      newActivityUrls,
-      newMember,
-      deleteActivityUrls,
-      deleteMember,
-      notionLink,
-    } = editClubData;
+    const { newActivityUrls, newMember, deleteActivityUrls, deleteMember } =
+      editClubData;
     const clubData = await this.Club.findOne({
       where: {
         title: editClubData.q,
