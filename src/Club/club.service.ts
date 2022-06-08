@@ -294,10 +294,15 @@ export class ClubService {
         HttpStatus.NOT_ACCEPTABLE,
       );
     }
-    return reqUserData.requestJoin.map((member) => {
+    const userScope = reqUserData.member.find((member) => {
+      return member.user.email === email;
+    }).scope;
+
+    const requestUser = reqUserData.requestJoin.map((member) => {
       delete member.user.refreshToken;
       return member.user;
     });
+    return { requestUser, userScope };
   }
 
   async detailPage(clubtype: string, clubtitle: string, email: string) {
@@ -400,10 +405,15 @@ export class ClubService {
         HttpStatus.NOT_ACCEPTABLE,
       );
     }
-    return clubData.member.map((member) => {
+    const userScope = clubData.member.find((member) => {
+      return member.user.email === email;
+    }).scope;
+
+    const requestUser = clubData.member.map((member) => {
       delete member.user.refreshToken;
       return member;
     });
+    return { userScope, requestUser };
   }
   async clubOnOff(openClubData: ClubDataDto, email: string, isOpened: boolean) {
     const clubData = await this.Club.findOne({
