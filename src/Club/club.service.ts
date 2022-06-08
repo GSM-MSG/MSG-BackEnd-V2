@@ -1,4 +1,10 @@
-import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
+import {
+  HttpException,
+  HttpStatus,
+  Injectable,
+  NotAcceptableException,
+  UnauthorizedException,
+} from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Club } from 'src/Entities/Club.entity';
 import { Image } from 'src/Entities/image.entity';
@@ -385,36 +391,26 @@ export class ClubService {
     }
   }
   async findMember(clubType: string, clubTitle: string, email: string) {
+    if (!email) throw new UnauthorizedException('이메일이 존재하지 않습니다.');
+
     const clubData = await this.Club.findOne({
       where: { title: clubTitle, type: clubType },
       relations: ['member', 'member.user'],
     });
-    if (!email) {
-      throw new HttpException(
-        '이메일이 존재하지 않습니다.',
-        HttpStatus.UNAUTHORIZED,
-      );
-    }
-    if (
-      !clubData.member.find((member) => {
-        return member.user.email === email;
-      })
-    ) {
-      throw new HttpException(
-        '동아리 원이 아닙니다',
-        HttpStatus.NOT_ACCEPTABLE,
-      );
-    }
-    const userScope = clubData.member.find((member) => {
+
+    const user = clubData.member.find((member) => {
       return member.user.email === email;
-    }).scope;
+    });
+
+    if (!user) throw new NotAcceptableException('동아리 원이 아닙니다');
 
     const requestUser = clubData.member.map((member) => {
       delete member.user.refreshToken;
-      return member;
+      return { ...member.user, scope: member.scope };
     });
-    return { userScope, requestUser };
+    return { userScope: user.scope, requestUser };
   }
+
   async clubOnOff(openClubData: ClubDataDto, email: string, isOpened: boolean) {
     const clubData = await this.Club.findOne({
       where: { title: openClubData.q, type: openClubData.type },
