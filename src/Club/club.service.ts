@@ -71,7 +71,8 @@ export class ClubService {
     const check = checkUser.filter((member) => {
       return member.club.type === type;
     });
-    if (check) {
+    console.log(check);
+    if (check[0]) {
       throw new HttpException(
         '이미 동아리를 만든 유저입니다.',
         HttpStatus.BAD_REQUEST,
