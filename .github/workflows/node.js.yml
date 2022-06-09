@@ -27,9 +27,9 @@ jobs:
         node-version: ${{ matrix.node-version }}
         cache: 'npm'
 
-    - run: npm ci
+    - run: yarn install --frozen-lockfile
     
     - name: Configure Code Signing
       run: gpg -d -o 'src/lib/students.ts' --pinentry-mode=loopback --passphrase ${{ secrets.PASSPHRASE }} 'src/lib/students.ts.gpg'
     
-    - run: npm run build
+    - run: yarn build
