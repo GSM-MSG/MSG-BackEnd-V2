@@ -10,6 +10,6 @@ export class ClassRegistration {
   @ManyToOne(() => AfterSchool, (AfterSchool) => AfterSchool.id)
   afterSchool: AfterSchool;
 
-  @ManyToOne(() => User, (User) => User.email)
+  @ManyToOne(() => User, (User) => User.email, { onDelete: 'CASCADE' })
   user: User;
 }

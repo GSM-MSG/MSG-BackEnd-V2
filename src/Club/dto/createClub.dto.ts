@@ -45,7 +45,7 @@ export class CreateClubDto {
     description: '연락처입니다',
     required: true,
   })
-  @IsOptional()
+  @IsNotEmpty()
   @IsString()
   contact: string;
 

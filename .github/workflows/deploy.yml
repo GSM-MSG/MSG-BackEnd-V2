@@ -1,0 +1,49 @@
+name: deploy
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  build:
+    runs-on: ubuntu-20.04
+    strategy:
+      matrix:
+        node-version: [16.x]
+    steps:
+      - uses: actions/checkout@v3
+      
+      - name: Use Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v2
+        with:
+          node-version: ${{ matrix.node-version }}
+
+      - name: create env
+        run: |
+          touch .env
+          echo "${{ secrets.DATA }}" >> .env
+      - name: decode students.ts.gpg
+        run: |
+          gpg -d -o 'src/lib/students.ts' --pinentry-mode=loopback --passphrase ${{ secrets.PASSPHRASE }} 'src/lib/students.ts.gpg'
+      - uses: appleboy/ssh-action@master
+        with:
+          host: ${{ secrets.HOST }}
+          username: ubuntu
+          key: ${{ secrets.SSH_KEY }}
+          script: mkdir -p /home/ubuntu/MSG-BackEnd-V2
+      - uses: burnett01/rsync-deployments@4.1
+        with:
+          switches: '-avzr --delete'
+          remote_path: /home/ubuntu/MSG-BackEnd-V2
+          remote_host: ${{ secrets.HOST }}
+          remote_user: ubuntu
+          remote_key: ${{ secrets.SSH_KEY }}
+      - uses: appleboy/ssh-action@master
+        with:
+          host: ${{ secrets.HOST }}
+          username: ubuntu
+          key: ${{ secrets.SSH_KEY }}
+          script: |
+            cd sh
+            sh deploy.sh

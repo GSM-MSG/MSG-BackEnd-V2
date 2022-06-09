@@ -8,8 +8,8 @@ export class RequestJoin {
   id: number;
 
   @ManyToOne(() => Club, (club) => club.id, { onDelete: 'CASCADE' })
-  clubId: Club;
+  club: Club;
 
   @ManyToOne(() => User, (user) => user.email)
-  userId: User;
+  user: User;
 }

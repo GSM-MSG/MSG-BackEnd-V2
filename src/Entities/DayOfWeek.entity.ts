@@ -6,7 +6,9 @@ export class DayOfWeek {
   @PrimaryGeneratedColumn()
   id: number;
 
-  @ManyToOne(() => AfterSchool, (AfterSchool) => AfterSchool.id)
+  @ManyToOne(() => AfterSchool, (AfterSchool) => AfterSchool.id, {
+    onDelete: 'CASCADE',
+  })
   afterSchool: AfterSchool;
 
   @Column()

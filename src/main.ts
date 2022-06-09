@@ -12,7 +12,7 @@ async function bootstrap() {
   });
   const config = new DocumentBuilder()
     .setTitle('GCMS Api명세서')
-    .setDescription('Api명세서들을 옮겨놨습니다')
+    .setDescription('Api명세서들을 옮겨놨습니다 :)')
     .setVersion('1.0')
     .addBearerAuth(
       {
