@@ -31,7 +31,7 @@
     "@nestjs/swagger": "^5.2.1",
     "@nestjs/typeorm": "^8.1.2",
     "@types/passport-local": "^1.0.34",
-    "aws-sdk": "^2.1151.0",
+    "aws-sdk": "^2.1152.0",
     "bcrypt": "^5.0.1",
     "class-transformer": "^0.5.1",
     "class-validator": "^0.13.2",
