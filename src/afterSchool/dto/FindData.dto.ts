@@ -13,5 +13,5 @@ export class FindDataDto {
   grade: number;
 
   @IsString()
-  title: string;
+  name: string;
 }

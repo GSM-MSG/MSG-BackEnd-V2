@@ -44,14 +44,14 @@ export class AfterSchoolService {
     );
   }
   async findAfterScool(findDataDto: FindDataDto, email: string) {
-    const { grade, season, title, week } = findDataDto;
+    const { grade, season, name, week } = findDataDto;
     let afterSchoolData: AfterSchool[];
     let isApplicant: boolean = false;
     let isEnabled: boolean;
 
     if (week === 'ALL') {
       afterSchoolData = await this.afterSchool.find({
-        where: { title: Like(`%${title}%`) },
+        where: { title: Like(`%${name}%`) },
         relations: ['dayOfWeek'],
         select: {
           id: true,
