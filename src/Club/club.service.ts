@@ -117,7 +117,7 @@ export class ClubService {
           relations: ['club'],
         });
         const check = checkMember.filter((member) => {
-          return member.club.type === type && member.club.id !== clubData.id;
+          return member.club.type === type;
         });
         if (!check) {
           await this.Member.save(
@@ -182,6 +182,13 @@ export class ClubService {
       );
     }
     const userData = await this.User.findOne({ where: { email } });
+    const check = await this.RequestJoin.find({ where: { user: userData } });
+    if (check[0]) {
+      throw new HttpException(
+        '이미 동아리에 지원한 상태입니다.',
+        HttpStatus.CONFLICT,
+      );
+    }
     if (!clubData) {
       throw new HttpException(
         '존재하지 않는 동아리입니다.',
@@ -240,6 +247,19 @@ export class ClubService {
     const userData = await this.User.findOne({
       where: { email: acceptUserId },
     });
+    const checkMemmber = await this.Member.find({
+      where: { user: userData },
+      relations: ['club'],
+    });
+    const check = checkMemmber.filter((member) => {
+      return member.club.type === clubtype;
+    });
+    if (check[0]) {
+      throw new HttpException(
+        '다른 동아리에 가입된 유저입니다.',
+        HttpStatus.CONFLICT,
+      );
+    }
     if (!clubData) {
       throw new HttpException(
         '존재하지 않는 동아리입니다.',
@@ -564,6 +584,22 @@ export class ClubService {
         const clubMemberData = await this.Member.findOne({
           where: { user: userData, club: clubData },
         });
+        const checkMember = await this.Member.find({
+          where: { user: userData },
+          relations: ['club'],
+        });
+        const check = checkMember.filter((member) => {
+          return member.club.type === editClubData.type;
+        });
+        if (!check) {
+          await this.Member.save(
+            this.Member.create({
+              user: userData,
+              club: clubData,
+              scope: 'MEMBER',
+            }),
+          );
+        }
         if (!userData) {
           throw new HttpException(
             '존재하지 않는 유저입니다.',
@@ -575,11 +611,6 @@ export class ClubService {
             HttpStatus.CONFLICT,
           );
         }
-        await this.Member.save({
-          user: userData,
-          club: clubData,
-          scope: 'MEMBER',
-        });
       }
     }
     if (deleteMember) {
@@ -588,6 +619,16 @@ export class ClubService {
         const clubmember = await this.Member.findOne({
           where: { user: userData, club: clubData },
         });
+        const checkMember = await this.Member.find({
+          where: { user: userData },
+          relations: ['club'],
+        });
+        const check = checkMember.filter((member) => {
+          return member.club.type === editClubData.type;
+        });
+        if (!check) {
+          await this.Member.delete({ user: userData, club: clubData });
+        }
         if (!userData) {
           throw new HttpException(
             '존재하지 않는 유저입니다.',
@@ -599,7 +640,6 @@ export class ClubService {
             HttpStatus.CONFLICT,
           );
         }
-        await this.Member.delete({ user: userData });
       }
     }
     if (newActivityUrls) {
