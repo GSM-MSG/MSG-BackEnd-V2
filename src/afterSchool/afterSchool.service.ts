@@ -6,9 +6,8 @@ import { ClassRegistration } from 'src/Entities/ClassRegistration.entity';
 import { DayOfWeek } from 'src/Entities/DayOfWeek.entity';
 import { Grade } from 'src/Entities/Grade.entity';
 import { User } from 'src/Entities/User.entity';
-import { Like, Repository } from 'typeorm';
+import { Repository } from 'typeorm';
 import { ApplyAfterSchoolDto } from './dto/ApplyAfterSchool.dto';
-import { FindDataDto } from './dto/FindData.dto';
 
 @Injectable()
 export class AfterSchoolService {
@@ -42,25 +41,5 @@ export class AfterSchoolService {
         afterSchool: afterSchoolData,
       }),
     );
-  }
-  async findAfterScool(findDataDto: FindDataDto, email: string) {
-    const { grade, season, name, week } = findDataDto;
-    let afterSchoolData: AfterSchool[];
-    let isApplicant: boolean = false;
-    let isEnabled: boolean;
-
-    if (week === 'ALL') {
-      afterSchoolData = await this.afterSchool.find({
-        where: { title: Like(`%${name}%`) },
-        relations: ['dayOfWeek'],
-        select: {
-          id: true,
-          dayOfWeek: {
-            dayOfWeek: true,
-          },
-        },
-      });
-      return afterSchoolData;
-    }
   }
 }

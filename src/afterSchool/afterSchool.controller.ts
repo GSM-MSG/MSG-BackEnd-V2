@@ -19,7 +19,6 @@ import {
 import { User } from 'src/auth/decorators';
 import { AfterSchoolService } from './afterSchool.service';
 import { ApplyAfterSchoolDto } from './dto/ApplyAfterSchool.dto';
-import { FindDataDto } from './dto/FindData.dto';
 import { ListDataDto } from './dto/listData.dto';
 
 @ApiTags('AFTERSCHOOL')
@@ -50,12 +49,5 @@ export class AfterSchoolController {
     @User('email') email: string,
   ) {
     this.afterSchoolService.applyAfterSchool(applyAfterSchoolDto, email);
-  }
-  @Get('find')
-  async findAfterSchool(
-    @Query() findDataDto: FindDataDto,
-    @Body() email: string,
-  ) {
-    return this.afterSchoolService.findAfterScool(findDataDto, email);
   }
 }
