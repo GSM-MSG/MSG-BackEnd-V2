@@ -33,6 +33,7 @@ jobs:
           key: ${{ secrets.SSH_KEY }}
           script: |
             mkdir -p /home/ubuntu/MSG-BackEnd-V2
+            mkdir -p /home/ubuntu/hello
             exit
       - uses: burnett01/rsync-deployments@4.1
         with:
