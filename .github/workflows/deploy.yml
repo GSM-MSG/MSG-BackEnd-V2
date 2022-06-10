@@ -41,6 +41,7 @@ jobs:
           remote_path: /home/ubuntu/MSG-BackEnd-V2
           remote_host: ${{ secrets.HOST }}
           remote_user: ubuntu
+          remote_port: 22
           remote_key: ${{ secrets.SSH_KEY }}
       - uses: appleboy/ssh-action@master
         with:
