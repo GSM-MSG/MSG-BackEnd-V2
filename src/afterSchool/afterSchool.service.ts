@@ -8,16 +8,12 @@ import { Grade } from 'src/Entities/Grade.entity';
 import { User } from 'src/Entities/User.entity';
 import { Repository } from 'typeorm';
 import { ApplyAfterSchoolDto } from './dto/ApplyAfterSchool.dto';
-import { DayOfWeek } from 'src/Entities/DayOfWeek.entity';
-import { Grade } from 'src/Entities/Grade.entity';
 
 @Injectable()
 export class AfterSchoolService {
   constructor(
     @InjectRepository(AfterSchool) private afterSchool: Repository<AfterSchool>,
     @InjectRepository(User) private user: Repository<User>,
-    @InjectRepository(DayOfWeek) private dayOfWeek: Repository<DayOfWeek>,
-    @InjectRepository(Grade) private grade: Repository<Grade>,
     @InjectRepository(ClassRegistration)
     private classRegistration: Repository<ClassRegistration>,
     @InjectRepository(DayOfWeek) private dayOfWeek: Repository<DayOfWeek>,
