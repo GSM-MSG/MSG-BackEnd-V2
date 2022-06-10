@@ -241,7 +241,7 @@ export class ClubService {
   ) {
     const clubData = await this.Club.findOne({
       where: { type: clubtype, title: clubtitle },
-      relations: ['member', 'member.user'],
+      relations: ['member'],
     });
     const userData = await this.User.findOne({
       where: { email: acceptUserId },
@@ -253,12 +253,6 @@ export class ClubService {
     const check = checkMemmber.filter((member) => {
       return member.club.type === clubtype;
     });
-    if (!userData) {
-      throw new HttpException(
-        '존재하지 않는 유저입니다.',
-        HttpStatus.NOT_FOUND,
-      );
-    }
     if (check[0]) {
       throw new HttpException(
         '다른 동아리에 가입된 유저입니다.',
