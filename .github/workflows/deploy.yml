@@ -48,4 +48,4 @@ jobs:
           key: ${{ secrets.SSH_KEY }}
           script: |
             cd sh
-            sh nohup sh run.sh >/dev/null 2>&1 &
+            sh deploy.sh
