@@ -20,9 +20,7 @@ export class RtStrategyWeb extends PassportStrategy(
     super({
       jwtFromRequest: ExtractJwt.fromExtractors([
         (req: Request) => {
-          let cookie: string;
-          if (!req.cookies['accessToken']) cookie = req.cookies['refreshToken'];
-          else cookie = req.cookies['accessToken'];
+          const cookie = req.cookies['refreshToken'];
 
           if (!cookie) return null;
           return cookie;
