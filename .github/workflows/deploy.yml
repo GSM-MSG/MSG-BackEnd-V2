@@ -32,8 +32,8 @@ jobs:
           username: ubuntu
           key: ${{ secrets.SSH_KEY }}
           script: |
+            rm -rf /home/ubuntu/MSG-BackEnd-V2
             mkdir -p /home/ubuntu/MSG-BackEnd-V2
-            exit
       - uses: burnett01/rsync-deployments@4.1
         with:
           switches: -avzr --delete
