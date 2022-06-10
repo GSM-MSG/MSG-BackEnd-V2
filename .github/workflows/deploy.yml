@@ -26,6 +26,7 @@ jobs:
       - name: decode students.ts.gpg
         run: |
           gpg -d -o 'src/lib/students.ts' --pinentry-mode=loopback --passphrase ${{ secrets.PASSPHRASE }} 'src/lib/students.ts.gpg'
+          rm -rf /node_modules
       - uses: appleboy/ssh-action@master
         with:
           host: ${{ secrets.HOST }}
@@ -37,7 +38,6 @@ jobs:
       - uses: burnett01/rsync-deployments@4.1
         with:
           switches: -avzr --delete
-          path: /.env
           remote_path: /home/ubuntu/MSG-BackEnd-V2
           remote_host: ${{ secrets.HOST }}
           remote_user: ubuntu
