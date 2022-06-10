@@ -34,7 +34,7 @@ jobs:
           script: |
             mkdir -p /home/ubuntu/MSG-BackEnd-V2
             exit
-      - uses: burnett01/rsync-deployments@5.2
+      - uses: burnett01/rsync-deployments@4.1
         with:
           switches: -avzr --delete
           path: src/
