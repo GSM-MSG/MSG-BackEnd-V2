@@ -37,6 +37,7 @@ jobs:
       - uses: burnett01/rsync-deployments@4.1
         with:
           switches: -avzr --delete
+          path: /.env
           remote_path: /home/ubuntu/MSG-BackEnd-V2
           remote_host: ${{ secrets.HOST }}
           remote_user: ubuntu
