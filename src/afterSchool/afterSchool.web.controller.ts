@@ -29,7 +29,6 @@ export class AfterSchoolWebController {
   })
   @ApiResponse({ status: 201, description: '방과후를 신청에 성공했습니다.' })
   @ApiResponse({ status: 404, description: '존재하지 않는 방과후입니다..' })
-  @ApiResponse({ status: 404, description: '존재하지 않는 유저입니다.' })
   @Post('apply')
   async applyAfterSchool(
     @Body() applyAfterSchoolDto: ApplyAfterSchoolDto,
