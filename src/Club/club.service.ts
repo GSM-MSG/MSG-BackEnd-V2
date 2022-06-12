@@ -253,16 +253,16 @@ export class ClubService {
       where: { user: userData },
       relations: ['club'],
     });
-    const check = checkMemmber.filter((member) => {
-      return member.club.type === clubtype;
-    });
     if (!userData) {
       throw new HttpException(
         '존재하지 않는 유저입니다.',
         HttpStatus.NOT_FOUND,
       );
     }
-    if (check[0]) {
+    if (
+      (checkMemmber[0] && checkMemmber[0].club.type === 'MAJOR') ||
+      'FREEDOM'
+    ) {
       throw new HttpException(
         '다른 동아리에 가입된 유저입니다.',
         HttpStatus.CONFLICT,
