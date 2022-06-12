@@ -181,8 +181,11 @@ export class ClubService {
       );
     }
     const userData = await this.User.findOne({ where: { email } });
-    const check = await this.RequestJoin.find({ where: { user: userData } });
-    if (check[0]) {
+    const check = await this.RequestJoin.find({
+      where: { user: userData },
+      relations: ['club'],
+    });
+    if ((check[0] && check[0].club.type === 'MAJOR') || 'FREEDOM') {
       throw new HttpException(
         '이미 동아리에 지원한 상태입니다.',
         HttpStatus.CONFLICT,
