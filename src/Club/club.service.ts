@@ -181,11 +181,23 @@ export class ClubService {
       );
     }
     const userData = await this.User.findOne({ where: { email } });
+    const checkAplly = await this.RequestJoin.findOne({
+      where: { user: userData, club: clubData },
+    });
+    if (checkAplly) {
+      throw new HttpException(
+        '이미 이 동아리에 가입신청을 하였습니다.',
+        HttpStatus.CONFLICT,
+      );
+    }
     const check = await this.RequestJoin.find({
       where: { user: userData },
       relations: ['club'],
     });
-    if ((check[0] && check[0].club.type === 'MAJOR') || 'FREEDOM') {
+    const filterCheck = check.filter((member) => {
+      return member.club.type === 'MAJOR' || 'FREEDOM';
+    });
+    if (filterCheck[0] && clubtype !== 'EDITORIAL') {
       throw new HttpException(
         '이미 동아리에 지원한 상태입니다.',
         HttpStatus.CONFLICT,
