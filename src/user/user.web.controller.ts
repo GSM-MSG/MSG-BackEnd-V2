@@ -1,9 +1,9 @@
 import {
   Body,
   Controller,
-  Delete,
   Get,
   HttpCode,
+  Post,
   Put,
   Query,
   UseGuards,
@@ -36,6 +36,7 @@ export class UserWebController {
   async userData(@User('email') email: string) {
     return this.userService.getUserData(email);
   }
+
   @ApiOperation({
     summary: '프로필 이미지 변경',
     description: 's3로 배포된 사진의 주소를 받아 유저의 프로필을 변경합니다',
@@ -47,6 +48,7 @@ export class UserWebController {
   async editImg(@Body() urlAddress: UrlDto, @User('email') email: string) {
     await this.userService.editProfile(urlAddress, email);
   }
+
   @ApiOperation({
     summary: '유저 검색',
     description:
@@ -71,12 +73,13 @@ export class UserWebController {
   ) {
     return this.userService.searchUser(name, clubType);
   }
+
   @ApiOperation({
     summary: '동아리 탈퇴',
     description: '유저가 동아리 탈퇴하는 파트입니다',
   })
   @ApiBearerAuth('access-token')
-  @Delete('/exit')
+  @Post('/exit')
   async exitClub(
     @Body() exitClubData: ClubDataDto,
     @User('email') email: string,
