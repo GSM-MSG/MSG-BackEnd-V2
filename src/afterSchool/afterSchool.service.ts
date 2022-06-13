@@ -8,7 +8,6 @@ import { Grade } from 'src/Entities/Grade.entity';
 import { User } from 'src/Entities/User.entity';
 import { Repository } from 'typeorm';
 import { ApplyAfterSchoolDto } from './dto/ApplyAfterSchool.dto';
-import { AfterSchoolType } from 'src/types/AfterSchoolType';
 
 @Injectable()
 export class AfterSchoolService {
