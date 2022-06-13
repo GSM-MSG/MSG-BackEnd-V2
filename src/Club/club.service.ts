@@ -311,7 +311,7 @@ export class ClubService {
       where: { club: clubData, user: userData },
     });
     await this.RequestJoin.delete(acceptUser);
-    this.Member.save({ club: clubData, email: userData, scope: 'MEMBER' });
+    this.Member.save({ club: clubData, user: userData, scope: 'MEMBER' });
   }
 
   async rejectClub(
