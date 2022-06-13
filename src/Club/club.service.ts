@@ -255,29 +255,24 @@ export class ClubService {
     userId: string,
   ) {
     const clubData = await this.Club.findOne({
-      //클럽데이터
       where: { type: clubtype, title: clubtitle },
       relations: ['member', 'member.user'],
     });
 
     const userData = await this.User.findOne({
-      //유저데이터
       where: { email: acceptUserId },
     });
 
     const checkJoin = await this.Member.findOne({
-      //이 동아리에 가입되어 있는지 확인하는 변수
       where: { user: userData, club: clubData },
     });
 
     const checkMemmber = await this.Member.find({
-      //이 유저가 멤버로 있는 값들을 저장하는 변수
       where: { user: userData },
       relations: ['club'],
     });
 
     const filterCheck = checkMemmber.filter((member) => {
-      //유저가 가입되어 있는 동아리 중 자율과 전공 동아리 확인
       return member.club.type === 'MAJOR' || 'FREEDOM';
     });
 
