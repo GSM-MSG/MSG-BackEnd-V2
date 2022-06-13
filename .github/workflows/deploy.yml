@@ -31,8 +31,10 @@ jobs:
           host: ${{ secrets.HOST }}
           username: ubuntu
           key: ${{ secrets.SSH_KEY }}
-          script: mkdir -p /home/ubuntu/MSG-BackEnd-V2
-      - uses: burnett01/rsync-deployments@5.2
+          script: |
+            sudo rm -rf /home/ubuntu/MSG-BackEnd-V2
+            mkdir -p /home/ubuntu/MSG-BackEnd-V2
+      - uses: burnett01/rsync-deployments@4.1
         with:
           switches: -avzr --delete
           remote_path: /home/ubuntu/MSG-BackEnd-V2

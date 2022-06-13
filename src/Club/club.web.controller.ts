@@ -2,7 +2,6 @@ import { UseGuards } from '@nestjs/common';
 import {
   Body,
   Controller,
-  Delete,
   Get,
   HttpCode,
   Post,
@@ -51,7 +50,7 @@ export class ClubWebController {
     description: '삭제 시킬 동아리 정보를 받아서 동아리를 삭제합니다',
   })
   @ApiResponse({ status: 201, description: '삭제 성공' })
-  @Delete('/')
+  @Post('/')
   @HttpCode(201)
   async deleteClub(
     @Body() deleteClubData: ClubDataDto,
@@ -96,7 +95,7 @@ export class ClubWebController {
     description: '동아리 가입신청 한 것을 취소',
   })
   @HttpCode(204)
-  @Delete('/cancel')
+  @Post('/cancel')
   async cancel(@Body() clubData: ClubDataDto, @User('email') email: string) {
     return this.clubService.cancelClub(clubData.type, clubData.q, email);
   }
@@ -123,7 +122,7 @@ export class ClubWebController {
     description: '동아리 가입신청 한 것을 부장이 거절',
   })
   @ApiResponse({ status: 201, description: '동아리 신청자 거절' })
-  @Delete('/reject')
+  @Post('/reject')
   async reject(@Body() ClubData: AcceptUserDto, @User('email') email: string) {
     return this.clubService.rejectClub(
       ClubData.type,
@@ -254,7 +253,7 @@ export class ClubWebController {
     description: '클럽 멤버에 있는 부장이 추방합니다',
   })
   @ApiResponse({ status: 201, description: '추방성공했습니다' })
-  @Delete('/kick')
+  @Post('/kick')
   @HttpCode(201)
   async kickUser(
     @Body() kickUserData: AcceptUserDto,
