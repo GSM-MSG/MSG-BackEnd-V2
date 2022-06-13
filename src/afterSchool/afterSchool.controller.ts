@@ -22,14 +22,13 @@ import { ApplyAfterSchoolDto } from './dto/ApplyAfterSchool.dto';
 import { ListDataDto } from './dto/listData.dto';
 
 @ApiTags('AFTERSCHOOL')
-@UseGuards(AuthGuard('jwt'))
 @Controller('afterSchool')
 export class AfterSchoolController {
   constructor(private afterSchoolService: AfterSchoolService) {}
   @Get()
   @UsePipes(new ValidationPipe({ transform: true }))
   async list(@Query() listDataDto: ListDataDto) {
-    return await this.afterSchoolService.list(listDataDto, 's21014@gsm.hs.kr');
+    return await this.afterSchoolService.list(listDataDto, 's21030@gsm.hs.kr');
   }
   @ApiBearerAuth('access-token')
   @ApiOperation({

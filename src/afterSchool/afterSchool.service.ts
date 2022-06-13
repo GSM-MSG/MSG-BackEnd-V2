@@ -8,6 +8,7 @@ import { Grade } from 'src/Entities/Grade.entity';
 import { User } from 'src/Entities/User.entity';
 import { Repository } from 'typeorm';
 import { ApplyAfterSchoolDto } from './dto/ApplyAfterSchool.dto';
+import { AfterSchoolType } from 'src/types/AfterSchoolType';
 
 @Injectable()
 export class AfterSchoolService {
@@ -32,13 +33,56 @@ export class AfterSchoolService {
         dayOfWeek: weekData,
         grade: gradeData,
       },
+      relations: ['dayOfWeek'],
     });
-    let ASDJ = new Object();
-    ASDJ[0] = { ...afterSchoolData };
-    afterSchoolData.forEach((data) => {
-      return -1;
+    const userData = await this.user.findOne({
+      where: { email: email },
     });
-    console.log(ASDJ[0]);
+    const registerData = await this.classRegistration.findOne({
+      where: { user: userData },
+      relations: ['afterSchool'],
+    });
+    var now = new Date();
+    let year = now.getFullYear();
+    let listData = new Array();
+    afterSchoolData.forEach((data, index) => {
+      console.log('123', weekData);
+      if (registerData.afterSchool.id === data.id) {
+        if (data.yearOf === year && data.dayOfWeek === weekData) {
+          listData[index] = {
+            ...afterSchoolData[index],
+            isApplied: true,
+            isEnabled: true, // 신청날짜랑 겹침
+          };
+        } else {
+          listData[index] = {
+            ...afterSchoolData[index],
+            isApplied: true,
+            isEnabled: false,
+          };
+        }
+      } else if (registerData.afterSchool.id != data.id) {
+        if (
+          data.yearOf === year &&
+          weekData.find((dayData) => {
+            return dayData.id === data.dayOfWeek[0].id;
+          })
+        ) {
+          listData[index] = {
+            ...afterSchoolData[index],
+            isApplied: false,
+            isEnabled: true, // 신청날짜랑 겹침
+          };
+        } else {
+          listData[index] = {
+            ...afterSchoolData[index],
+            isApplied: false,
+            isEnabled: false,
+          };
+        }
+      }
+    });
+    console.log(listData);
   }
   async applyAfterSchool(applyAfterSchool: ApplyAfterSchoolDto, email: string) {
     const afterSchoolData = await this.afterSchool.findOne({

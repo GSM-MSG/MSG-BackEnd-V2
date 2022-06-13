@@ -13,7 +13,7 @@ jobs:
         node-version: [16.x]
     steps:
       - uses: actions/checkout@v3
-      
+
       - name: Use Node.js ${{ matrix.node-version }}
         uses: actions/setup-node@v2
         with:
@@ -34,7 +34,7 @@ jobs:
           script: mkdir -p /home/ubuntu/MSG-BackEnd-V2
       - uses: burnett01/rsync-deployments@5.2
         with:
-          switches: '-avzr --delete'
+          switches: -avzr --delete
           remote_path: /home/ubuntu/MSG-BackEnd-V2
           remote_host: ${{ secrets.HOST }}
           remote_user: ubuntu
