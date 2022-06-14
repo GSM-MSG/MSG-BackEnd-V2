@@ -174,12 +174,6 @@ export class ClubService {
     const clubData = await this.Club.findOne({
       where: { type: clubtype, title: clubtitle },
     });
-    if (!email) {
-      throw new HttpException(
-        '이메일이 존재하지 않습니다.',
-        HttpStatus.UNAUTHORIZED,
-      );
-    }
     const userData = await this.User.findOne({ where: { email } });
     const checkAplly = await this.RequestJoin.findOne({
       where: { user: userData, club: clubData },
