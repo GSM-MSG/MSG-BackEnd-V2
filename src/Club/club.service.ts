@@ -205,7 +205,7 @@ export class ClubService {
     }
     if (userData.member[0] && type !== 'EDITORIAL') {
       findOthers = userData.member.filter((member) => {
-        return member.club.type === type && member.club.id !== clubData.id;
+        return member.club.id !== clubData.id;
       });
     }
     if (findOthers) {
@@ -272,6 +272,7 @@ export class ClubService {
 
     const userData = await this.User.findOne({
       where: { email: acceptUserId },
+      relations: ['member'],
     });
 
     const checkJoin = await this.Member.findOne({
