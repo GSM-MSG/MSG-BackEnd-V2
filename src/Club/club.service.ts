@@ -192,9 +192,7 @@ export class ClubService {
       );
     }
     const checkApply = userData.requestJoin.filter((requestJoin) => {
-      return (
-        requestJoin.club.type === type && requestJoin.club.id === clubData.id
-      );
+      return requestJoin.club.id === clubData.id;
     });
 
     if (checkApply[0]) {
