@@ -258,33 +258,42 @@ export class ClubService {
   }
 
   async acceptClub(
-    clubtype: string,
-    clubtitle: string,
+    type: string,
+    title: string,
     acceptUserId: string,
     userId: string,
   ) {
+    let findOthers: any[];
     const clubData = await this.Club.findOne({
-      where: { type: clubtype, title: clubtitle },
+      where: { type: type, title: title },
       relations: ['member', 'member.user'],
     });
 
+    if (!clubData) {
+      throw new HttpException(
+        '존재하지 않는 동아리입니다.',
+        HttpStatus.NOT_FOUND,
+      );
+    }
     const userData = await this.User.findOne({
       where: { email: acceptUserId },
-      relations: ['member'],
+      relations: ['member', 'member.club'],
     });
 
-    const checkJoin = await this.Member.findOne({
-      where: { user: userData, club: clubData },
+    if (!userData) {
+      throw new HttpException(
+        '존재하지 않는 유저입니다.',
+        HttpStatus.NOT_FOUND,
+      );
+    }
+    const checkJoin = userData.member.filter((member) => {
+      return member.club.id === clubData.id;
     });
 
-    const checkMemmber = await this.Member.find({
-      where: { user: userData },
-      relations: ['club'],
-    });
-
-    const filterCheck = checkMemmber.filter((member) => {
-      return member.club.type === 'MAJOR' || 'FREEDOM';
-    });
+    if (userData.member[0] && type !== 'EDITORIAL')
+      findOthers = userData.member.filter((member) => {
+        return member.club.id !== clubData.id;
+      });
 
     if (checkJoin) {
       throw new HttpException(
@@ -292,22 +301,10 @@ export class ClubService {
         HttpStatus.CONFLICT,
       );
     }
-    if (!userData) {
-      throw new HttpException(
-        '존재하지 않는 유저입니다.',
-        HttpStatus.NOT_FOUND,
-      );
-    }
-    if (filterCheck[0] && clubtype !== 'EDITORIAL') {
+    if (findOthers[0] && type !== 'EDITORIAL') {
       throw new HttpException(
         '다른 동아리에 가입된 유저입니다.',
         HttpStatus.CONFLICT,
-      );
-    }
-    if (!clubData) {
-      throw new HttpException(
-        '존재하지 않는 동아리입니다.',
-        HttpStatus.NOT_FOUND,
       );
     }
     if (
