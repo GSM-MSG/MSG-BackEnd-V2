@@ -192,8 +192,11 @@ export class ClubService {
       );
     }
     const checkApply = userData.requestJoin.filter((requestJoin) => {
-      requestJoin.club.type === type && requestJoin.club.id === clubData.id;
+      return (
+        requestJoin.club.type === type && requestJoin.club.id === clubData.id
+      );
     });
+
     if (checkApply[0]) {
       throw new HttpException(
         '이미 이 동아리에 가입신청을 하였습니다.',
@@ -205,14 +208,17 @@ export class ClubService {
         return member.club.type === type && member.club.id !== clubData.id;
       });
     }
-    if (findOthers[0]) {
+    if (findOthers) {
       throw new HttpException(
         '다른 동아리에 소속되어있습니다.',
         HttpStatus.CONFLICT,
       );
     }
     const filterCheck = userData.requestJoin.filter((member) => {
-      return member.club.type === 'MAJOR' || member.club.type === 'FREEDOM';
+      return (
+        (member.club.type === 'MAJOR' || member.club.type === 'FREEDOM') &&
+        member.club.id !== clubData.id
+      );
     });
     if (filterCheck[0] && type !== 'EDITORIAL') {
       throw new HttpException(
