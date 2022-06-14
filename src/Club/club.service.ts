@@ -170,43 +170,47 @@ export class ClubService {
     }
   }
 
-  async applyClub(clubtype: string, clubtitle: string, email: string) {
+  async applyClub(type: string, title: string, email: string) {
     const clubData = await this.Club.findOne({
-      where: { type: clubtype, title: clubtitle },
+      where: { type: type, title: title },
     });
-    const userData = await this.User.findOne({ where: { email } });
-    const checkAplly = await this.RequestJoin.findOne({
-      where: { user: userData, club: clubData },
-    });
-    if (checkAplly) {
-      throw new HttpException(
-        '이미 이 동아리에 가입신청을 하였습니다.',
-        HttpStatus.CONFLICT,
-      );
-    }
-    const check = await this.RequestJoin.find({
-      where: { user: userData },
-      relations: ['club'],
-    });
-    const filterCheck = check.filter((member) => {
-      return member.club.type === 'MAJOR' || 'FREEDOM';
-    });
-    if (filterCheck[0] && clubtype !== 'EDITORIAL') {
-      throw new HttpException(
-        '이미 동아리에 지원한 상태입니다.',
-        HttpStatus.CONFLICT,
-      );
-    }
     if (!clubData) {
       throw new HttpException(
         '존재하지 않는 동아리입니다.',
         HttpStatus.NOT_FOUND,
       );
     }
+    const userData = await this.User.findOne({
+      where: { email },
+      relations: ['requestJoin', 'requestJoin.club', 'member', 'member.club'],
+    });
     if (!userData) {
       throw new HttpException(
         '존재하지 않는 유저입니다.',
         HttpStatus.NOT_FOUND,
+      );
+    }
+    const checkApply = await this.RequestJoin.findOne({
+      where: { user: userData, club: clubData },
+    });
+    if (checkApply) {
+      throw new HttpException(
+        '이미 이 동아리에 가입신청을 하였습니다.',
+        HttpStatus.CONFLICT,
+      );
+    }
+    if (userData.member[0]) {
+      const findOthers = userData.member.filter((member) => {
+        return member.club === clubData;
+      });
+    }
+    const filterCheck = userData.requestJoin.filter((member) => {
+      return member.club.type === 'MAJOR' || member.club.type === 'FREEDOM';
+    });
+    if (filterCheck[0] && type !== 'EDITORIAL') {
+      throw new HttpException(
+        '이미 다른 동아리에 지원한 상태입니다.',
+        HttpStatus.CONFLICT,
       );
     }
     this.RequestJoin.save(
