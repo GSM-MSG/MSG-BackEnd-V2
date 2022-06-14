@@ -191,10 +191,10 @@ export class ClubService {
         HttpStatus.NOT_FOUND,
       );
     }
-    const checkApply = await this.RequestJoin.findOne({
-      where: { user: userData, club: clubData },
+    const checkApply = userData.requestJoin.filter((requestJoin) => {
+      requestJoin.club.type === type && requestJoin.club.id === clubData.id;
     });
-    if (checkApply) {
+    if (checkApply[0]) {
       throw new HttpException(
         '이미 이 동아리에 가입신청을 하였습니다.',
         HttpStatus.CONFLICT,
