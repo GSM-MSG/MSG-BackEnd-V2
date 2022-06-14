@@ -254,15 +254,10 @@ export class ClubService {
     await this.RequestJoin.delete({ ...applyUser });
   }
 
-  async acceptClub(
-    type: string,
-    title: string,
-    acceptUserId: string,
-    userId: string,
-  ) {
+  async acceptClub(type: string, title: string, email: string, userId: string) {
     let findOthers: any;
     const clubData = await this.Club.findOne({
-      where: { type: type, title: title },
+      where: { type, title },
       relations: ['member', 'member.user'],
     });
 
@@ -273,7 +268,7 @@ export class ClubService {
       );
     }
     const userData = await this.User.findOne({
-      where: { email: acceptUserId },
+      where: { email },
       relations: ['member', 'member.club'],
     });
 
