@@ -171,6 +171,7 @@ export class ClubService {
   }
 
   async applyClub(type: string, title: string, email: string) {
+    let findOthers: any[];
     const clubData = await this.Club.findOne({
       where: { type: type, title: title },
     });
@@ -199,10 +200,16 @@ export class ClubService {
         HttpStatus.CONFLICT,
       );
     }
-    if (userData.member[0]) {
-      const findOthers = userData.member.filter((member) => {
-        return member.club === clubData;
+    if (userData.member[0] && type !== 'EDITORIAL') {
+      findOthers = userData.member.filter((member) => {
+        return member.club.type === type && member.club.id !== clubData.id;
       });
+    }
+    if (findOthers[0]) {
+      throw new HttpException(
+        '다른 동아리에 소속되어있습니다.',
+        HttpStatus.CONFLICT,
+      );
     }
     const filterCheck = userData.requestJoin.filter((member) => {
       return member.club.type === 'MAJOR' || member.club.type === 'FREEDOM';
