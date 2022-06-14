@@ -45,7 +45,6 @@ export class AfterSchoolService {
     let year = now.getFullYear();
     let listData = new Array();
     afterSchoolData.forEach((data, index) => {
-      console.log('123', weekData);
       if (registerData.afterSchool.id === data.id) {
         if (data.yearOf === year && data.dayOfWeek === weekData) {
           listData[index] = {
@@ -81,7 +80,6 @@ export class AfterSchoolService {
         }
       }
     });
-    console.log(listData);
   }
   async applyAfterSchool(applyAfterSchool: ApplyAfterSchoolDto, email: string) {
     const afterSchoolData = await this.afterSchool.findOne({
