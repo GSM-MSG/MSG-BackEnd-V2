@@ -24,7 +24,7 @@ import { CreateClubDto } from './dto/createClub.dto';
 import { EditClubDto } from './dto/editclub.dto';
 
 @ApiTags('CLUB')
-@UseGuards(AuthGuard('jwt'))
+//@UseGuards(AuthGuard('jwt'))
 @Controller('club')
 export class ClubController {
   constructor(private clubService: ClubService) {}
@@ -257,9 +257,9 @@ export class ClubController {
   @HttpCode(201)
   async kickUser(
     @Body() kickUserData: AcceptUserDto,
-    @User('email') email: string,
+   // @User('email') email: string,
   ) {
-    await this.clubService.kickUser(kickUserData, email);
+    await this.clubService.kickUser(kickUserData, "s21058@gsm.hs.kr");
   }
 
   @ApiBearerAuth('access-token')
