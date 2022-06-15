@@ -206,7 +206,7 @@ export class ClubService {
         return member.club.id !== clubData.id;
       });
     }
-    if (findOthers) {
+    if (findOthers[0]) {
       throw new HttpException(
         '다른 동아리에 소속되어있습니다.',
         HttpStatus.CONFLICT,
@@ -254,8 +254,8 @@ export class ClubService {
     await this.RequestJoin.delete({ ...applyUser });
   }
 
-  async acceptClub(type: string, title: string, email: string, userId: string) {
-    let findOthers: any;
+  async acceptClub(type: string, title: string, email: string, headId: string) {
+    let findOthers: Member;
     const clubData = await this.Club.findOne({
       where: { type, title },
       relations: ['member', 'member.user'],
@@ -278,22 +278,24 @@ export class ClubService {
         HttpStatus.NOT_FOUND,
       );
     }
+
     const checkJoin = userData.member.filter((member) => {
       return member.club.id === clubData.id;
     });
-
-    if (userData.member[0] && type !== 'EDITORIAL')
+    if (userData.member[0] && type !== 'EDITORIAL') {
       findOthers = userData.member.find((member) => {
-        return member.club.id !== clubData.id;
+        return (
+          member.club.type === type && member.club.title !== clubData.title
+        );
       });
-
-    if (checkJoin) {
+    }
+    if (checkJoin[0]) {
       throw new HttpException(
         '이미 동아리에 가입되어있는 유저입니다.',
         HttpStatus.CONFLICT,
       );
     }
-    if (findOthers[0] && type !== 'EDITORIAL') {
+    if (findOthers && type !== 'EDITORIAL') {
       throw new HttpException(
         '다른 동아리에 가입된 유저입니다.',
         HttpStatus.CONFLICT,
@@ -301,7 +303,7 @@ export class ClubService {
     }
     if (
       !clubData.member.filter((member) => {
-        return member.user.email === userId && member.scope == 'HEAD';
+        return member.user.email === headId && member.scope === 'HEAD';
       })
     ) {
       throw new HttpException('동아리부장이 아닙니다.', HttpStatus.FORBIDDEN);
@@ -321,6 +323,7 @@ export class ClubService {
   ) {
     const clubData = await this.Club.findOne({
       where: { type: clubtype, title: clubtitle },
+      relations: ['member', 'member.user'],
     });
     const userData = await this.User.findOne({
       where: { email: rejectUserId },
