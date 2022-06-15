@@ -14,12 +14,73 @@ export class AfterSchoolService {
   constructor(
     @InjectRepository(AfterSchool) private afterSchool: Repository<AfterSchool>,
     @InjectRepository(User) private user: Repository<User>,
-    @InjectRepository(DayOfWeek) private dayOfWeek: Repository<DayOfWeek>,
-    @InjectRepository(Grade) private grade: Repository<Grade>,
     @InjectRepository(ClassRegistration)
     private classRegistration: Repository<ClassRegistration>,
+    @InjectRepository(DayOfWeek) private dayOfWeek: Repository<DayOfWeek>,
+    @InjectRepository(Grade) private grade: Repository<Grade>,
   ) {}
-  async list(listDataDto: ListDataDto, email: string) {}
+  async list(listDataDto: ListDataDto, email: string) {
+    const weekData = await this.dayOfWeek.find({
+      where: { dayOfWeek: listDataDto.week },
+    });
+    const gradeData = await this.grade.find({
+      where: { grade: listDataDto.grade },
+    });
+    const afterSchoolData = await this.afterSchool.find({
+      where: {
+        season: listDataDto.season,
+        dayOfWeek: weekData,
+        grade: gradeData,
+      },
+      relations: ['dayOfWeek'],
+    });
+    const userData = await this.user.findOne({
+      where: { email: email },
+    });
+    const registerData = await this.classRegistration.findOne({
+      where: { user: userData },
+      relations: ['afterSchool'],
+    });
+    var now = new Date();
+    let year = now.getFullYear();
+    let listData = new Array();
+    afterSchoolData.forEach((data, index) => {
+      if (registerData.afterSchool.id === data.id) {
+        if (data.yearOf === year && data.dayOfWeek === weekData) {
+          listData[index] = {
+            ...afterSchoolData[index],
+            isApplied: true,
+            isEnabled: true, // 신청날짜랑 겹침
+          };
+        } else {
+          listData[index] = {
+            ...afterSchoolData[index],
+            isApplied: true,
+            isEnabled: false,
+          };
+        }
+      } else if (registerData.afterSchool.id != data.id) {
+        if (
+          data.yearOf === year &&
+          weekData.find((dayData) => {
+            return dayData.id === data.dayOfWeek[0].id;
+          })
+        ) {
+          listData[index] = {
+            ...afterSchoolData[index],
+            isApplied: false,
+            isEnabled: true, // 신청날짜랑 겹침
+          };
+        } else {
+          listData[index] = {
+            ...afterSchoolData[index],
+            isApplied: false,
+            isEnabled: false,
+          };
+        }
+      }
+    });
+  }
   async applyAfterSchool(applyAfterSchool: ApplyAfterSchoolDto, email: string) {
     const afterSchoolData = await this.afterSchool.findOne({
       where: { id: applyAfterSchool.afterSchoolId },

@@ -29,7 +29,7 @@ export class AfterSchoolController {
   @Get()
   @UsePipes(new ValidationPipe({ transform: true }))
   async list(@Query() listDataDto: ListDataDto) {
-    return await this.afterSchoolService.list(listDataDto, 's21014');
+    return await this.afterSchoolService.list(listDataDto, 's21030@gsm.hs.kr');
   }
   @ApiBearerAuth('access-token')
   @ApiOperation({
