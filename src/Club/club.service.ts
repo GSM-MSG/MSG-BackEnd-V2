@@ -203,7 +203,10 @@ export class ClubService {
     }
     if (userData.member[0] && type !== 'EDITORIAL') {
       findOthers = userData.member.filter((member) => {
-        return member.club.id !== clubData.id;
+        return (
+          member.club.type === clubData.type &&
+          member.club.title !== clubData.title
+        );
       });
     }
     if (findOthers[0]) {

@@ -255,9 +255,10 @@ var ClubService = /** @class */ (function () {
                         }
                         if (userData.member[0] && type !== 'EDITORIAL') {
                             findOthers = userData.member.filter(function (member) {
-                                return member.club.id !== clubData.id;
+                                return (member.club.type === clubData.type && member.club.title !== clubData.title);
                             });
                         }
+                        console.log(findOthers);
                         if (findOthers[0]) {
                             throw new common_1.HttpException('다른 동아리에 소속되어있습니다.', common_1.HttpStatus.CONFLICT);
                         }
