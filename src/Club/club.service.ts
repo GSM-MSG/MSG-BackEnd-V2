@@ -170,34 +170,58 @@ export class ClubService {
     }
   }
 
-  async applyClub(clubtype: string, clubtitle: string, email: string) {
+  async applyClub(type: string, title: string, email: string) {
+    let findOthers: Member[];
     const clubData = await this.Club.findOne({
-      where: { type: clubtype, title: clubtitle },
+      where: { type, title },
     });
-    if (!email) {
-      throw new HttpException(
-        '이메일이 존재하지 않습니다.',
-        HttpStatus.UNAUTHORIZED,
-      );
-    }
-    const userData = await this.User.findOne({ where: { email } });
-    const check = await this.RequestJoin.find({ where: { user: userData } });
-    if (check[0]) {
-      throw new HttpException(
-        '이미 동아리에 지원한 상태입니다.',
-        HttpStatus.CONFLICT,
-      );
-    }
     if (!clubData) {
       throw new HttpException(
         '존재하지 않는 동아리입니다.',
         HttpStatus.NOT_FOUND,
       );
     }
+    const userData = await this.User.findOne({
+      where: { email },
+      relations: ['requestJoin', 'requestJoin.club', 'member', 'member.club'],
+    });
     if (!userData) {
       throw new HttpException(
         '존재하지 않는 유저입니다.',
         HttpStatus.NOT_FOUND,
+      );
+    }
+    const checkApply = userData.requestJoin.filter((requestJoin) => {
+      return requestJoin.club.id === clubData.id;
+    });
+
+    if (checkApply[0]) {
+      throw new HttpException(
+        '이미 이 동아리에 가입신청을 하였습니다.',
+        HttpStatus.CONFLICT,
+      );
+    }
+    if (userData.member[0] && type !== 'EDITORIAL') {
+      findOthers = userData.member.filter((member) => {
+        return (
+          member.club.type === clubData.type &&
+          member.club.title !== clubData.title
+        );
+      });
+    }
+    if (findOthers[0]) {
+      throw new HttpException(
+        '다른 동아리에 소속되어있습니다.',
+        HttpStatus.CONFLICT,
+      );
+    }
+    const checkOtherclub = userData.requestJoin.filter((member) => {
+      return member.club.type !== 'EDITORIAL' && member.club.id !== clubData.id;
+    });
+    if (checkOtherclub[0] && type !== 'EDITORIAL') {
+      throw new HttpException(
+        '이미 다른 동아리에 지원한 상태입니다.',
+        HttpStatus.CONFLICT,
       );
     }
     this.RequestJoin.save(
@@ -233,47 +257,56 @@ export class ClubService {
     await this.RequestJoin.delete({ ...applyUser });
   }
 
-  async acceptClub(
-    clubtype: string,
-    clubtitle: string,
-    acceptUserId: string,
-    userId: string,
-  ) {
+  async acceptClub(type: string, title: string, email: string, headId: string) {
+    let findOthers: Member;
     const clubData = await this.Club.findOne({
-      where: { type: clubtype, title: clubtitle },
+      where: { type, title },
       relations: ['member', 'member.user'],
     });
-    const userData = await this.User.findOne({
-      where: { email: acceptUserId },
-    });
-    const checkMemmber = await this.Member.find({
-      where: { user: userData },
-      relations: ['club'],
-    });
-    const check = checkMemmber.filter((member) => {
-      return member.club.type === clubtype;
-    });
-    if (!userData) {
-      throw new HttpException(
-        '존재하지 않는 유저입니다.',
-        HttpStatus.NOT_FOUND,
-      );
-    }
-    if (check[0]) {
-      throw new HttpException(
-        '다른 동아리에 가입된 유저입니다.',
-        HttpStatus.CONFLICT,
-      );
-    }
+
     if (!clubData) {
       throw new HttpException(
         '존재하지 않는 동아리입니다.',
         HttpStatus.NOT_FOUND,
       );
     }
+    const userData = await this.User.findOne({
+      where: { email },
+      relations: ['member', 'member.club'],
+    });
+
+    if (!userData) {
+      throw new HttpException(
+        '존재하지 않는 유저입니다.',
+        HttpStatus.NOT_FOUND,
+      );
+    }
+
+    const checkJoin = userData.member.filter((member) => {
+      return member.club.id === clubData.id;
+    });
+    if (userData.member[0] && type !== 'EDITORIAL') {
+      findOthers = userData.member.find((member) => {
+        return (
+          member.club.type === type && member.club.title !== clubData.title
+        );
+      });
+    }
+    if (checkJoin[0]) {
+      throw new HttpException(
+        '이미 동아리에 가입되어있는 유저입니다.',
+        HttpStatus.CONFLICT,
+      );
+    }
+    if (findOthers && type !== 'EDITORIAL') {
+      throw new HttpException(
+        '다른 동아리에 가입된 유저입니다.',
+        HttpStatus.CONFLICT,
+      );
+    }
     if (
       !clubData.member.filter((member) => {
-        return member.user.email === userId && member.scope == 'HEAD';
+        return member.user.email === headId && member.scope === 'HEAD';
       })
     ) {
       throw new HttpException('동아리부장이 아닙니다.', HttpStatus.FORBIDDEN);
@@ -282,7 +315,7 @@ export class ClubService {
       where: { club: clubData, user: userData },
     });
     await this.RequestJoin.delete(acceptUser);
-    this.Member.save({ club: clubData, email: userData, scope: 'MEMBER' });
+    this.Member.save({ club: clubData, user: userData, scope: 'MEMBER' });
   }
 
   async rejectClub(
@@ -293,6 +326,7 @@ export class ClubService {
   ) {
     const clubData = await this.Club.findOne({
       where: { type: clubtype, title: clubtitle },
+      relations: ['member', 'member.user'],
     });
     const userData = await this.User.findOne({
       where: { email: rejectUserId },
