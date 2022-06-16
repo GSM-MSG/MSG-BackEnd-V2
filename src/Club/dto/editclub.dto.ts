@@ -75,24 +75,6 @@ export class EditClubDto {
   teacher: string;
 
   @ApiProperty({
-    example: '["s21060","s21024"]',
-    description: '동아리 멤버 추가',
-    required: true,
-  })
-  @IsOptional()
-  @IsArray()
-  newMember: string[];
-
-  @ApiProperty({
-    example: '["s21060","s21024"]',
-    description: '동아리 멤버 제외',
-    required: true,
-  })
-  @IsOptional()
-  @IsArray()
-  deleteMember: string[];
-
-  @ApiProperty({
     example: '노션링크',
     description: '동아리 홍보 링크입니다',
     required: true,
