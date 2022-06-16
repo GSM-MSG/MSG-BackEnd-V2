@@ -19,6 +19,7 @@ import {
 import { User } from 'src/auth/decorators';
 import { AfterSchoolService } from './afterSchool.service';
 import { ApplyAfterSchoolDto } from './dto/ApplyAfterSchool.dto';
+import { FindDataDto } from './dto/FindData.dto';
 import { ListDataDto } from './dto/listData.dto';
 
 @ApiTags('AFTERSCHOOL')
@@ -31,6 +32,7 @@ export class AfterSchoolController {
   async list(@Query() listDataDto: ListDataDto) {
     return await this.afterSchoolService.list(listDataDto, 's21030@gsm.hs.kr');
   }
+
   @ApiBearerAuth('access-token')
   @ApiOperation({
     summary: '방과후 신청',
@@ -49,5 +51,9 @@ export class AfterSchoolController {
     @User('email') email: string,
   ) {
     this.afterSchoolService.applyAfterSchool(applyAfterSchoolDto, email);
+  }
+  @Get('find')
+  async findAfterSchool(@Query() FindDataDto: FindDataDto) {
+    return this.afterSchoolService.findAfterSchool(FindDataDto);
   }
 }

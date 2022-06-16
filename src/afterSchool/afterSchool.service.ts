@@ -8,6 +8,7 @@ import { Grade } from 'src/Entities/Grade.entity';
 import { User } from 'src/Entities/User.entity';
 import { Repository } from 'typeorm';
 import { ApplyAfterSchoolDto } from './dto/ApplyAfterSchool.dto';
+import { FindDataDto } from './dto/FindData.dto';
 
 @Injectable()
 export class AfterSchoolService {
@@ -95,7 +96,6 @@ export class AfterSchoolService {
     if (!userData) {
       throw new HttpException('유저가 존재하지 않아yo', HttpStatus.NOT_FOUND);
     }
-
     await this.classRegistration.save(
       this.classRegistration.create({
         user: userData,
@@ -103,4 +103,5 @@ export class AfterSchoolService {
       }),
     );
   }
+  async findAfterSchool(FindData: FindDataDto) {}
 }
