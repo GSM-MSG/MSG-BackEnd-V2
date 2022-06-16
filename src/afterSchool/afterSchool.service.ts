@@ -103,5 +103,7 @@ export class AfterSchoolService {
       }),
     );
   }
-  async findAfterSchool(FindData: FindDataDto) {}
+  async findAfterSchool(FindData: FindDataDto) {
+    const { week, grade, name, season } = FindData;
+  }
 }
