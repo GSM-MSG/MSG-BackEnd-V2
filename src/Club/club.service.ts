@@ -554,8 +554,7 @@ export class ClubService {
     );
   }
   async editClub(editClubData: EditClubDto, email: string) {
-    const { newActivityUrls, newMember, deleteActivityUrls, deleteMember } =
-      editClubData;
+    const { newActivityUrls, deleteActivityUrls } = editClubData;
     const clubData = await this.Club.findOne({
       where: {
         title: editClubData.q,
@@ -582,70 +581,6 @@ export class ClubService {
       })
     ) {
       throw new HttpException('동아리 부장이 아닙니다.', HttpStatus.FORBIDDEN);
-    }
-    if (newMember) {
-      for (const email of newMember) {
-        const userData = await this.User.findOne({ where: { email } });
-        const clubMemberData = await this.Member.findOne({
-          where: { user: userData, club: clubData },
-        });
-        const checkMember = await this.Member.find({
-          where: { user: userData },
-          relations: ['club'],
-        });
-        const check = checkMember.filter((member) => {
-          return member.club.type === editClubData.type;
-        });
-        if (!check) {
-          await this.Member.save(
-            this.Member.create({
-              user: userData,
-              club: clubData,
-              scope: 'MEMBER',
-            }),
-          );
-        }
-        if (!userData) {
-          throw new HttpException(
-            '존재하지 않는 유저입니다.',
-            HttpStatus.NOT_FOUND,
-          );
-        } else if (clubMemberData) {
-          throw new HttpException(
-            '동아리에 이미 있는 유저입니다.',
-            HttpStatus.CONFLICT,
-          );
-        }
-      }
-    }
-    if (deleteMember) {
-      for (const email of deleteMember) {
-        const userData = await this.User.findOne({ where: { email } });
-        const clubmember = await this.Member.findOne({
-          where: { user: userData, club: clubData },
-        });
-        const checkMember = await this.Member.find({
-          where: { user: userData },
-          relations: ['club'],
-        });
-        const check = checkMember.filter((member) => {
-          return member.club.type === editClubData.type;
-        });
-        if (!check) {
-          await this.Member.delete({ user: userData, club: clubData });
-        }
-        if (!userData) {
-          throw new HttpException(
-            '존재하지 않는 유저입니다.',
-            HttpStatus.NOT_FOUND,
-          );
-        } else if (!clubmember) {
-          throw new HttpException(
-            '동아리에 존재하지 않는 유저입니다.',
-            HttpStatus.CONFLICT,
-          );
-        }
-      }
     }
     if (newActivityUrls) {
       for (const image of newActivityUrls) {
