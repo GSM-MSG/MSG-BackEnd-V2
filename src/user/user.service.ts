@@ -36,19 +36,9 @@ export class UserService {
       const data = await this.User.query(
         "CALL msg.findUserNotJoin('" + clubType + "' , '" + name + "');",
       );
-      if (
-        data[0].find((user) => {
-          return user.email === email;
-        })
-      ) {
-        delete data[0][
-          data[0].findIndex((user) => {
-            return user.email === email;
-          })
-        ];
-      }
-      let newArr = data[0].filter((element) => element != null);
-      return newArr.map((user: any) => {
+
+      const newArr = data[0].filter((element) => element.email != email);
+      return newArr.map((user) => {
         delete user.refreshToken;
         return user;
       });
@@ -56,20 +46,9 @@ export class UserService {
       const data = await this.User.query(
         "CALL msg.findUserByName('" + name + "');",
       );
-      if (
-        data[0].find((user) => {
-          return user.email === email;
-        })
-      ) {
-        delete data[0][
-          data[0].findIndex((user) => {
-            return user.email === email;
-          })
-        ];
-      }
-      let newArr = new Array();
-      newArr = data[0].filter((element) => element != null);
-      return newArr.map((user: any) => {
+
+      const newArr = data[0].filter((element) => element.email != email);
+      return newArr.map((user) => {
         delete user.refreshToken;
         return user;
       });
