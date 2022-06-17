@@ -24,7 +24,7 @@ import { CreateClubDto } from './dto/createClub.dto';
 import { EditClubDto } from './dto/editclub.dto';
 
 @ApiTags('CLUB')
-//@UseGuards(AuthGuard('jwt'))
+@UseGuards(AuthGuard('jwt'))
 @Controller('club')
 export class ClubController {
   constructor(private clubService: ClubService) {}
