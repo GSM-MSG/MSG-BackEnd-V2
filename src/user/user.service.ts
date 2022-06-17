@@ -47,8 +47,7 @@ export class UserService {
           })
         ];
       }
-      let newArr = new Array();
-      newArr = data[0].filter((element) => element != null);
+      let newArr = data[0].filter((element) => element != null);
       return newArr.map((user: any) => {
         delete user.refreshToken;
         return user;
