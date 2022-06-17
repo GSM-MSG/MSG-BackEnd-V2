@@ -257,9 +257,9 @@ export class ClubController {
   @HttpCode(201)
   async kickUser(
     @Body() kickUserData: AcceptUserDto,
-    @User('email') email: string,
+   // @User('email') email: string,
   ) {
-    await this.clubService.kickUser(kickUserData, email);
+    await this.clubService.kickUser(kickUserData, "s21058@gsm.hs.kr");
   }
 
   @ApiBearerAuth('access-token')
