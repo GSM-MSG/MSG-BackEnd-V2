@@ -31,12 +31,25 @@ export class UserService {
   async editProfile(urlAddress: UrlDto, email: string) {
     await this.User.update({ email: email }, { userImg: urlAddress.url });
   }
-  async searchUser(name: string, clubType: string) {
+  async searchUser(name: string, clubType: string, email: string) {
     if (clubType === 'MAJOR' || clubType === 'FREEDOM') {
       const data = await this.User.query(
         "CALL msg.findUserNotJoin('" + clubType + "' , '" + name + "');",
       );
-      return data[0].map((user: any) => {
+      if (
+        data[0].find((user) => {
+          return user.email === email;
+        })
+      ) {
+        delete data[0][
+          data[0].findIndex((user) => {
+            return user.email === email;
+          })
+        ];
+      }
+      let newArr = new Array();
+      newArr = data[0].filter((element) => element != null);
+      return newArr.map((user: any) => {
         delete user.refreshToken;
         return user;
       });
@@ -44,7 +57,23 @@ export class UserService {
       const data = await this.User.query(
         "CALL msg.findUserByName('" + name + "');",
       );
-      return data[0];
+      if (
+        data[0].find((user) => {
+          return user.email === email;
+        })
+      ) {
+        delete data[0][
+          data[0].findIndex((user) => {
+            return user.email === email;
+          })
+        ];
+      }
+      let newArr = new Array();
+      newArr = data[0].filter((element) => element != null);
+      return newArr.map((user: any) => {
+        delete user.refreshToken;
+        return user;
+      });
     } else
       throw new HttpException('없는 동아리 타입입니다', HttpStatus.BAD_GATEWAY);
   }
