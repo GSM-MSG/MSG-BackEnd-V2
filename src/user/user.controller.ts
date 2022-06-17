@@ -71,8 +71,9 @@ export class UserController {
   async searchUser(
     @Query('name') name: string,
     @Query('type') clubType: string,
+    @User('email') email: string,
   ) {
-    return this.userService.searchUser(name, clubType);
+    return this.userService.searchUser(name, clubType, email);
   }
 
   @ApiOperation({
