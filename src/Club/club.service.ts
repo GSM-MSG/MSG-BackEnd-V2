@@ -180,13 +180,11 @@ export class ClubService {
     }
     if (userData.member[0] && type !== 'EDITORIAL') {
       findOthers = userData.member.filter((member) => {
-        return (
-          member.club.type === clubData.type &&
-          member.club.title !== clubData.title
-        );
+        return member.club.type === type;
       });
     }
-    if (findOthers[0]) {
+
+    if (findOthers[0] && type !== 'EDITORIAL') {
       throw new HttpException(
         '다른 동아리에 소속되어있습니다.',
         HttpStatus.CONFLICT,
@@ -258,7 +256,6 @@ export class ClubService {
         HttpStatus.NOT_FOUND,
       );
     }
-
     const checkJoin = userData.member.filter((member) => {
       return member.club.id === clubData.id;
     });
@@ -291,6 +288,12 @@ export class ClubService {
     const acceptUser = await this.RequestJoin.findOne({
       where: { club: clubData, user: userData },
     });
+    if (!acceptUser) {
+      throw new HttpException(
+        '신청을 수락할 유저가 없습니다.',
+        HttpStatus.NOT_FOUND,
+      );
+    }
     await this.RequestJoin.delete(acceptUser);
     this.Member.save({ club: clubData, user: userData, scope: 'MEMBER' });
   }
