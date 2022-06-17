@@ -23,7 +23,7 @@ import { UrlDto } from './dto/urlAddress.dto';
 import { UserService } from './user.service';
 
 @ApiTags('USER')
-//  @UseGuards(AuthGuard('jwt'))
+@UseGuards(AuthGuard('jwt'))
 @Controller('/user')
 export class UserController {
   constructor(private userService: UserService) {}
@@ -71,8 +71,9 @@ export class UserController {
   async searchUser(
     @Query('name') name: string,
     @Query('type') clubType: string,
+    @User('email') email: string,
   ) {
-    return this.userService.searchUser(name, clubType);
+    return this.userService.searchUser(name, clubType, email);
   }
 
   @ApiOperation({
