@@ -74,4 +74,16 @@ export class UserService {
       );
     await this.Member.delete({ club: clubData, user: member.user });
   }
+  async withdrawal(email: string) {
+    const findUserData = await this.User.findOne({ where: { email } });
+
+    if (!findUserData) {
+      throw new HttpException(
+        '존재하지 않는 유저입니다.',
+        HttpStatus.NOT_FOUND,
+      );
+    }
+
+    await this.User.delete(findUserData);
+  }
 }
