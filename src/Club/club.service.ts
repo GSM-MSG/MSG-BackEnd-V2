@@ -44,6 +44,7 @@ export class ClubService {
     }
   }
   async createClub(createClubData: CreateClubDto, email: string) {
+    let checkHead: Member;
     const {
       title,
       description,
@@ -61,11 +62,28 @@ export class ClubService {
         HttpStatus.CONFLICT,
       );
     }
-    if (!email) {
+
+    const userData = await this.User.findOne({
+      where: { email },
+      relations: ['member', 'member.user', 'member.club'],
+    });
+
+    if (!userData) {
       throw new HttpException(
-        '이메일이 존재하지 않습니다.',
-        HttpStatus.UNAUTHORIZED,
+        '존재하지 않는 유저입니다.',
+        HttpStatus.NOT_FOUND,
       );
+    }
+
+    if (userData.member && type !== 'EDITORIAL') {
+      checkHead = userData.member.find((member) => {
+        return (
+          (member.scope === 'HEAD' || 'MEMBER') && member.club.type === type
+        );
+      });
+    }
+    if (checkHead) {
+      throw new HttpException('다른 동아리에 부장입니다.', HttpStatus.CONFLICT);
     }
     let isOpened = false;
     await this.Club.save(
@@ -89,11 +107,10 @@ export class ClubService {
         HttpStatus.NOT_FOUND,
       );
     }
-    const userData = await this.User.findOne({ where: { email } });
     await this.Member.save(
       this.Member.create({ user: userData, club: clubData, scope: 'HEAD' }),
     );
-    if (member) {
+    if (member.length) {
       member.forEach(async (user) => {
         const userData = await this.User.findOne({ where: { email: user } });
         await this.Member.save(
@@ -105,7 +122,8 @@ export class ClubService {
         );
       });
     }
-    if (activityUrls) {
+
+    if (activityUrls.length) {
       activityUrls.forEach((image) => {
         this.Image.save({ club: clubData.id, url: image });
       });
