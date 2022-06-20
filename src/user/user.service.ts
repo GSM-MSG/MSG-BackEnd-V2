@@ -86,16 +86,15 @@ export class UserService {
         HttpStatus.NOT_FOUND,
       );
     }
-    if (findUserData.member[0]) {
+    if (findUserData.member.length) {
       findUserData.member
         .filter((member) => {
           return member.scope === 'HEAD';
         })
-        .map(async (head) => {
+        .forEach(async (head) => {
           await this.Club.delete(head.club);
         });
     }
-
     await this.User.delete(findUserData.email);
   }
 }
