@@ -7,7 +7,7 @@ export class Member {
   @PrimaryGeneratedColumn()
   id: number;
 
-  @ManyToOne(() => User, (user) => user.email, { nullable: true })
+  @ManyToOne(() => User, (user) => user.email, { onDelete: 'CASCADE' })
   user: User;
 
   @ManyToOne(() => Club, (club) => club.id, { onDelete: 'CASCADE' })

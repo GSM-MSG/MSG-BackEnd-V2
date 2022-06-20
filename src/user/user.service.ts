@@ -75,7 +75,10 @@ export class UserService {
     await this.Member.delete({ club: clubData, user: member.user });
   }
   async withdrawal(email: string) {
-    const findUserData = await this.User.findOne({ where: { email } });
+    const findUserData = await this.User.findOne({
+      where: { email },
+      relations: ['member', 'member.club'],
+    });
 
     if (!findUserData) {
       throw new HttpException(
@@ -83,7 +86,17 @@ export class UserService {
         HttpStatus.NOT_FOUND,
       );
     }
+    if (findUserData.member[0]) {
+      findUserData.member
+        .filter((member) => {
+          return member.scope === 'HEAD';
+        })
+        .map(async (head) => {
+          //await this.Club.delete(head.club);
+        });
+    }
+    console.log(findUserData);
 
-    await this.User.delete(findUserData);
+    //await this.User.delete(findUserData);
   }
 }
