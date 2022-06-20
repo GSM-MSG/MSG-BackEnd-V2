@@ -83,7 +83,10 @@ export class ClubService {
       });
     }
     if (checkHead) {
-      throw new HttpException('다른 동아리에 부장입니다.', HttpStatus.CONFLICT);
+      throw new HttpException(
+        '다른 동아리에 소속되어있습니다..',
+        HttpStatus.CONFLICT,
+      );
     }
     let isOpened = false;
     await this.Club.save(
