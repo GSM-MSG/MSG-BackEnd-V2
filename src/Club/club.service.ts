@@ -112,7 +112,7 @@ export class ClubService {
       this.Member.create({ user: userData, club: clubData, scope: 'HEAD' }),
     );
     if (member.length) {
-      member.map(async (user) => {
+      member.forEach(async (user) => {
         const userData = await this.User.findOne({ where: { email: user } });
         await this.Member.save(
           this.Member.create({
@@ -125,7 +125,7 @@ export class ClubService {
     }
 
     if (activityUrls.length) {
-      activityUrls.map((image) => {
+      activityUrls.forEach((image) => {
         this.Image.save({ club: clubData.id, url: image });
       });
     }
