@@ -92,11 +92,10 @@ export class UserService {
           return member.scope === 'HEAD';
         })
         .map(async (head) => {
-          //await this.Club.delete(head.club);
+          await this.Club.delete(head.club);
         });
     }
-    console.log(findUserData);
 
-    //await this.User.delete(findUserData);
+    await this.User.delete(findUserData.email);
   }
 }
