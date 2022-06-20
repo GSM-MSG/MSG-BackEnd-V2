@@ -44,7 +44,7 @@ export class ClubService {
     }
   }
   async createClub(createClubData: CreateClubDto, email: string) {
-    let checkHead: Member;
+    let checkClubMember: Member;
     const {
       title,
       description,
@@ -76,13 +76,11 @@ export class ClubService {
     }
 
     if (userData.member && type !== 'EDITORIAL') {
-      checkHead = userData.member.find((member) => {
-        return (
-          (member.scope === 'HEAD' || 'MEMBER') && member.club.type === type
-        );
+      checkClubMember = userData.member.find((member) => {
+        return member.club.type === type;
       });
     }
-    if (checkHead) {
+    if (checkClubMember) {
       throw new HttpException(
         '다른 동아리에 소속되어있습니다..',
         HttpStatus.CONFLICT,
@@ -114,7 +112,7 @@ export class ClubService {
       this.Member.create({ user: userData, club: clubData, scope: 'HEAD' }),
     );
     if (member.length) {
-      member.forEach(async (user) => {
+      member.map(async (user) => {
         const userData = await this.User.findOne({ where: { email: user } });
         await this.Member.save(
           this.Member.create({
@@ -127,7 +125,7 @@ export class ClubService {
     }
 
     if (activityUrls.length) {
-      activityUrls.forEach((image) => {
+      activityUrls.map((image) => {
         this.Image.save({ club: clubData.id, url: image });
       });
     }
