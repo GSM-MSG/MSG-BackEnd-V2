@@ -90,5 +90,7 @@ export class UserController {
   }
 
   @Delete('/withdrawal')
-  async withdrawal() {}
+  async withdrawal(@User('email') email: string) {
+    await this.userService.withdrawal(email);
+  }
 }

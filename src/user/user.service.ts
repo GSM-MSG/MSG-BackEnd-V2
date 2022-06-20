@@ -74,4 +74,27 @@ export class UserService {
       );
     await this.Member.delete({ club: clubData, user: member.user });
   }
+  async withdrawal(email: string) {
+    const findUserData = await this.User.findOne({
+      where: { email },
+      relations: ['member', 'member.club'],
+    });
+
+    if (!findUserData) {
+      throw new HttpException(
+        '존재하지 않는 유저입니다.',
+        HttpStatus.NOT_FOUND,
+      );
+    }
+    if (findUserData.member.length) {
+      findUserData.member
+        .filter((member) => {
+          return member.scope === 'HEAD';
+        })
+        .forEach(async (head) => {
+          await this.Club.delete(head.club);
+        });
+    }
+    await this.User.delete(findUserData.email);
+  }
 }

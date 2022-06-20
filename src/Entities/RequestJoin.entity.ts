@@ -10,6 +10,6 @@ export class RequestJoin {
   @ManyToOne(() => Club, (club) => club.id, { onDelete: 'CASCADE' })
   club: Club;
 
-  @ManyToOne(() => User, (user) => user.email)
+  @ManyToOne(() => User, (user) => user.email, { onDelete: 'CASCADE' })
   user: User;
 }
