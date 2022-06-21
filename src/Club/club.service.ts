@@ -44,6 +44,7 @@ export class ClubService {
     }
   }
   async createClub(createClubData: CreateClubDto, email: string) {
+    let checkClubMember: Member;
     const {
       title,
       description,
@@ -61,10 +62,28 @@ export class ClubService {
         HttpStatus.CONFLICT,
       );
     }
-    if (!email) {
+
+    const userData = await this.User.findOne({
+      where: { email },
+      relations: ['member', 'member.user', 'member.club'],
+    });
+
+    if (!userData) {
       throw new HttpException(
-        '이메일이 존재하지 않습니다.',
-        HttpStatus.UNAUTHORIZED,
+        '존재하지 않는 유저입니다.',
+        HttpStatus.NOT_FOUND,
+      );
+    }
+
+    if (userData.member && type !== 'EDITORIAL') {
+      checkClubMember = userData.member.find((member) => {
+        return member.club.type === type;
+      });
+    }
+    if (checkClubMember) {
+      throw new HttpException(
+        '다른 동아리에 소속되어있습니다..',
+        HttpStatus.CONFLICT,
       );
     }
     let isOpened = false;
@@ -89,27 +108,69 @@ export class ClubService {
         HttpStatus.NOT_FOUND,
       );
     }
-    const userData = await this.User.findOne({ where: { email } });
     await this.Member.save(
       this.Member.create({ user: userData, club: clubData, scope: 'HEAD' }),
     );
-    if (member) {
-      member.forEach(async (user) => {
-        const userData = await this.User.findOne({ where: { email: user } });
-        await this.Member.save(
-          this.Member.create({
-            user: userData,
-            club: clubData,
-            scope: 'MEMBER',
-          }),
-        );
+    if (member.length) {
+      const members = member.map(async (user) => {
+        const userData = await this.checkUser(user, clubData);
+        return this.Member.create({
+          user: userData,
+          club: clubData,
+          scope: 'MEMBER',
+        });
+      });
+      await this.Member.save(await Promise.all(members));
+    }
+  }
+
+  async checkUser(email: string, clubData: Club) {
+    let checkReqJoin: RequestJoin;
+    let findOthers: Member;
+    const userData = await this.User.findOne({
+      where: { email },
+      relations: ['member', 'member.club', 'requestJoin', 'requestJoin.club'],
+    });
+    if (!userData) {
+      throw new HttpException(
+        `${email}존재하지 않는 유저입니다.`,
+        HttpStatus.NOT_FOUND,
+      );
+    }
+    const checkJoin = userData.member.find((member) => {
+      return member.club.id === clubData.id;
+    });
+    if (checkJoin) {
+      throw new HttpException(
+        `${email}는 이미 가입되어 있는 유저입니다.`,
+        HttpStatus.CONFLICT,
+      );
+    }
+    if (userData.requestJoin.length && clubData.type !== 'EDITORIAL') {
+      checkReqJoin = userData.requestJoin.find((user) => {
+        return user.club.type === clubData.type;
       });
     }
-    if (activityUrls) {
-      activityUrls.forEach((image) => {
-        this.Image.save({ club: clubData.id, url: image });
+    if (checkReqJoin) {
+      throw new HttpException(
+        `${email}다른 동아리에 신청을 넣은 유저입니다.`,
+        HttpStatus.CONFLICT,
+      );
+    }
+    if (userData.member.length && clubData.type !== 'EDITORIAL') {
+      findOthers = userData.member.find((member) => {
+        return member.club.type === clubData.type;
       });
     }
+    if (findOthers) {
+      throw new HttpException(
+        `${email}다른 동아리에 소속되어 있습니다.`,
+        HttpStatus.CONFLICT,
+      );
+    }
+    delete userData.member;
+    delete userData.requestJoin;
+    return userData;
   }
 
   async deleteClub(clubtitle: string, clubType: string, email: string) {
