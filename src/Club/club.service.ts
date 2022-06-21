@@ -504,13 +504,23 @@ export class ClubService {
       let scope = memberForScope ? memberForScope.scope : 'USER';
       let result: Member | RequestJoin;
 
-      if (scope === 'USER' && userData.member.length) {
+      if (
+        scope === 'USER' &&
+        userData.member.filter((m) => {
+          return m.club.type === clubtype;
+        }).length
+      ) {
         result = userData.member.find((member) => {
-          return member.club.type === clubtype;
+          return member.club.type === clubtype.toUpperCase();
         });
-      } else if (scope === 'USER' && userData.requestJoin.length) {
+      } else if (
+        scope === 'USER' &&
+        userData.requestJoin.filter((r) => {
+          return r.club.type === clubtype;
+        }).length
+      ) {
         result = userData.requestJoin.find((reqJoin) => {
-          return reqJoin.club.type === clubtype;
+          return reqJoin.club.type === clubtype.toUpperCase();
         });
       }
       if (result) {
