@@ -113,22 +113,64 @@ export class ClubService {
     );
     if (member.length) {
       const members = member.map(async (user) => {
-        const userData = await this.User.findOne({ where: { email: user } });
+        const userData = await this.checkUser(user, clubData);
         return this.Member.create({
           user: userData,
           club: clubData,
           scope: 'MEMBER',
         });
       });
-      this.Member.save(await Promise.all(members));
+      await this.Member.save(await Promise.all(members));
     }
+  }
 
-    if (activityUrls.length) {
-      const image = activityUrls.map((image) => {
-        return this.Image.create({ club: clubData.id, url: image });
-      });
-      this.Image.save(await Promise.all(image));
+  async checkUser(email: string, clubData: Club) {
+    let checkReqJoin: RequestJoin;
+    let findOthers: Member;
+    const userData = await this.User.findOne({
+      where: { email },
+      relations: ['member', 'member.club', 'requestJoin', 'requestJoin.club'],
+    });
+    if (!userData) {
+      throw new HttpException(
+        `${email}존재하지 않는 유저입니다.`,
+        HttpStatus.NOT_FOUND,
+      );
     }
+    const checkJoin = userData.member.find((member) => {
+      return member.club.id === clubData.id;
+    });
+    if (checkJoin) {
+      throw new HttpException(
+        `${email}는 이미 가입되어 있는 유저입니다.`,
+        HttpStatus.CONFLICT,
+      );
+    }
+    if (userData.requestJoin.length && clubData.type !== 'EDITORIAL') {
+      checkReqJoin = userData.requestJoin.find((user) => {
+        return user.club.type === clubData.type;
+      });
+    }
+    if (checkReqJoin) {
+      throw new HttpException(
+        `${email}다른 동아리에 신청을 넣은 유저입니다.`,
+        HttpStatus.CONFLICT,
+      );
+    }
+    if (userData.member.length && clubData.type !== 'EDITORIAL') {
+      findOthers = userData.member.find((member) => {
+        return member.club.type === clubData.type;
+      });
+    }
+    if (findOthers) {
+      throw new HttpException(
+        `${email}다른 동아리에 소속되어 있습니다.`,
+        HttpStatus.CONFLICT,
+      );
+    }
+    delete userData.member;
+    delete userData.requestJoin;
+    return userData;
   }
 
   async deleteClub(clubtitle: string, clubType: string, email: string) {
