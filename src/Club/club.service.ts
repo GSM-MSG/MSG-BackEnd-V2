@@ -471,7 +471,10 @@ export class ClubService {
         HttpStatus.UNAUTHORIZED,
       );
     }
-    const userData = await this.User.findOne({ where: { email } });
+    const userData = await this.User.findOne({
+      where: { email },
+      relations: ['member', 'member.club', 'requestJoin', 'requestJoin.club'],
+    });
     if (!club) {
       throw new HttpException(
         '존재하지않는 동아리입니다.',
@@ -498,7 +501,21 @@ export class ClubService {
       const memberForScope = club.member.find((member) => {
         return member.user.email === userData.email;
       });
-      const scope = memberForScope ? memberForScope.scope : 'USER';
+      let scope = memberForScope ? memberForScope.scope : 'USER';
+      let result: Member | RequestJoin;
+
+      if (scope === 'USER' && userData.member.length) {
+        result = userData.member.find((member) => {
+          return member.club.type === clubtype;
+        });
+      } else if (scope === 'USER' && userData.requestJoin.length) {
+        result = userData.requestJoin.find((reqJoin) => {
+          return reqJoin.club.type === clubtype;
+        });
+      }
+      if (result) {
+        scope = 'OTHER';
+      }
 
       delete club.member;
       delete club.activityUrls;
