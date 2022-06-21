@@ -112,22 +112,22 @@ export class ClubService {
       this.Member.create({ user: userData, club: clubData, scope: 'HEAD' }),
     );
     if (member.length) {
-      member.forEach(async (user) => {
+      const members = member.map(async (user) => {
         const userData = await this.User.findOne({ where: { email: user } });
-        await this.Member.save(
-          this.Member.create({
-            user: userData,
-            club: clubData,
-            scope: 'MEMBER',
-          }),
-        );
+        return this.Member.create({
+          user: userData,
+          club: clubData,
+          scope: 'MEMBER',
+        });
       });
+      this.Member.save(await Promise.all(members));
     }
 
     if (activityUrls.length) {
-      activityUrls.forEach((image) => {
-        this.Image.save({ club: clubData.id, url: image });
+      const image = activityUrls.map((image) => {
+        return this.Image.create({ club: clubData.id, url: image });
       });
+      this.Image.save(await Promise.all(image));
     }
   }
 
