@@ -18,15 +18,23 @@ export class UserService {
   async getUserData(email: string) {
     const userData = await this.User.findOne({
       where: { email },
-      relations: ['member', 'member.club'],
+      relations: [
+        'member',
+        'member.club',
+        'classRegistration',
+        'classRegistration.afterSchool',
+      ],
     });
     delete userData.refreshToken;
     const clubs = userData.member.map((member) => {
       return member.club;
     });
 
+    const afterSchools = userData.member.map((member) => {
+      return member.user.classRegistration;
+    });
     delete userData.member;
-    return { userData, clubs };
+    return { userData, clubs, afterSchools };
   }
   async editProfile(urlAddress: UrlDto, email: string) {
     await this.User.update({ email: email }, { userImg: urlAddress.url });
