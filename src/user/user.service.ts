@@ -25,12 +25,13 @@ export class UserService {
         'classRegistration.afterSchool',
       ],
     });
+    console.log(userData.classRegistration)
     delete userData.refreshToken;
     const clubs = userData.member.map((member) => {
       return member.club;
     });
 
-    const afterSchools = userData.member.map((member) => {
+    const afterSchools = userData.classRegistration.map((member) => {
       return member.user.classRegistration;
     });
     delete userData.member;
