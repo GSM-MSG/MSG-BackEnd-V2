@@ -25,7 +25,6 @@ export class UserService {
         'classRegistration.afterSchool',
       ],
     });
-    console.log(userData.classRegistration)
     delete userData.refreshToken;
     const clubs = userData.member.map((member) => {
       return member.club;
