@@ -29,7 +29,6 @@ export class UserService {
     const clubs = userData.member.map((member) => {
       return member.club;
     });
-    console.log(userData);
     const afterSchools = userData.classRegistration.map((member) => {
       return member.afterSchool;
     });
