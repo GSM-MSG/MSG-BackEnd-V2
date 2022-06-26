@@ -29,9 +29,9 @@ export class UserService {
     const clubs = userData.member.map((member) => {
       return member.club;
     });
-
+    console.log(userData);
     const afterSchools = userData.classRegistration.map((member) => {
-      return member.user.classRegistration;
+      return member.afterSchool;
     });
     delete userData.member;
     return { userData, clubs, afterSchools };
