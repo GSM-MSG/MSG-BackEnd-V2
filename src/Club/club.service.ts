@@ -245,8 +245,6 @@ export class ClubService {
       });
     }
 
-    console.log(findOthers);
-
     if (findOthers.length && type !== 'EDITORIAL') {
       throw new HttpException(
         '다른 동아리에 소속되어있습니다.',
