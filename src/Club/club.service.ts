@@ -208,7 +208,7 @@ export class ClubService {
   }
 
   async applyClub(type: string, title: string, email: string) {
-    let findOthers: Member[];
+    let findOthers: Member[] = [];
     const clubData = await this.Club.findOne({
       where: { type, title },
     });
@@ -233,19 +233,19 @@ export class ClubService {
       return requestJoin.club.id === clubData.id;
     });
 
-    if (checkApply[0]) {
+    if (checkApply.length) {
       throw new HttpException(
         '이미 이 동아리에 가입신청을 하였습니다.',
         HttpStatus.CONFLICT,
       );
     }
-    if (userData.member[0] && type !== 'EDITORIAL') {
+    if (userData.member.length && type !== 'EDITORIAL') {
       findOthers = userData.member.filter((member) => {
         return member.club.type === type;
       });
     }
 
-    if (findOthers[0] && type !== 'EDITORIAL') {
+    if (findOthers.length && type !== 'EDITORIAL') {
       throw new HttpException(
         '다른 동아리에 소속되어있습니다.',
         HttpStatus.CONFLICT,
@@ -254,7 +254,7 @@ export class ClubService {
     const checkOtherclub = userData.requestJoin.filter((member) => {
       return member.club.type !== 'EDITORIAL' && member.club.id !== clubData.id;
     });
-    if (checkOtherclub[0] && type !== 'EDITORIAL') {
+    if (checkOtherclub.length && type !== 'EDITORIAL') {
       throw new HttpException(
         '이미 다른 동아리에 지원한 상태입니다.',
         HttpStatus.CONFLICT,
@@ -320,14 +320,14 @@ export class ClubService {
     const checkJoin = userData.member.filter((member) => {
       return member.club.id === clubData.id;
     });
-    if (userData.member[0] && type !== 'EDITORIAL') {
+    if (userData.member.length && type !== 'EDITORIAL') {
       findOthers = userData.member.find((member) => {
         return (
           member.club.type === type && member.club.title !== clubData.title
         );
       });
     }
-    if (checkJoin[0]) {
+    if (checkJoin.length) {
       throw new HttpException(
         '이미 동아리에 가입되어있는 유저입니다.',
         HttpStatus.CONFLICT,
