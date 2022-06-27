@@ -641,18 +641,24 @@ export class ClubService {
     ) {
       throw new HttpException('동아리 부장이 아닙니다', HttpStatus.FORBIDDEN);
     }
-    const memberData = await this.User.findOne({
-      where: { email: userData.userId },
-    });
-    const headData = await this.User.findOne({ where: { email: email } });
+    let memberData = clubData.member.find((member) => {
+      return member.user.email === userData.userId
+    })
+    const headData = clubData.member.find((member)=>{
+      return member.user.email === email
+    })
+    console.log(memberData);
+    console.log(headData);
+    
     await this.Member.update(
-      { club: clubData, user: memberData },
+      { club: clubData, user: memberData.user },
       { scope: 'HEAD' },
     );
     await this.Member.update(
-      { club: clubData, user: headData },
+      { club: clubData, user: headData.user },
       { scope: 'MEMBER' },
     );
+    
   }
 
   async editClub(editClubData: EditClubDto, email: string) {
