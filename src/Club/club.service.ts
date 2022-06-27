@@ -621,6 +621,12 @@ export class ClubService {
   }
 
   async delegation(userData: KickUserDto, email: string) {
+    if (userData.userId === email) {
+      throw new HttpException(
+        '부장은 자기 자신을 방출 할 수 없습니다',
+        HttpStatus.FORBIDDEN,
+      );
+    }
     const clubData = await this.Club.findOne({
       where: {
         title: userData.q,
