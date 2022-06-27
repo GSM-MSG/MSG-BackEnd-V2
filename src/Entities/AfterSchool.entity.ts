@@ -11,8 +11,8 @@ export class AfterSchool {
   @Column()
   title: string;
 
-  @Column()
-  personnel: number;
+  //@Column()
+  //personnel: number;
 
   @OneToMany(() => DayOfWeek, (DayOfWeek) => DayOfWeek.afterSchool)
   dayOfWeek: DayOfWeek[];
