@@ -7,7 +7,4 @@ export class Teacher {
 
     @Column()
     password: string;
-
-    @Column()
-    name: string;
 }
