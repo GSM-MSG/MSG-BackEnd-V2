@@ -138,8 +138,9 @@ export class ClubService {
       relations: ['member', 'member.club', 'requestJoin', 'requestJoin.club'],
     });
     if (!userData) {
+      await this.Club.delete(clubData);
       throw new HttpException(
-        `${email}존재하지 않는 유저입니다.`,
+        `${email}는존재하지 않는 유저입니다.`,
         HttpStatus.NOT_FOUND,
       );
     }
@@ -147,6 +148,7 @@ export class ClubService {
       return member.club.id === clubData.id;
     });
     if (checkJoin) {
+      await this.Club.delete(clubData);
       throw new HttpException(
         `${email}는 이미 가입되어 있는 유저입니다.`,
         HttpStatus.CONFLICT,
@@ -158,6 +160,7 @@ export class ClubService {
       });
     }
     if (checkReqJoin) {
+      await this.Club.delete(clubData);
       throw new HttpException(
         `${email}다른 동아리에 신청을 넣은 유저입니다.`,
         HttpStatus.CONFLICT,
@@ -169,6 +172,7 @@ export class ClubService {
       });
     }
     if (findOthers) {
+      await this.Club.delete(clubData);
       throw new HttpException(
         `${email}다른 동아리에 소속되어 있습니다.`,
         HttpStatus.CONFLICT,
