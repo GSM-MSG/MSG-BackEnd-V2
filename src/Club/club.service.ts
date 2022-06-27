@@ -122,6 +122,12 @@ export class ClubService {
       });
       await this.Member.save(await Promise.all(members));
     }
+    if (activityUrls.length) {
+      const activityUrl = activityUrls.map(async (img) => {
+        return this.Image.create({ url: img, club: clubData.id });
+      });
+      await this.Image.save(await Promise.all(activityUrl));
+    }
   }
 
   async checkUser(email: string, clubData: Club) {
