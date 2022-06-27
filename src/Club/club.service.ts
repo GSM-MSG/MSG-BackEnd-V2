@@ -627,6 +627,12 @@ export class ClubService {
   }
 
   async delegation(userData: KickUserDto, email: string) {
+    if (userData.userId === email) {
+      throw new HttpException(
+        '부장은 자기 자신에게 위임할 수 없습니다',
+        HttpStatus.FORBIDDEN,
+      );
+    }
     const clubData = await this.Club.findOne({
       where: {
         title: userData.q,
@@ -634,35 +640,30 @@ export class ClubService {
       },
       relations: ['member', 'member.user'],
     });
-    if (!email) {
-      throw new HttpException(
-        '이메일이 존재하지 않습니다.',
-        HttpStatus.UNAUTHORIZED,
-      );
-    }
     if (
       !clubData.member.find((member) => {
         return member.user.email === email && member.scope === 'HEAD';
       })
-    )
+    ) {
       throw new HttpException('동아리 부장이 아닙니다', HttpStatus.FORBIDDEN);
-    const member = clubData.member.find((member) => {
+    }
+    let memberData = clubData.member.find((member) => {
       return member.user.email === userData.userId;
     });
-    if (!member)
-      throw new HttpException('멤버가 없습니다', HttpStatus.NOT_FOUND);
-    await this.Member.update(
-      { club: clubData, user: member.user },
-      { scope: 'HEAD' },
-    );
-    const headMember = clubData.member.find((member) => {
+    const headData = clubData.member.find((member) => {
       return member.user.email === email;
     });
+
     await this.Member.update(
-      { club: clubData, user: headMember.user },
+      { club: clubData, user: memberData.user },
+      { scope: 'HEAD' },
+    );
+    await this.Member.update(
+      { club: clubData, user: headData.user },
       { scope: 'MEMBER' },
     );
   }
+
   async editClub(editClubData: EditClubDto, email: string) {
     const { newActivityUrls, deleteActivityUrls } = editClubData;
     const clubData = await this.Club.findOne({
