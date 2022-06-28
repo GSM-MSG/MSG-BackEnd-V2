@@ -6,6 +6,7 @@ import { Image } from 'src/Entities/image.entity';
 import { Member } from 'src/Entities/Member.entity';
 import { RequestJoin } from 'src/Entities/RequestJoin.entity';
 import { Repository } from 'typeorm';
+import * as appleSignin from 'apple-signin';
 
 @Injectable()
 export class GuestService {
@@ -16,6 +17,10 @@ export class GuestService {
     @InjectRepository(Image) private Image: Repository<Image>,
     @InjectRepository(RequestJoin) private RequestJoin: Repository<RequestJoin>,
   ) {}
+
+  async appleSignin(idToken: String) {
+    
+  }
 
   async guestDetailPage(clubType: string, clubName: string) {
     const club = await this.Club.findOne({
