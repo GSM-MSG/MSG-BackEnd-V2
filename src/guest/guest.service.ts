@@ -63,7 +63,23 @@ export class GuestService {
   async appleRevoke(data: appleRevokeDto) {
     const secret = this.generateSecretKey();
 
-
+    const params = new URLSearchParams({
+      client_id: this.configService.get('APPLE_CLIENT_ID'),
+      client_secret: secret,
+      token_type_hint: 'refresh_token',
+      token: data.refreshToken,
+    });
+    console.log(params);
+    
+    try {
+      const res = (await this.httpService.post('https://appleid.apple.com/auth/revoke', params, {
+        headers: { 'Content-Type': 'application/x-www-form-urlencoded' }
+      }).toPromise()).data;
+      console.log(res);
+      return res;
+    } catch {
+      throw new UnauthorizedException('유효하지 않은 앱에서 인증을 요청하였습니다.');
+    }
   }
 
   private generateSecretKey() {
