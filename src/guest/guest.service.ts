@@ -11,7 +11,7 @@ import { JwtService } from '@nestjs/jwt';
 import { HttpService } from '@nestjs/axios'
 import * as jwt from 'jsonwebtoken'
 import { ConfigService } from '@nestjs/config';
-import { appleSigninDto } from './dto';
+import { appleRevokeDto, appleSigninDto } from './dto';
 import * as fs from 'fs'
 import {} from '@nestjs/axios';
 
@@ -26,11 +26,11 @@ export class GuestService {
   constructor(
     @InjectRepository(Club) private Club: Repository<Club>,
     private readonly jwtService: JwtService,
-    private readonly httpService: HttpService
+    private readonly httpService: HttpService,
+    private readonly configService: ConfigService
   ) {}
 
   async appleSignin(data: appleSigninDto) {
-    const configService = new ConfigService();
     const decoded = this.jwtService.decode(data.idToken, { complete: true, json: true });
     const kid: string = decoded['header']['kid'];
     const alg: string = decoded['header']['alg'];
@@ -42,32 +42,42 @@ export class GuestService {
     );
     this.validateToken(result);
 
-    const timeNow = Math.floor(Date.now() / 1000);
-
-    const claims = {
-      iss: configService.get('APPLE_TEAM_ID'),
-      iat: timeNow,
-      exp: timeNow + 60 * 60 * 24 * 7,
-      aud: 'https://appleid.apple.com',
-      sub: configService.get('APPLE_CLIENT_ID'),
-    };
-
-    const secret = jwt.sign(claims, fs.readFileSync('src/lib/AuthKey.p8', 'utf8'), { header: { alg: 'ES256', kid: configService.get('APPLE_KEY_ID') } });
+    const secret = this.generateSecretKey();
     
-    const formData = new URLSearchParams({
-      client_id: configService.get('APPLE_CLIENT_ID'),
+    const params = new URLSearchParams({
+      client_id: this.configService.get('APPLE_CLIENT_ID'),
       client_secret: secret,
       grant_type: 'authorization_code',
       code: data.code,
     });
     try {
-      const res = (await this.httpService.post('https://appleid.apple.com/auth/token', formData, {
+      const res = (await this.httpService.post('https://appleid.apple.com/auth/token', params, {
         headers: { 'Content-Type': 'application/x-www-form-urlencoded' }
       }).toPromise()).data;
       return res;
     } catch {
       throw new UnauthorizedException('유효하지 않은 앱에서 인증을 요청하였습니다.');
     }
+  }
+
+  async appleRevoke(data: appleRevokeDto) {
+    const secret = this.generateSecretKey();
+
+
+  }
+
+  private generateSecretKey() {
+    const timeNow = Math.floor(Date.now() / 1000);
+
+    const claims = {
+      iss: this.configService.get('APPLE_TEAM_ID'),
+      iat: timeNow,
+      exp: timeNow + 60 * 60 * 24 * 7,
+      aud: 'https://appleid.apple.com',
+      sub: this.configService.get('APPLE_CLIENT_ID'),
+    };
+
+    return jwt.sign(claims, fs.readFileSync('src/lib/AuthKey.p8', 'utf8'), { header: { alg: 'ES256', kid: this.configService.get('APPLE_KEY_ID') } });
   }
 
   private validateToken(token) {

@@ -55,6 +55,6 @@ export class GuestController {
 
   @Post('/apple/revoke')
   async appleRevoke(@Body() data: appleRevokeDto) {
-    
+    return this.guestService.appleRevoke(data);
   }
 }
