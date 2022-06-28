@@ -1,4 +1,5 @@
 
 export class appleSigninDto {
-  idToken: String
+  idToken: string
+  code: string
 }

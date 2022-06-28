@@ -50,6 +50,6 @@ export class GuestController {
 
   @Post('/apple')
   async appleSignin(@Body() data: appleSigninDto) {
-    return this.guestService.appleSignin(data.idToken);
+    return this.guestService.appleSignin(data);
   }
 }
