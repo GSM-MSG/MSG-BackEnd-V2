@@ -19,7 +19,9 @@ export class GuestService {
   ) {}
 
   async appleSignin(idToken: String) {
-    
+    const clientSecret = appleSignin.getClientSecret({
+      clientId
+    })
   }
 
   async guestDetailPage(clubType: string, clubName: string) {
