@@ -1527,13 +1527,6 @@
     "semver" "^7.3.5"
     "tar" "^6.1.11"
 
-"@nestjs/axios@^0.0.8":
-  "integrity" "sha512-oJyfR9/h9tVk776il0829xyj3b2e81yTu6HjPraxynwNtMNGqZBHHmAQL24yMB3tVbBM0RvG3eUXH8+pRCGwlg=="
-  "resolved" "https://registry.npmjs.org/@nestjs/axios/-/axios-0.0.8.tgz"
-  "version" "0.0.8"
-  dependencies:
-    "axios" "0.27.2"
-
 "@nestjs/cli@^8.2.6":
   "integrity" "sha512-y5Imcw1EY0OxD3POAM7SLUB1rFdn5FjbfSsyJrokjKmXY+i6KcBdbRrv3Ox7aeJ4W7wXuckIXZEUlK6lC52dnA=="
   "resolved" "https://registry.npmjs.org/@nestjs/cli/-/cli-8.2.8.tgz"
@@ -5978,7 +5971,7 @@
   dependencies:
     "queue-microtask" "^1.2.2"
 
-"rxjs@^6.0.0 || ^7.0.0", "rxjs@^6.0.0 || ^7.2.0", "rxjs@^7.1.0", "rxjs@^7.2.0", "rxjs@^7.5.5":
+"rxjs@^6.0.0 || ^7.2.0", "rxjs@^7.1.0", "rxjs@^7.2.0", "rxjs@^7.5.5":
   "integrity" "sha512-sy+H0pQofO95VDmFLzyaw9xNJU4KTRSwQIGM6+iG3SypAtCiLDzpeG8sJrNCWn2Up9km+KhkvTdbkrdy+yzZdw=="
   "resolved" "https://registry.npmjs.org/rxjs/-/rxjs-7.5.5.tgz"
   "version" "7.5.5"
