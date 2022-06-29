@@ -61,7 +61,7 @@ export class GuestService {
     });
 
     if (club.activityUrls) {
-      const activityurls = club.activityUrls.map((url) => {
+      const activityUrls = club.activityUrls.map((url) => {
         return url.url;
       });
       const isApplied = false;
@@ -72,7 +72,7 @@ export class GuestService {
 
       return {
         club,
-        activityurls,
+        activityUrls,
         head: head.user,
         member: clubMembers.map((user) => {
           return user.user;
