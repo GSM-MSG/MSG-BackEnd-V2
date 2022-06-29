@@ -22,6 +22,7 @@
     "test:e2e": "jest --config ./test/jest-e2e.json"
   },
   "dependencies": {
+    "@nestjs/axios": "^0.0.8",
     "@nestjs/common": "^8.4.6",
     "@nestjs/config": "^2.1.0",
     "@nestjs/core": "^8.4.6",
@@ -32,11 +33,13 @@
     "@nestjs/typeorm": "^8.1.2",
     "@types/passport-local": "^1.0.34",
     "aws-sdk": "^2.1152.0",
+    "axios": "^0.27.2",
     "bcrypt": "^5.0.1",
     "class-transformer": "^0.5.1",
     "class-validator": "^0.13.2",
     "cookie-parser": "^1.4.6",
     "googleapis": "^101.0.0",
+    "jwks-rsa": "^2.1.4",
     "multer": "^1.4.4",
     "multer-s3": "^3.0.1",
     "mysql2": "^2.3.3",

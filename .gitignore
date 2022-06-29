@@ -36,3 +36,4 @@ lerna-debug.log*
 
 .env
 students.ts
+AuthKey.p8

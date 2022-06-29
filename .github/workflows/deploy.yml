@@ -26,6 +26,7 @@ jobs:
       - name: decode students.ts.gpg
         run: |
           gpg -d -o 'src/lib/students.ts' --pinentry-mode=loopback --passphrase ${{ secrets.PASSPHRASE }} 'src/lib/students.ts.gpg'
+          gpg -d -o 'src/lib/AuthKey.p8' --pinentry-mode=loopback --passphrase ${{ secrets.PASSPHRASE }} 'src/lib/AuthKey.p8.gpg'
       - uses: appleboy/ssh-action@master
         with:
           host: ${{ secrets.HOST }}
