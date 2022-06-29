@@ -481,16 +481,24 @@ export class ClubService {
         HttpStatus.UNAUTHORIZED,
       );
     }
-    const userData = await this.User.findOne({
-      where: { email },
-      relations: ['member', 'member.club', 'requestJoin', 'requestJoin.club'],
-    });
     if (!club) {
       throw new HttpException(
         '존재하지않는 동아리입니다.',
         HttpStatus.NOT_FOUND,
       );
     }
+
+    if (club.member.length === 0) {
+      await this.Club.delete(club);
+      throw new HttpException(
+        '동아리에 멤버가 아무도 존재하지 않습니다.',
+        HttpStatus.BAD_REQUEST,
+      );
+    }
+    const userData = await this.User.findOne({
+      where: { email },
+      relations: ['member', 'member.club', 'requestJoin', 'requestJoin.club'],
+    });
 
     const head = club.member.find((member) => {
       return member.scope === 'HEAD';
