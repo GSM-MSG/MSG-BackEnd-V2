@@ -21,7 +21,7 @@ import { ClubService } from './club.service';
 import { AcceptUserDto } from './dto/accept.dto';
 import { ClubDataDto } from './dto/ClubData.dto';
 import { CreateClubDto } from './dto/createClub.dto';
-import { DetailPageDto } from './dto/detailPage.dto';
+import { DetailPageDto } from './dto/DetailPage.dto';
 import { EditClubDto } from './dto/editclub.dto';
 
 @ApiTags('CLUB')
