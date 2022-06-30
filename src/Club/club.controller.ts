@@ -21,6 +21,7 @@ import { ClubService } from './club.service';
 import { AcceptUserDto } from './dto/accept.dto';
 import { ClubDataDto } from './dto/ClubData.dto';
 import { CreateClubDto } from './dto/createClub.dto';
+import { DetailPageDto } from './dto/detailPage.dto';
 import { EditClubDto } from './dto/editclub.dto';
 
 @ApiTags('CLUB')
@@ -182,11 +183,14 @@ export class ClubController {
   })
   @Get('/detail')
   async detailPage(
-    @Query('q') clubname: string,
-    @Query('type') clubtype: string,
+    @Query() detailPageDto: DetailPageDto,
     @User('email') email: string,
   ) {
-    return this.clubService.detailPage(clubtype, clubname, email);
+    return this.clubService.detailPage(
+      detailPageDto.type,
+      detailPageDto.q,
+      email,
+    );
   }
 
   @ApiBearerAuth('access-token')
