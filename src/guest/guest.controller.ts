@@ -1,5 +1,6 @@
-import { Controller, Get, Query } from '@nestjs/common';
+import { Body, Controller, Get, Post, Query } from '@nestjs/common';
 import { ApiOperation, ApiResponse, ApiQuery } from '@nestjs/swagger';
+import { appleRevokeDto, appleSigninDto } from './dto';
 import { GuestService } from './guest.service';
 
 @Controller('guest')
@@ -45,5 +46,15 @@ export class GuestController {
   @Get('/list')
   async guestList(@Query('type') clubType: string) {
     return this.guestService.list(clubType);
+  }
+
+  @Post('/apple')
+  async appleSignin(@Body() data: appleSigninDto) {
+    return this.guestService.appleSignin(data);
+  }
+
+  @Post('/apple/revoke')
+  async appleRevoke(@Body() data: appleRevokeDto) {
+    return this.guestService.appleRevoke(data);
   }
 }

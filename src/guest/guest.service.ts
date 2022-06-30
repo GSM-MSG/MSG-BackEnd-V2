@@ -1,21 +1,124 @@
-import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
+import { HttpException, HttpStatus, Injectable, UnauthorizedException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
+import * as jwksClient from 'jwks-rsa';
 import { Club } from 'src/Entities/Club.entity';
 import { User } from 'src/Entities/User.entity';
 import { Image } from 'src/Entities/image.entity';
 import { Member } from 'src/Entities/Member.entity';
 import { RequestJoin } from 'src/Entities/RequestJoin.entity';
 import { Repository } from 'typeorm';
+import { JwtService } from '@nestjs/jwt';
+import { HttpService } from '@nestjs/axios'
+import * as jwt from 'jsonwebtoken'
+import { ConfigService } from '@nestjs/config';
+import { appleRevokeDto, appleSigninDto } from './dto';
+import * as fs from 'fs'
+import {} from '@nestjs/axios';
+
+export interface ApplePublicKeyType {
+  keys: Array<{
+    [key: string]: string;
+  }>;
+}
 
 @Injectable()
 export class GuestService {
   constructor(
     @InjectRepository(Club) private Club: Repository<Club>,
-    @InjectRepository(Member) private Member: Repository<Member>,
-    @InjectRepository(User) private User: Repository<User>,
-    @InjectRepository(Image) private Image: Repository<Image>,
-    @InjectRepository(RequestJoin) private RequestJoin: Repository<RequestJoin>,
+    private readonly jwtService: JwtService,
+    private readonly httpService: HttpService,
+    private readonly configService: ConfigService
   ) {}
+
+  async appleSignin(data: appleSigninDto) {
+    const decoded = this.jwtService.decode(data.idToken, { complete: true, json: true });
+    const kid: string = decoded['header']['kid'];
+    const alg: string = decoded['header']['alg'];
+    const publicKey = await this.getPublicKey(kid, alg);
+
+    const result = jwt.verify(
+      data.idToken,
+      publicKey,
+    );
+    this.validateToken(result);
+
+    const secret = this.generateSecretKey();
+    
+    const params = new URLSearchParams({
+      client_id: this.configService.get('APPLE_CLIENT_ID'),
+      client_secret: secret,
+      grant_type: 'authorization_code',
+      code: data.code,
+    });
+    try {
+      const res = (await this.httpService.post('https://appleid.apple.com/auth/token', params, {
+        headers: { 'Content-Type': 'application/x-www-form-urlencoded' }
+      }).toPromise()).data;
+      return res;
+    } catch {
+      throw new UnauthorizedException('유효하지 않은 앱에서 인증을 요청하였습니다.');
+    }
+  }
+
+  async appleRevoke(data: appleRevokeDto) {
+    const secret = this.generateSecretKey();
+
+    const params = new URLSearchParams({
+      client_id: this.configService.get('APPLE_CLIENT_ID'),
+      client_secret: secret,
+      token_type_hint: 'refresh_token',
+      token: data.refreshToken,
+    });
+    console.log(params);
+    
+    try {
+      const res = (await this.httpService.post('https://appleid.apple.com/auth/revoke', params, {
+        headers: { 'Content-Type': 'application/x-www-form-urlencoded' }
+      }).toPromise()).data;
+      console.log(res);
+      return res;
+    } catch {
+      throw new UnauthorizedException('유효하지 않은 앱에서 인증을 요청하였습니다.');
+    }
+  }
+
+  private generateSecretKey() {
+    const timeNow = Math.floor(Date.now() / 1000);
+
+    const claims = {
+      iss: this.configService.get('APPLE_TEAM_ID'),
+      iat: timeNow,
+      exp: timeNow + 60 * 60 * 24 * 7,
+      aud: 'https://appleid.apple.com',
+      sub: this.configService.get('APPLE_CLIENT_ID'),
+    };
+
+    return jwt.sign(claims, fs.readFileSync('src/lib/AuthKey.p8', 'utf8'), { header: { alg: 'ES256', kid: this.configService.get('APPLE_KEY_ID') } });
+  }
+
+  private validateToken(token) {
+    if (token.iss !== 'https://appleid.apple.com') {
+      throw new UnauthorizedException();
+    }
+  }
+  private async getPublicKey(keyid: string, algorithm: string) {
+    const applePublicKeys: ApplePublicKeyType = (await this.httpService.get('https://appleid.apple.com/auth/keys').toPromise()).data;
+
+    const client: jwksClient.JwksClient = jwksClient({
+      jwksUri: 'https://appleid.apple.com/auth/keys'
+    });
+
+    const validKid: string = applePublicKeys.keys.filter(
+      (element) => element['kid'] === keyid && element['alg'] === algorithm,
+    )[0]?.['kid'];
+
+    if (!validKid) {
+      throw new UnauthorizedException('유효하지 않은 앱에서 인증을 요청하였습니다.');
+    }
+    const key: jwksClient.CertSigningKey | jwksClient.RsaSigningKey =
+        await client.getSigningKey(validKid);
+    return key.getPublicKey();
+  }
 
   async guestDetailPage(clubType: string, clubName: string) {
     const club = await this.Club.findOne({
