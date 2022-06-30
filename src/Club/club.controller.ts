@@ -186,6 +186,7 @@ export class ClubController {
     @Query('type') clubtype: string,
     @User('email') email: string,
   ) {
+    console.log(clubname);
     return this.clubService.detailPage(clubtype, clubname, email);
   }
 
