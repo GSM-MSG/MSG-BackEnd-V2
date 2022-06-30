@@ -83,7 +83,7 @@ export class ClubService {
     if (checkClubMember) {
       throw new HttpException(
         '다른 동아리에 소속되어있습니다..',
-        HttpStatus.CONFLICT,
+        HttpStatus.BAD_REQUEST,
       );
     }
     let isOpened = false;
@@ -114,6 +114,7 @@ export class ClubService {
     if (member.length) {
       const members = member.map(async (user) => {
         const userData = await this.checkUser(user, clubData);
+
         return this.Member.create({
           user: userData,
           club: clubData,
@@ -163,7 +164,7 @@ export class ClubService {
       await this.Club.delete(clubData);
       throw new HttpException(
         `${email}다른 동아리에 신청을 넣은 유저입니다.`,
-        HttpStatus.CONFLICT,
+        HttpStatus.BAD_REQUEST,
       );
     }
     if (userData.member.length && clubData.type !== 'EDITORIAL') {
@@ -175,7 +176,7 @@ export class ClubService {
       await this.Club.delete(clubData);
       throw new HttpException(
         `${email}다른 동아리에 소속되어 있습니다.`,
-        HttpStatus.CONFLICT,
+        HttpStatus.BAD_REQUEST,
       );
     }
     delete userData.member;
@@ -530,15 +531,6 @@ export class ClubService {
       ) {
         result = userData.member.find((member) => {
           return member.club.type === clubtype.toUpperCase();
-        });
-      } else if (
-        scope === 'USER' &&
-        userData.requestJoin.filter((r) => {
-          return r.club.type === clubtype;
-        }).length
-      ) {
-        result = userData.requestJoin.find((reqJoin) => {
-          return reqJoin.club.type === clubtype.toUpperCase();
         });
       }
       if (result) {
