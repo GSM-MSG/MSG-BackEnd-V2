@@ -3,7 +3,7 @@ import { Member } from './Member.entity';
 import { Image } from './image.entity';
 import { RequestJoin } from './RequestJoin.entity';
 
-@Entity()
+@Entity({ name: 'club' })
 export class Club {
   @PrimaryGeneratedColumn()
   id: number;

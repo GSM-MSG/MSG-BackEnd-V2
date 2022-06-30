@@ -7,7 +7,7 @@ import {
 } from 'typeorm';
 import { Club } from './Club.entity';
 
-@Entity()
+@Entity({ name: 'image' })
 export class Image {
   @PrimaryGeneratedColumn()
   id: number;

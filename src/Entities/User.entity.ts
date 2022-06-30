@@ -3,7 +3,7 @@ import { ClassRegistration } from './ClassRegistration.entity';
 import { Member } from './Member.entity';
 import { RequestJoin } from './RequestJoin.entity';
 
-@Entity()
+@Entity({ name: 'user' })
 export class User {
   @PrimaryColumn()
   email: string;
