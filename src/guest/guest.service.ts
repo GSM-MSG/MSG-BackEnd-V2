@@ -75,7 +75,6 @@ export class GuestService {
       token_type_hint: 'refresh_token',
       token: data.refreshToken,
     });
-    console.log(params);
 
     try {
       const res = (
@@ -85,7 +84,6 @@ export class GuestService {
           })
           .toPromise()
       ).data;
-      console.log(res);
       return res;
     } catch {
       throw new UnauthorizedException(
