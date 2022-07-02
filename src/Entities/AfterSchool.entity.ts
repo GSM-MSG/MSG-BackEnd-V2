@@ -24,15 +24,12 @@ export class AfterSchool {
   teacher: string;
 
   @Column()
-  canDuplicate: boolean;
-
-  @Column()
   season: string;
 
-  @Column()
+  @Column({ name: 'yearOf' })
   yearOf: number;
 
-  @Column()
+  @Column({ name: 'isOpened' })
   isOpened: boolean;
 
   @OneToMany(
