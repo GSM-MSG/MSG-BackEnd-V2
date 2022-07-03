@@ -60,7 +60,7 @@ export class UserService {
         return user;
       });
     } else
-      throw new HttpException('없는 동아리 타입입니다', HttpStatus.BAD_GATEWAY);
+      throw new HttpException('없는 동아리 타입입니다', HttpStatus.BAD_REQUEST);
   }
   async exitClub(exitclubData: ClubDataDto, email: string) {
     const clubData = await this.Club.findOne({
