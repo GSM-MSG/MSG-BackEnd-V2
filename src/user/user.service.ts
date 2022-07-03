@@ -60,7 +60,7 @@ export class UserService {
         return user;
       });
     } else
-      throw new HttpException('없는 동아리 타입입니다', HttpStatus.BAD_GATEWAY);
+      throw new HttpException('없는 동아리 타입입니다', HttpStatus.BAD_REQUEST);
   }
   async exitClub(exitclubData: ClubDataDto, email: string) {
     const clubData = await this.Club.findOne({
@@ -71,9 +71,12 @@ export class UserService {
       return member.user.email === email;
     });
     if (!clubData)
-      throw new HttpException('없는 동아리 입니다', HttpStatus.NOT_FOUND);
+      throw new HttpException('없는 동아리 입니다', HttpStatus.BAD_REQUEST);
     else if (!member)
-      throw new HttpException('동아리 멤버가 아닙니다', HttpStatus.BAD_GATEWAY);
+      throw new HttpException(
+        '동아리 멤버가 아닙니다',
+        HttpStatus.NOT_ACCEPTABLE,
+      );
     else if (member.scope === 'HEAD')
       throw new HttpException(
         '동아리 부장은 탈퇴가 불가능합니다',
