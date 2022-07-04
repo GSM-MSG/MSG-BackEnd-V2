@@ -62,7 +62,8 @@ export class ClubService {
         HttpStatus.CONFLICT,
       );
     }
-
+    let deduplication = new Set(member); //중복을 제거하는 배열 생성
+    let deduplicatedMember = Array.from(deduplication); //set타입을 배열 형식으로 변경
     const userData = await this.User.findOne({
       where: { email },
       relations: ['member', 'member.user', 'member.club'],
@@ -112,9 +113,8 @@ export class ClubService {
       this.Member.create({ user: userData, club: clubData, scope: 'HEAD' }),
     );
     if (member.length) {
-      const members = member.map(async (user) => {
+      const members = deduplicatedMember.map(async (user) => {
         const userData = await this.checkUser(user, clubData);
-
         return this.Member.create({
           user: userData,
           club: clubData,

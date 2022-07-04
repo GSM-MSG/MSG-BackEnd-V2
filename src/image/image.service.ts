@@ -1,4 +1,9 @@
-import { BadRequestException, Injectable } from '@nestjs/common';
+import {
+  BadRequestException,
+  HttpException,
+  HttpStatus,
+  Injectable,
+} from '@nestjs/common';
 import * as AWS from 'aws-sdk';
 import { ConfigService } from '@nestjs/config';
 
@@ -13,6 +18,13 @@ export class ImageService {
 
   async uploladFile(files: Express.Multer.File[]) {
     const list = [];
+
+    if (files.length > 4) {
+      throw new HttpException(
+        '이미지를 너무 많이 보냈습니다',
+        HttpStatus.BAD_REQUEST,
+      );
+    }
 
     for (const element of files) {
       const params = {
@@ -32,6 +44,9 @@ export class ImageService {
       } catch (e) {
         throw new BadRequestException(e);
       }
+    }
+    if (list.length > 4) {
+      throw new HttpException('요청을 다시 보내주세요', HttpStatus.BAD_REQUEST);
     }
     return list;
   }
