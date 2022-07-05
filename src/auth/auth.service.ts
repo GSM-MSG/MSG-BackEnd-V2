@@ -53,9 +53,17 @@ export class AuthService {
     }
 
     const email = payload.email;
-    const student = this.findStudent(email);
+    let student = this.findStudent(email);
 
-    if (email === 'forgcms@gmail.com') {}
+    if (email === 'forgcms@gmail.com') {
+      student = {
+        grade: 10,
+        class: 10,
+        num: 10,
+        name: '심사용',
+        email: 'forgcms@gmail.com'
+      };
+    }
     else if (!payload || !email) throw new NotFoundException('Not found oauth user');
     else if (payload.hd !== 'gsm.hs.kr')
       throw new ForbiddenException('Not GSM mail');
