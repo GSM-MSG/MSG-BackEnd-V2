@@ -525,17 +525,17 @@ export class ClubService {
       return member.user.email === userData.email;
     });
     let scope = memberForScope ? memberForScope.scope : 'USER';
-    let result: Member | RequestJoin;
 
+    let result = false;
+    const checkJoinOtherClub = userData.member.filter((m) => {
+      return m.club.type === clubtype.toUpperCase();
+    });
     if (
       scope === 'USER' &&
-      userData.member.filter((m) => {
-        return m.club.type === clubtype;
-      }).length
+      checkJoinOtherClub.length &&
+      clubtype !== 'EDITORIAL'
     ) {
-      result = userData.member.find((member) => {
-        return member.club.type === clubtype.toUpperCase();
-      });
+      result = true;
     }
     if (result) {
       scope = 'OTHER';
