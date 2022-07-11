@@ -23,6 +23,8 @@ export class UserService {
         'member.club',
         'classRegistration',
         'classRegistration.afterSchool',
+        'classRegistration.afterSchool.dayOfWeek',
+        'classRegistration.afterSchool.grade',
       ],
     });
     delete userData.refreshToken;
